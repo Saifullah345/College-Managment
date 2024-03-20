@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
@@ -5,8 +7,8 @@ import { getSubjectList } from '../../../redux/sclassRelated/sclassHandle';
 import { deleteUser } from '../../../redux/userRelated/userHandle';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import {
-    Paper, Box, IconButton,
-} from '@mui/material';
+    Paper, IconButton, Typography, Card, CardContent, Box, // Import Box component
+} from '@mui/material'; // Ensure Box component is imported
 import DeleteIcon from "@mui/icons-material/Delete";
 import TableTemplate from '../../../components/TableTemplate';
 import { BlueButton, GreenButton } from '../../../components/buttonStyles';
@@ -42,12 +44,6 @@ const ShowSubjects = () => {
         //     })
     }
 
-    const subjectColumns = [
-        { id: 'subName', label: 'Sub Name', minWidth: 170 },
-        { id: 'sessions', label: 'Sessions', minWidth: 170 },
-        { id: 'sclassName', label: 'Class', minWidth: 170 },
-    ]
-
     const subjectRows = subjectsList.map((subject) => {
         return {
             subName: subject.subName,
@@ -68,6 +64,7 @@ const ShowSubjects = () => {
                     onClick={() => navigate(`/Admin/subjects/subject/${row.sclassID}/${row.id}`)}>
                     View
                 </BlueButton>
+                <Typography>{row.sclassName}</Typography>
             </>
         );
     };
@@ -99,15 +96,34 @@ const ShowSubjects = () => {
                         :
                         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                             {Array.isArray(subjectsList) && subjectsList.length > 0 &&
-                                <TableTemplate buttonHaver={SubjectsButtonHaver} columns={subjectColumns} rows={subjectRows} />
-                            }
+                                subjectsList.map((subject) => (
+                                    <Card key={subject._id} sx={{ width: '18rem', marginBottom: '16px' }}>
+                                        <CardContent>
+                                            <Typography variant="h5" component="div">
+                                                {subject.subName}
+                                            </Typography>
+                                            <Typography variant="body2">
+                                                Sessions: {subject.sessions}
+                                            </Typography>
+                                            <Typography variant="body2">
+                                                Class: {subject.sclassName.sclassName}
+                                            </Typography>
+                                        </CardContent>
+                                        <IconButton onClick={() => deleteHandler(subject._id, "Subject")}>
+                                            <DeleteIcon color="error" />
+                                        </IconButton>
+                                        <BlueButton variant="contained"
+                                            onClick={() => navigate(`/Admin/subjects/subject/${subject.sclassName._id}/${subject._id}`)}>
+                                            View
+                                        </BlueButton>
+                                    </Card>
+                                ))}
                             <SpeedDialTemplate actions={actions} />
                         </Paper>
                     }
                 </>
             }
             <Popup message={message} setShowPopup={setShowPopup} showPopup={showPopup} />
-
         </>
     );
 };

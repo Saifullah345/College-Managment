@@ -9,7 +9,7 @@ import LoginPage from './pages/LoginPage';
 import AdminRegisterPage from './pages/admin/AdminRegisterPage';
 import ChooseUser from './pages/ChooseUser';
 
-const App = () => {
+export const App = () => {
   const { currentRole } = useSelector(state => state.user);
 
   return (
