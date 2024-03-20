@@ -32,56 +32,6 @@ const AdminHomePage = () => {
   const numberOfClasses = sclassesList && sclassesList.length;
   const numberOfTeachers = teachersList && teachersList.length;
 
-<<<<<<< HEAD
-    return (
-        <>
-            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-                <Grid container spacing={3}>
-                    <Grid item xs={12} md={3} lg={3}>
-                        <StyledPaper>
-                            <img src={Students} alt="Students" />
-                            <Title>
-                                Total Students
-                            </Title>
-                            <Data start={0} end={numberOfStudents} duration={2.5} />
-                        </StyledPaper>
-                    </Grid>
-                    <Grid item xs={12} md={3} lg={3}>
-                        <StyledPaper>
-                            <img src={Classes} alt="Classes" />
-                            <Title>
-                                Total Classes
-                            </Title>
-                            <Data start={0} end={numberOfClasses} duration={5} />
-                        </StyledPaper>
-                    </Grid>
-                    <Grid item xs={12} md={3} lg={3}>
-                        <StyledPaper>
-                            <img src={Teachers} alt="Teachers" />
-                            <Title>
-                                Total Teachers
-                            </Title>
-                            <Data start={0} end={numberOfTeachers} duration={2.5} />
-                        </StyledPaper>
-                    </Grid>
-                    <Grid item xs={12} md={3} lg={3}>
-                        <StyledPaper>
-                            <img src={Fees} alt="Fees" />
-                            <Title>
-                                Fees Collection
-                            </Title>
-                            <Data start={0} end={0} duration={2.5} prefix=" ₹" />                        </StyledPaper>
-                    </Grid>
-                    <Grid item xs={12} md={12} lg={12}>
-                        <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                            <SeeNotice />
-                        </Paper>
-                    </Grid>
-                </Grid>
-            </Container>
-        </>
-    );
-=======
   return (
     <>
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -123,7 +73,6 @@ const AdminHomePage = () => {
       </Container>
     </>
   );
->>>>>>> bafb7569c0e3cf0b5ea2f8c4e87741b8afbb2331
 };
 
 const StyledPaper = styled(Paper)`

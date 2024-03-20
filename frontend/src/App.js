@@ -15,11 +15,7 @@ import AdminRegisterPage from "./pages/admin/AdminRegisterPage";
 import ChooseUser from "./pages/ChooseUser";
 
 export const App = () => {
-<<<<<<< HEAD
-  const { currentRole } = useSelector(state => state.user);
-=======
   const { currentRole } = useSelector((state) => state.user);
->>>>>>> bafb7569c0e3cf0b5ea2f8c4e87741b8afbb2331
 
   return (
     <Router>
