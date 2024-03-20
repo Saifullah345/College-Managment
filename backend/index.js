@@ -2,7 +2,6 @@ const express = require("express")
 const cors = require("cors")
 const mongoose = require("mongoose")
 const dotenv = require("dotenv")
-// const bodyParser = require("body-parser")
 const app = express()
 const Routes = require("./routes/route.js")
 
