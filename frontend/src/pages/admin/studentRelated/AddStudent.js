@@ -11,9 +11,7 @@ const AddStudent = ({ situation }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const params = useParams();
-
-  const userState = useSelector((state) => state.user);
-  const { status, currentUser, response, error } = userState;
+  const { currentUser, status, response, error } = useSelector((state) => state.user);
   const { sclassesList } = useSelector((state) => state.sclass);
 
   const [name, setName] = useState("");
@@ -23,10 +21,18 @@ const AddStudent = ({ situation }) => {
   const [address, setAddress] = useState("");
   const [className, setClassName] = useState("");
   const [sclassName, setSclassName] = useState("");
-
-  const adminID = currentUser._id;
-  const role = "Student";
-  const attendance = [];
+  const [fatherName, setFatherName] = useState("");
+  const [citizenship, setCitizenship] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const [message, setMessage] = useState("");
+  const [loader, setLoader] = useState(false);
+  const [cnic, setCnic] = useState("");
+  const [contactNo, setContactNo] = useState("");
+  const [religion, setReligion] = useState("");
+  const [gender, setGender] = useState("");
+  const [dob, setDob] = useState("");
+  const [qualification, setQualification] = useState("");
+  const [concernedBoard, setConcernedBoard] = useState("");
 
   useEffect(() => {
     if (situation === "Class") {
@@ -34,22 +40,16 @@ const AddStudent = ({ situation }) => {
     }
   }, [params.id, situation]);
 
-  const [showPopup, setShowPopup] = useState(false);
-  const [message, setMessage] = useState("");
-  const [loader, setLoader] = useState(false);
-
   useEffect(() => {
-    dispatch(getAllSclasses(adminID, "Sclass"));
-  }, [adminID, dispatch]);
+    dispatch(getAllSclasses(currentUser._id, "Sclass"));
+  }, [currentUser._id, dispatch]);
 
   const changeHandler = (event) => {
     if (event.target.value === "Select Class") {
       setClassName("Select Class");
       setSclassName("");
     } else {
-      const selectedClass = sclassesList.find(
-        (classItem) => classItem.sclassName === event.target.value
-      );
+      const selectedClass = sclassesList.find((classItem) => classItem.sclassName === event.target.value);
       setClassName(selectedClass.sclassName);
       setSclassName(selectedClass._id);
     }
@@ -62,9 +62,18 @@ const AddStudent = ({ situation }) => {
     sclassName,
     provinces,
     address,
-    adminID,
-    role,
-    attendance,
+    adminID: currentUser._id,
+    role: "Student",
+    attendance: [],
+    cnic,
+    contactNo,
+    religion,
+    gender,
+    dob,
+    qualification,
+    concernedBoard,
+    fatherName,
+    citizenship,
   };
 
   const submitHandler = (event) => {
@@ -74,7 +83,7 @@ const AddStudent = ({ situation }) => {
       setShowPopup(true);
     } else {
       setLoader(true);
-      dispatch(registerUser(fields, role));
+      dispatch(registerUser(fields));
     }
   };
 
@@ -91,81 +100,108 @@ const AddStudent = ({ situation }) => {
       setShowPopup(true);
       setLoader(false);
     }
-  }, [status, navigate, error, response, dispatch]);
+  }, [status, navigate, response, dispatch]);
 
   return (
     <>
       <div className="register">
         <form className="registerForm" onSubmit={submitHandler}>
           <span className="registerTitle">Add Student</span>
-          <label>Name</label>
+          <label>Full Name *</label>
           <input
             className="registerInput"
             type="text"
-            placeholder="Enter student's name..."
+            placeholder="Enter full name..."
             value={name}
             onChange={(event) => setName(event.target.value)}
             autoComplete="name"
             required
           />
-
-          {situation === "Student" && (
-            <>
-              <label>Class</label>
-              <select
-                className="registerInput"
-                value={className}
-                onChange={changeHandler}
-                required
-              >
-                <option value="Select Class">Select Class</option>
-                {sclassesList.map((classItem, index) => (
-                  <option key={index} value={classItem.sclassName}>
-                    {classItem.sclassName}
-                  </option>
-                ))}
-              </select>
-            </>
-          )}
-
-          <label>Roll Number</label>
-          <input
-            className="registerInput"
-            type="number"
-            placeholder="Enter student's Roll Number..."
-            value={rollNum}
-            onChange={(event) => setRollNum(event.target.value)}
-            required
-          />
-          <label>Provinces</label>
+          <label>Father Name *</label>
           <input
             className="registerInput"
             type="text"
-            placeholder="Enter student's Provinces..."
-            value={provinces}
-            onChange={(event) => setProvinces(event.target.value)}
+            placeholder="Enter father's name..."
+            value={fatherName}
+            onChange={(event) => setFatherName(event.target.value)}
             required
           />
-          <label>Address</label>
+          <label>Citizenship *</label>
+          <select
+            className="registerInput"
+            value={citizenship}
+            onChange={(event) => setCitizenship(event.target.value)}
+            required
+          >
+            <option value="">Select Citizenship</option>
+            {/* Add citizenship options */}
+          </select>
+          <label>CNIC *</label>
           <input
             className="registerInput"
             type="text"
-            placeholder="Enter student's Address..."
-            value={address}
-            onChange={(event) => setAddress(event.target.value)}
+            placeholder="Enter CNIC..."
+            value={cnic}
+            onChange={(event) => setCnic(event.target.value)}
             required
           />
-
-          <label>Password</label>
+          <label>Contact No *</label>
           <input
             className="registerInput"
-            type="password"
-            placeholder="Enter student's password..."
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            autoComplete="new-password"
+            type="tel"
+            placeholder="Enter contact number..."
+            value={contactNo}
+            onChange={(event) => setContactNo(event.target.value)}
+            pattern="[0-9]{4}-[0-9]{7}"
             required
           />
+          <label>Religion</label>
+          <input
+            className="registerInput"
+            type="text"
+            placeholder="Enter religion..."
+            value={religion}
+            onChange={(event) => setReligion(event.target.value)}
+          />
+          <label>Gender *</label>
+          <select
+            className="registerInput"
+            value={gender}
+            onChange={(event) => setGender(event.target.value)}
+            required
+          >
+            <option value="">Select a gender</option>
+            {/* Add gender options */}
+          </select>
+          <label>Date of Birth *</label>
+          <input
+            className="registerInput"
+            type="date"
+            value={dob}
+            onChange={(event) => setDob(event.target.value)}
+            required
+          />
+          <label>Qualification *</label>
+          <input
+            className="registerInput"
+            type="text"
+            placeholder="Enter qualification..."
+            value={qualification}
+            onChange={(event) => setQualification(event.target.value)}
+            required
+          />
+          <label>Concerned Board *</label>
+          <select
+            className="registerInput"
+            value={concernedBoard}
+            onChange={(event) => setConcernedBoard(event.target.value)}
+            required
+          >
+            <option value="">Select Concerned Board</option>
+            {/* Add concerned board options */}
+          </select>
+
+          {/* Additional input fields */}
 
           <button className="registerButton" type="submit" disabled={loader}>
             {loader ? <CircularProgress size={24} color="inherit" /> : "Add"}
@@ -180,6 +216,5 @@ const AddStudent = ({ situation }) => {
     </>
   );
 };
-
 
 export default AddStudent;
