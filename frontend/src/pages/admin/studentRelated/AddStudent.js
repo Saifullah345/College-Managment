@@ -14,6 +14,7 @@ const AddStudent = ({ situation }) => {
   const { currentUser, status, response, error } = useSelector((state) => state.user);
   const { sclassesList } = useSelector((state) => state.sclass);
 
+  // State variables
   const [name, setName] = useState("");
   const [rollNum, setRollNum] = useState("");
   const [password, setPassword] = useState("");
@@ -34,16 +35,19 @@ const AddStudent = ({ situation }) => {
   const [qualification, setQualification] = useState("");
   const [concernedBoard, setConcernedBoard] = useState("");
 
+  // Effect for setting sclassName based on situation
   useEffect(() => {
     if (situation === "Class") {
       setSclassName(params.id);
     }
   }, [params.id, situation]);
 
+  // Effect for getting all sclasses when currentUser ID changes
   useEffect(() => {
     dispatch(getAllSclasses(currentUser._id, "Sclass"));
   }, [currentUser._id, dispatch]);
 
+  // Handler for changing class
   const changeHandler = (event) => {
     if (event.target.value === "Select Class") {
       setClassName("Select Class");
@@ -55,6 +59,7 @@ const AddStudent = ({ situation }) => {
     }
   };
 
+  // Fields object for registerUser dispatch
   const fields = {
     name,
     rollNum,
@@ -76,6 +81,7 @@ const AddStudent = ({ situation }) => {
     citizenship,
   };
 
+  // Handler for form submission
   const submitHandler = (event) => {
     event.preventDefault();
     if (sclassName === "") {
@@ -87,6 +93,7 @@ const AddStudent = ({ situation }) => {
     }
   };
 
+  // Effect for handling different status scenarios
   useEffect(() => {
     if (status === "added") {
       dispatch(underControl());
@@ -103,109 +110,131 @@ const AddStudent = ({ situation }) => {
   }, [status, navigate, response, dispatch]);
 
   return (
-    <>
+    <div className="container">
       <div className="register">
         <form className="registerForm" onSubmit={submitHandler}>
           <span className="registerTitle">Add Student</span>
-          <label>Full Name *</label>
-          <input
-            className="registerInput"
-            type="text"
-            placeholder="Enter full name..."
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            autoComplete="name"
-            required
-          />
-          <label>Father Name *</label>
-          <input
-            className="registerInput"
-            type="text"
-            placeholder="Enter father's name..."
-            value={fatherName}
-            onChange={(event) => setFatherName(event.target.value)}
-            required
-          />
-          <label>Citizenship *</label>
-          <select
-            className="registerInput"
-            value={citizenship}
-            onChange={(event) => setCitizenship(event.target.value)}
-            required
-          >
-            <option value="">Select Citizenship</option>
-            {/* Add citizenship options */}
-          </select>
-          <label>CNIC *</label>
-          <input
-            className="registerInput"
-            type="text"
-            placeholder="Enter CNIC..."
-            value={cnic}
-            onChange={(event) => setCnic(event.target.value)}
-            required
-          />
-          <label>Contact No *</label>
-          <input
-            className="registerInput"
-            type="tel"
-            placeholder="Enter contact number..."
-            value={contactNo}
-            onChange={(event) => setContactNo(event.target.value)}
-            pattern="[0-9]{4}-[0-9]{7}"
-            required
-          />
-          <label>Religion</label>
-          <input
-            className="registerInput"
-            type="text"
-            placeholder="Enter religion..."
-            value={religion}
-            onChange={(event) => setReligion(event.target.value)}
-          />
-          <label>Gender *</label>
-          <select
-            className="registerInput"
-            value={gender}
-            onChange={(event) => setGender(event.target.value)}
-            required
-          >
-            <option value="">Select a gender</option>
-            {/* Add gender options */}
-          </select>
-          <label>Date of Birth *</label>
-          <input
-            className="registerInput"
-            type="date"
-            value={dob}
-            onChange={(event) => setDob(event.target.value)}
-            required
-          />
-          <label>Qualification *</label>
-          <input
-            className="registerInput"
-            type="text"
-            placeholder="Enter qualification..."
-            value={qualification}
-            onChange={(event) => setQualification(event.target.value)}
-            required
-          />
-          <label>Concerned Board *</label>
-          <select
-            className="registerInput"
-            value={concernedBoard}
-            onChange={(event) => setConcernedBoard(event.target.value)}
-            required
-          >
-            <option value="">Select Concerned Board</option>
-            {/* Add concerned board options */}
-          </select>
+          <div className="formGroup">
+            <label>Full Name *</label>
+            <input
+              className="registerInput"
+              type="text"
+              placeholder="Enter full name..."
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              autoComplete="name"
+              required
+            />
+          </div>
+          <div className="formGroup">
+            <label>Father Name *</label>
+            <input
+              className="registerInput"
+              type="text"
+              placeholder="Enter father's name..."
+              value={fatherName}
+              onChange={(event) => setFatherName(event.target.value)}
+              required
+            />
+          </div>
+          <div className="formGroup">
+            <label>Citizenship *</label>
+            <select
+              className="registerInput"
+              value={citizenship}
+              onChange={(event) => setCitizenship(event.target.value)}
+              required
+            >
+              <option value="">Select Citizenship</option>
+              {/* Add citizenship options */}
+            </select>
+          </div>
+          <div className="formGroup">
+            <label>CNIC *</label>
+            <input
+              className="registerInput"
+              type="text"
+              placeholder="Enter CNIC..."
+              value={cnic}
+              onChange={(event) => setCnic(event.target.value)}
+              required
+            />
+          </div>
+          <div className="formGroup">
+            <label>Contact No *</label>
+            <input
+              className="registerInput"
+              type="tel"
+              placeholder="Enter contact number..."
+              value={contactNo}
+              onChange={(event) => setContactNo(event.target.value)}
+              pattern="[0-9]{4}-[0-9]{7}"
+              required
+            />
+          </div>
+          <div className="formGroup">
+            <label>Religion</label>
+            <input
+              className="registerInput"
+              type="text"
+              placeholder="Enter religion..."
+              value={religion}
+              onChange={(event) => setReligion(event.target.value)}
+            />
+          </div>
+          <div className="formGroup">
+            <label>Gender *</label>
+            <select
+              className="registerInput"
+              value={gender}
+              onChange={(event) => setGender(event.target.value)}
+              required
+            >
+              <option value="">Select a gender</option>
+              {/* Add gender options */}
+            </select>
+          </div>
+          <div className="formGroup">
+            <label>Date of Birth *</label>
+            <input
+              className="registerInput"
+              type="date"
+              value={dob}
+              onChange={(event) => setDob(event.target.value)}
+              required
+            />
+          </div>
+          <div className="formGroup">
+            <label>Qualification *</label>
+            <input
+              className="registerInput"
+              type="text"
+              placeholder="Enter qualification..."
+              value={qualification}
+              onChange={(event) => setQualification(event.target.value)}
+              required
+            />
+          </div>
+          <div className="formGroup">
+            <label>Concerned Board *</label>
+            <select
+              className="registerInput"
+              value={concernedBoard}
+              onChange={(event) => setConcernedBoard(event.target.value)}
+              required
+            >
+              <option value="">Select Concerned Board</option>
+              {/* Add concerned board options */}
+            </select>
+          </div>
 
           {/* Additional input fields */}
 
-          <button className="registerButton" type="submit" disabled={loader}>
-            {loader ? <CircularProgress size={24} color="inherit" /> : "Add"}
-          </button>
+          <div className="formGroup">
+            <button className="registerButton" type="submit" disabled={loader}>
+              {loader ? <CircularProgress size={24} color="inherit" /> : "Add"}
+            </button>
+          </div>
         </form>
       </div>
       <Popup
@@ -213,7 +242,7 @@ const AddStudent = ({ situation }) => {
         setShowPopup={setShowPopup}
         showPopup={showPopup}
       />
-    </>
+    </div>
   );
 };
 
