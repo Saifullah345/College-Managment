@@ -1,11 +1,18 @@
 * {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   margin: 0;
 }
 
 a {
   text-decoration: none;
   color: inherit;
+}
+.flex {
+  display: flex;
+  gap: 5rem;
+}
+.justify-between {
+  justify-content: space-between;
 }
 
 ::-webkit-scrollbar {
@@ -22,7 +29,10 @@ a {
 
 /* FORM */
 .register {
-  height: 100vh;
+  /* height: 100vh; */
+  width: 100%;
+  margin-top: "10rem";
+  overflow: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -34,6 +44,14 @@ a {
   background-blend-mode: darken; */
   font-family: "Josefin Sans", sans-serif;
 }
+.register-form {
+  margin-top: 3rem;
+  padding: 0 100px;
+  display: flex;
+  flex-direction: column;
+  /* gap: 20rem !important; */
+  /* margin: "10rem" !important; */
+}
 
 .registerTitle {
   font-size: 50px;
@@ -43,18 +61,25 @@ a {
   margin-top: -50px;
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
 
-.registerForm>label {
+.registerForm > label {
   margin: 10px 0;
   color: rgb(0, 0, 0);
 }
-
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: "2px";
+  width: 100%;
+}
 .registerInput {
   padding: 10px;
   background-color: white;
   border: none;
   border-radius: 10px;
+  width: 100%;
 }
 
 .registerInput:focus {
