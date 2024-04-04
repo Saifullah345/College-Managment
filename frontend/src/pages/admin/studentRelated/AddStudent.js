@@ -36,6 +36,10 @@ const AddStudent = ({ situation }) => {
   const [dob, setDob] = useState("");
   const [qualification, setQualification] = useState("");
   const [concernedBoard, setConcernedBoard] = useState("");
+  const [district, setDistrict] = useState('');
+  const [tehsil, setTehsil] = useState('');
+
+
 
   // Effect for setting sclassName based on situation
   useEffect(() => {
@@ -143,17 +147,22 @@ const AddStudent = ({ situation }) => {
               />
             </div>
             <div className="formGroup">
-              <label>Citizenship *</label>
-              <select
-                className="registerInput"
-                value={citizenship}
-                onChange={(event) => setCitizenship(event.target.value)}
-                required
-              >
-                <option value="">Select Citizenship</option>
-                {/* Add citizenship options */}
-              </select>
-            </div>
+    <label>Citizenship *</label>
+    <select
+        className="registerInput"
+        value={citizenship}
+        onChange={(event) => setCitizenship(event.target.value)}
+        required
+    >
+        <option value="">Select Country of Citizenship</option>
+        <option value="US">Country: United States</option>
+        <option value="UK">Country: United Kingdom</option>
+        <option value="CA">Country: Canada</option>
+        <option value="PK">Country: Pakistan</option>
+        {/* Add more options as needed */}
+    </select>
+</div>
+
           </div>
           <div className="flex justify-between">
             <div className="formGroup">
@@ -191,18 +200,22 @@ const AddStudent = ({ situation }) => {
             </div>
           </div>
           <div className="flex justify-between">
-            <div className="formGroup">
-              <label>Gender *</label>
-              <select
-                className="registerInput"
-                value={gender}
-                onChange={(event) => setGender(event.target.value)}
-                required
-              >
-                <option value="">Select a gender</option>
-                {/* Add gender options */}
-              </select>
-            </div>
+          <div className="formGroup">
+    <label>Gender *</label>
+    <select
+        className="registerInput"
+        value={gender}
+        onChange={(event) => setGender(event.target.value)}
+        required
+    >
+        <option value="">Select a gender</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+        {/* Add more options as needed */}
+    </select>
+</div>
+
             <div className="formGroup">
               <label>Date of Birth *</label>
               <input
@@ -226,16 +239,129 @@ const AddStudent = ({ situation }) => {
             </div>
           </div>
           <div className="formGroup">
-            <label>Concerned Board *</label>
-            <select
-              className="registerInput"
-              value={concernedBoard}
-              onChange={(event) => setConcernedBoard(event.target.value)}
-              required
-            >
-              <option value="">Select Concerned Board</option>
-              {/* Add concerned board options */}
-            </select>
+    <label>Concerned Board *</label>
+    <select
+        className="registerInput"
+        value={concernedBoard}
+        onChange={(event) => setConcernedBoard(event.target.value)}
+        required
+    >
+        <option value="">Select Concerned Board</option>
+        <option value="Federal Board of Intermediate and Secondary Education">Federal Board of Intermediate and Secondary Education</option>
+        <option value="Lahore Board of Intermediate and Secondary Education">Lahore Board of Intermediate and Secondary Education</option>
+        <option value="Punjab Board of Technical Education">Punjab Board of Technical Education</option>
+        {/* Add more board options as needed */}
+    </select>
+</div>
+
+          <div  iv className="flex justify-between">
+
+            <div className="formGroup">
+              <label>Candidate Posttal Adress *</label>
+              <input
+                className="registerInput"
+                type="text"
+                placeholder="Enter Postal Adress..."
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                autoComplete="name"
+                required
+              />
+            </div>
+
+
+
+            <div className="formGroup">
+              <label>Candidate Permanant Adress *</label>
+              <input
+                className="registerInput"
+                type="text"
+                placeholder="Enter Permanant Adress..."
+                value={fatherName}
+                onChange={(event) => setFatherName(event.target.value)}
+                required
+              />
+            <div className="formGroup">
+    <label>District *</label>
+    <select
+        className="registerInput"
+        value={district}
+        onChange={(event) => setDistrict(event.target.value)}
+        required
+    >
+        <option value="">Select District</option>
+        <option value="Abbottabad">Abbottabad</option>
+        <option value="Bahawalpur">Bahawalpur</option>
+        <option value="Bannu">Bannu</option>
+        <option value="Bhakkar">Bhakkar</option>
+        <option value="Chakwal">Chakwal</option>
+        <option value="Charsadda">Charsadda</option>
+        <option value="Chiniot">Chiniot</option>
+        <option value="Dadu">Dadu</option>
+        <option value="Dera Ghazi Khan">Dera Ghazi Khan</option>
+        <option value="Faisalabad">Faisalabad</option>
+        <option value="Ghotki">Ghotki</option>
+        <option value="Gujranwala">Gujranwala</option>
+        <option value="Gujrat">Gujrat</option>
+        <option value="Hafizabad">Hafizabad</option>
+        <option value="Hyderabad">Hyderabad</option>
+        <option value="Islamabad">Islamabad</option>
+        <option value="Jacobabad">Jacobabad</option>
+        <option value="Jhang">Jhang</option>
+        <option value="Karachi">Karachi</option>
+        <option value="Kasur">Kasur</option>
+        <option value="Khairpur">Khairpur</option>
+        <option value="Khanewal">Khanewal</option>
+        <option value="Khushab">Khushab</option>
+        <option value="Kohat">Kohat</option>
+        <option value="Lahore">Lahore</option>
+        <option value="Larkana">Larkana</option>
+        <option value="Lodhran">Lodhran</option>
+        <option value="Mandi Bahauddin">Mandi Bahauddin</option>
+        <option value="Mansehra">Mansehra</option>
+        <option value="Mardan">Mardan</option>
+        <option value="Mianwali">Mianwali</option>
+        <option value="Multan">Multan</option>
+        <option value="Muzaffargarh">Muzaffargarh</option>
+        <option value="Narowal">Narowal</option>
+        <option value="Nawabshah">Nawabshah</option>
+        <option value="Nowshera">Nowshera</option>
+        <option value="Okara">Okara</option>
+        <option value="Peshawar">Peshawar</option>
+        <option value="Quetta">Quetta</option>
+        <option value="Rahim Yar Khan">Rahim Yar Khan</option>
+        <option value="Rajanpur">Rajanpur</option>
+        <option value="Rawalpindi">Rawalpindi</option>
+        <option value="Sahiwal">Sahiwal</option>
+        <option value="Sargodha">Sargodha</option>
+        <option value="Sheikhupura">Sheikhupura</option>
+        <option value="Shikarpur">Shikarpur</option>
+        <option value="Sialkot">Sialkot</option>
+        <option value="Sukkur">Sukkur</option>
+        <option value="Swabi">Swabi</option>
+        <option value="Swat">Swat</option>
+        <option value="Toba Tek Singh">Toba Tek Singh</option>
+        <option value="Vehari">Vehari</option>
+        {/* Add more districts as needed */}
+    </select>
+</div>
+</div>
+
+            
+<div className="formGroup">
+    <label>Tehsil *</label>
+    <select
+        className="registerInput"
+        value={tehsil}
+        onChange={(event) => setTehsil(event.target.value)}
+        required
+    >
+        <option value="">Select Tehsil</option>
+        <option value="Depalpur">Depalpur</option>
+        {/* Add more tehsil options as needed */}
+    </select>
+</div>
+
           </div>
 
           {/* Additional input fields */}
