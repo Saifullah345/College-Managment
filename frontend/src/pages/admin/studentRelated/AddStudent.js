@@ -41,9 +41,27 @@ const AddStudent = ({ situation }) => {
   const [postalAddress, setPostalAddress] = useState('');
   const [permanentAddress, setPermanentAddress] = useState('');
   const [admissionDate, setAdmissionDate] = useState("");
+  const [profilePhoto, setProfilePhoto] = useState(null);
+
+  const handleProfilePhotoUpload = (event) => {
+    const file = event.target.files[0];
+    // You can perform validation here if needed
+  
+    // Now, you can upload the file to your server or store it in state
+    // For example, you can store it in state like this:
+    setProfilePhoto(file);
+  };
+  
 
 
+  const [studentPhoto, setStudentPhoto] = useState(null);
 
+  // Handler for student photo upload
+  const handleStudentPhotoUpload = (event) => {
+    const file = event.target.files[0];
+    setStudentPhoto(file);
+  };
+  
 
 
   // Effect for setting sclassName based on situation
@@ -92,6 +110,8 @@ const AddStudent = ({ situation }) => {
     concernedBoard,
     fatherName,
     citizenship,
+    studentPhoto,
+
   };
 
   // Handler for form submission
@@ -304,21 +324,23 @@ const AddStudent = ({ situation }) => {
         {/* Add more tehsil options as needed */}
     </select>
 </div>
-<div className="formGroup">
-        <label>Date of Admission *</label>
-        <input
-          className="registerInput"
-          type="date"
-          value={admissionDate}
-          onChange={(event) => setAdmissionDate(event.target.value)}
-          required
-        />
-      </div>
-      
+          </div>      
+          <div  iv className="flex justify-between">
+          <div className="formGroup">
+  <label>Student Profile Photo *</label>
+  <input
+    type="file"
+    accept="image/*"
+    onChange={handleProfilePhotoUpload}
+    required
+  />
+</div>
 
-          </div>
-          <label>District *</label>
-    <select
+
+          <div className="formGroup">
+<label>District *</label> 
+
+<select
         className="registerInput"
         value={district}
         onChange={(event) => setDistrict(event.target.value)}
@@ -378,9 +400,17 @@ const AddStudent = ({ situation }) => {
         <option value="Toba Tek Singh">Toba Tek Singh</option>
         <option value="Vehari">Vehari</option>
         {/* Add more districts as needed */}
+        
     </select>
+      </div> 
+      
+      </div>     
+     
+    
+    
 
           {/* Additional input fields */}
+          
 
           <div className="formGroup">
             <button className="registerButton" type="submit" disabled={loader}>
