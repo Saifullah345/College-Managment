@@ -38,6 +38,11 @@ const AddStudent = ({ situation }) => {
   const [concernedBoard, setConcernedBoard] = useState("");
   const [district, setDistrict] = useState('');
   const [tehsil, setTehsil] = useState('');
+  const [postalAddress, setPostalAddress] = useState('');
+  const [permanentAddress, setPermanentAddress] = useState('');
+  const [admissionDate, setAdmissionDate] = useState("");
+
+
 
 
 
@@ -226,6 +231,7 @@ const AddStudent = ({ situation }) => {
                 required
               />
             </div>
+       
             <div className="formGroup">
               <label>Qualification *</label>
               <input
@@ -256,33 +262,62 @@ const AddStudent = ({ situation }) => {
 
           <div  iv className="flex justify-between">
 
-            <div className="formGroup">
-              <label>Candidate Posttal Adress *</label>
-              <input
-                className="registerInput"
-                type="text"
-                placeholder="Enter Postal Adress..."
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-                autoComplete="name"
-                required
-              />
-            </div>
+          <div className="formGroup">
+        <label>Candidate Postal Address *</label>
+        <input
+            className="registerInput"
+            type="text"
+            placeholder="Enter Postal Address..."
+            value={postalAddress}
+            onChange={(event) => setPostalAddress(event.target.value)}
+            autoComplete="postal-address"
+            required
+        />
+    </div>
 
 
 
-            <div className="formGroup">
-              <label>Candidate Permanant Adress *</label>
-              <input
-                className="registerInput"
-                type="text"
-                placeholder="Enter Permanant Adress..."
-                value={fatherName}
-                onChange={(event) => setFatherName(event.target.value)}
-                required
-              />
-            <div className="formGroup">
-    <label>District *</label>
+    <div className="formGroup">
+        <label>Candidate Permanent Address *</label>
+        <input
+            className="registerInput"
+            type="text"
+            placeholder="Enter Permanent Address..."
+            value={permanentAddress}
+            onChange={(event) => setPermanentAddress(event.target.value)}
+            autoComplete="permanent-address"
+            required
+        />
+    </div>
+
+            
+<div className="formGroup">
+    <label>Tehsil *</label>
+    <select
+        className="registerInput"
+        value={tehsil}
+        onChange={(event) => setTehsil(event.target.value)}
+        required
+    >
+        <option value="">Select Tehsil</option>
+        <option value="Depalpur">Depalpur</option>
+        {/* Add more tehsil options as needed */}
+    </select>
+</div>
+<div className="formGroup">
+        <label>Date of Admission *</label>
+        <input
+          className="registerInput"
+          type="date"
+          value={admissionDate}
+          onChange={(event) => setAdmissionDate(event.target.value)}
+          required
+        />
+      </div>
+      
+
+          </div>
+          <label>District *</label>
     <select
         className="registerInput"
         value={district}
@@ -344,25 +379,6 @@ const AddStudent = ({ situation }) => {
         <option value="Vehari">Vehari</option>
         {/* Add more districts as needed */}
     </select>
-</div>
-</div>
-
-            
-<div className="formGroup">
-    <label>Tehsil *</label>
-    <select
-        className="registerInput"
-        value={tehsil}
-        onChange={(event) => setTehsil(event.target.value)}
-        required
-    >
-        <option value="">Select Tehsil</option>
-        <option value="Depalpur">Depalpur</option>
-        {/* Add more tehsil options as needed */}
-    </select>
-</div>
-
-          </div>
 
           {/* Additional input fields */}
 
