@@ -43,6 +43,7 @@ const AddStudent = ({ situation }) => {
   const [admissionDate, setAdmissionDate] = useState("");
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [studentPhoto, setStudentPhoto] = useState(null);
+  
 
 
 
@@ -57,10 +58,6 @@ const AddStudent = ({ situation }) => {
     // For example, you can store it in state like this:
     setProfilePhoto(file);
   };
-  
-
-
-
   
 
 
@@ -400,10 +397,23 @@ const AddStudent = ({ situation }) => {
         <option value="Toba Tek Singh">Toba Tek Singh</option>
         <option value="Vehari">Vehari</option>
         {/* Add more districts as needed */}
+
+        
         
     </select>
+    
       </div> 
-      
+      <div className="formGroup">
+  <label>Date of Admission *</label>
+  <input
+    className="registerInput"
+    type="date"
+    value={admissionDate}
+    onChange={(event) => setAdmissionDate(event.target.value)}
+    required
+  />
+</div>
+
       </div>     
      
     
