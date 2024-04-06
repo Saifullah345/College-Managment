@@ -42,6 +42,12 @@ const AddStudent = ({ situation }) => {
   const [permanentAddress, setPermanentAddress] = useState('');
   const [admissionDate, setAdmissionDate] = useState("");
   const [profilePhoto, setProfilePhoto] = useState(null);
+  const [studentPhoto, setStudentPhoto] = useState(null);
+
+
+
+
+
 
   const handleProfilePhotoUpload = (event) => {
     const file = event.target.files[0];
@@ -54,13 +60,7 @@ const AddStudent = ({ situation }) => {
   
 
 
-  const [studentPhoto, setStudentPhoto] = useState(null);
 
-  // Handler for student photo upload
-  const handleStudentPhotoUpload = (event) => {
-    const file = event.target.files[0];
-    setStudentPhoto(file);
-  };
   
 
 
