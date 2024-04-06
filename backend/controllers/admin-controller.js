@@ -53,6 +53,7 @@ const Complain = require('../models/complainSchema.js');
 //     } else {
 //         res.send({ message: "Email and password are required" });
 //     }
+
 // };
 
 const adminRegister = async (req, res) => {
