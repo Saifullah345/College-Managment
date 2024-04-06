@@ -414,12 +414,9 @@ const AddStudent = ({ situation }) => {
   />
 </div>
 
-      </div>     
-     
-    
-    
-
-          {/* Additional input fields */}
+      </div>               
+        
+      {/* Additional input fields */}
           
 
           <div className="formGroup">
