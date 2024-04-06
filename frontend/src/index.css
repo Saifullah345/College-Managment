@@ -46,6 +46,7 @@ a {
 }
 .register-form {
   margin-top: 3rem;
+  margin-bottom: 3rem;
   padding: 0 100px;
   display: flex;
   flex-direction: column;
@@ -54,14 +55,14 @@ a {
 }
 
 .registerTitle {
-  font-size: 50px;
+  font-size: 30px;
 }
 
 .registerForm {
   margin-top: -50px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
 }
 
 .registerForm > label {

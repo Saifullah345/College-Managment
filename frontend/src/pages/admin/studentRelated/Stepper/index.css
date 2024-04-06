@@ -1,0 +1,88 @@
+.stepper {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.step {
+  flex: 1;
+  text-align: center;
+  position: relative;
+}
+
+.step::before {
+  content: "";
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #ccc;
+  display: block;
+  margin: 0 auto 10px;
+  position: relative;
+  z-index: 2;
+}
+
+/* .step:first-child::before {
+  background-color: #007bff;
+} */
+
+.step:last-child::before {
+  background-color: #ccc;
+}
+
+.step-line {
+  height: 2px;
+  background-color: #28a745;
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 0px); /* Adjusted width calculation */
+}
+.cursorNone {
+  cursor: not-allowed;
+}
+.cursorPointer {
+  cursor: pointer;
+}
+.step-line::before {
+  content: "";
+  width: 100%;
+  height: 2px;
+  background-color: #ccc;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+/* .step:last-child .step-line {
+  display: none;
+} */
+
+.step.active::before {
+  background-color: #007bff;
+}
+
+.step.completed::before {
+  background-color: #28a745;
+}
+
+.step-number {
+  font-size: 18px;
+  color: #ccc;
+}
+
+.step-label {
+  font-size: 14px;
+  color: #555;
+  margin-top: 5px;
+}
+
+@media (max-width: 768px) {
+  .stepper {
+    flex-direction: column;
+    align-items: center;
+  }
+}
