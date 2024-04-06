@@ -45,7 +45,31 @@ const AddStudent = ({ situation }) => {
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [studentPhoto, setStudentPhoto] = useState(null);
   const [stepper, setStepper] = useState(1);
+  const [educationalDocument, setEducationalDocument] = useState(null);
+  const [metricResult, setMetricResult] = useState(""); // State variable for metric result
+  const [fscResult, setFscResult] = useState(""); // State variable for FSC result
+  const [fscDocument, setFscDocument] = useState(null); // State variable for FSC document
+  const [metricDocument, setMetricDocument] = useState(null); // State variable for metric document
 
+
+
+   // Handler for educational document upload
+   const handleEducationalDocumentUpload = (event) => {
+    const file = event.target.files[0];
+    setEducationalDocument(file);
+  };
+
+  // Handler for FSC document upload
+  const handleFscDocumentUpload = (event) => {
+    const file = event.target.files[0];
+    setFscDocument(file);
+  };
+
+    // Handler for metric document upload
+    const handleMetricDocumentUpload = (event) => {
+      const file = event.target.files[0];
+      setMetricDocument(file);
+    };
   const handleProfilePhotoUpload = (event) => {
     const file = event.target.files[0];
     // You can perform validation here if needed
@@ -102,6 +126,9 @@ const AddStudent = ({ situation }) => {
     fatherName,
     citizenship,
     studentPhoto,
+    educationalDocument,
+    metricResult, // Include metric result in the fields
+    fscResult, // Include FSC result in the fields
   };
 
   // Handler for form submission
@@ -141,6 +168,15 @@ const AddStudent = ({ situation }) => {
           {stepper === 1 ? (
             <>
               <div className="flex justify-between">
+              <div className="formGroup">
+                  <label>Student Profile Photo *</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleProfilePhotoUpload}
+                    required
+                  />
+                </div>
                 <div className="formGroup">
                   <label>Full Name *</label>
                   <input
@@ -182,6 +218,7 @@ const AddStudent = ({ situation }) => {
                 </div>
               </div>
               <div className="flex justify-between">
+                
                 <div className="formGroup">
                   <label>CNIC *</label>
                   <input
@@ -278,36 +315,89 @@ const AddStudent = ({ situation }) => {
                 </select>
               </div>
 
+              
               <div className="flex justify-between">
+                
+
+                
                 <div className="formGroup">
-                  <label>Candidate Postal Address *</label>
+                  <label>Date of Admission *</label>
                   <input
                     className="registerInput"
-                    type="text"
-                    placeholder="Enter Postal Address..."
-                    value={postalAddress}
-                    onChange={(event) => setPostalAddress(event.target.value)}
-                    autoComplete="postal-address"
+                    type="date"
+                    value={admissionDate}
+                    onChange={(event) => setAdmissionDate(event.target.value)}
                     required
                   />
                 </div>
+              </div>
+            </>
+          ) : stepper === 2 ? (
+            <>
+            <div className="flex justify-between">
+            <div className="formGroup">
+            <label>Educational Document *</label>
+            <input
+              className="registerInput"
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={handleEducationalDocumentUpload}
+              required
+            />
+          </div>
+            <div className="formGroup">
+            <div className="formGroup">
+            <label>Metric Result *</label>
+            <input
+              className="registerInput"
+              type="text"
+              placeholder="Enter metric result..."
+              value={metricResult}
+              onChange={(event) => setMetricResult(event.target.value)}
+              required
+            />
+             <div className="formGroup">
+            <label>Metric Document *</label>
+            <input
+              className="registerInput"
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={handleMetricDocumentUpload}
+              required
+            />
+          </div>
+          </div>
 
-                <div className="formGroup">
-                  <label>Candidate Permanent Address *</label>
-                  <input
-                    className="registerInput"
-                    type="text"
-                    placeholder="Enter Permanent Address..."
-                    value={permanentAddress}
-                    onChange={(event) =>
-                      setPermanentAddress(event.target.value)
-                    }
-                    autoComplete="permanent-address"
-                    required
-                  />
-                </div>
-
-                <div className="formGroup">
+            </div>
+            <div className="formGroup">
+            <div className="formGroup">
+            <label>FSC Result *</label>
+            <input
+              className="registerInput"
+              type="text"
+              placeholder="Enter FSC result..."
+              value={fscResult}
+              onChange={(event) => setFscResult(event.target.value)}
+              required
+            />
+             <div className="formGroup">
+            <label>FSC Document *</label>
+            <input
+              className="registerInput"
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={handleFscDocumentUpload}
+              required
+            />
+          </div>
+          </div>
+            </div>
+          </div>
+            </>
+            
+          ) : (
+            <div className="flex justify-between">
+              <div className="formGroup">
                   <label>Tehsil *</label>
                   <select
                     className="registerInput"
@@ -319,20 +409,7 @@ const AddStudent = ({ situation }) => {
                     <option value="Depalpur">Depalpur</option>
                     {/* Add more tehsil options as needed */}
                   </select>
-                </div>
-              </div>
-              <div className="flex justify-between">
-                <div className="formGroup">
-                  <label>Student Profile Photo *</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleProfilePhotoUpload}
-                    required
-                  />
-                </div>
-
-                <div className="formGroup">
+                  <div className="formGroup">
                   <label>District *</label>
 
                   <select
@@ -397,30 +474,37 @@ const AddStudent = ({ situation }) => {
                     {/* Add more districts as needed */}
                   </select>
                 </div>
+                </div>
                 <div className="formGroup">
-                  <label>Date of Admission *</label>
+                  <label>Candidate Postal Address *</label>
                   <input
                     className="registerInput"
-                    type="date"
-                    value={admissionDate}
-                    onChange={(event) => setAdmissionDate(event.target.value)}
+                    type="text"
+                    placeholder="Enter Postal Address..."
+                    value={postalAddress}
+                    onChange={(event) => setPostalAddress(event.target.value)}
+                    autoComplete="postal-address"
                     required
                   />
                 </div>
+
+                <div className="formGroup">
+                  <label>Candidate Permanent Address *</label>
+                  <input
+                    className="registerInput"
+                    type="text"
+                    placeholder="Enter Permanent Address..."
+                    value={permanentAddress}
+                    onChange={(event) =>
+                      setPermanentAddress(event.target.value)
+                    }
+                    autoComplete="permanent-address"
+                    required
+                  />
+                </div>
+
+                
               </div>
-            </>
-          ) : stepper === 2 ? (
-            <div className="formGroup">
-              <label>Uploaded Document *</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleProfilePhotoUpload}
-                required
-              />
-            </div>
-          ) : (
-            <span className="registerTitle">Confirm ?</span>
           )}
           {/* Additional input fields */}
 
