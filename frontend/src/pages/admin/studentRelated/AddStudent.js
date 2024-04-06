@@ -417,7 +417,6 @@ const AddStudent = ({ situation }) => {
       </div>               
         
       {/* Additional input fields */}
-          
 
           <div className="formGroup">
             <button className="registerButton" type="submit" disabled={loader}>
