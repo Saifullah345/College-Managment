@@ -507,44 +507,20 @@ const AddStudent = ({ situation }) => {
               </div>
           )}
           {/* Additional input fields */}
-          
-          {/* Additional input fields */}
-<div className="formGroup">
-  {stepper > 1 && (
-    <button
-      className="registerButton"
-      onClick={() => setStepper(stepper - 1)}
-    >
-      Previous Step
-    </button>
-  )}
-  {stepper < 3 && (
-    <button
-      className="registerButton"
-      onClick={() => setStepper(stepper + 1)}
-    >
-      Next Step
-    </button>
-  )}
-  {stepper === 3 && (
-    <button className="registerButton" type="submit" disabled={loader}>
-      {loader ? (
-        <CircularProgress size={24} color="inherit" />
-      ) : (
-        "submit"
-      )}
-    </button>
-  )}
-</div>
 
-    </form>
-  </div>
-  <Popup
-    message={message}
-    setShowPopup={setShowPopup}
-    showPopup={showPopup}
-  />
-</>
+          <div className="formGroup">
+            <button className="registerButton" type="submit" disabled={loader}>
+              {loader ? <CircularProgress size={24} color="inherit" /> : "Add"}
+            </button>
+          </div>
+        </form>
+      </div>
+      <Popup
+        message={message}
+        setShowPopup={setShowPopup}
+        showPopup={showPopup}
+      />
+    </>
   );
 };
 
