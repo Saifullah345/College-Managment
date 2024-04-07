@@ -164,9 +164,10 @@ const AddStudent = ({ situation }) => {
       <Stepper setStepper={setStepper} stepper={stepper} />
       <div className="register-form">
         <form className="registerForm" onSubmit={submitHandler}>
-          <span className="registerTitle">Add Student</span>
           {stepper === 1 ? (
             <>
+            <span className="registerTitle">Personal Details</span>
+
               <div className="flex justify-between">
               <div className="formGroup">
                   <label>Student Profile Photo *</label>
@@ -334,6 +335,8 @@ const AddStudent = ({ situation }) => {
             </>
           ) : stepper === 2 ? (
             <>
+           <span className="registerTitle">Academic Details</span>
+
             <div className="flex justify-between">
             <div className="formGroup">
             <label>Educational Document *</label>
@@ -488,6 +491,7 @@ const AddStudent = ({ situation }) => {
                   />
                 </div>
 
+
                 <div className="formGroup">
                   <label>Candidate Permanent Address *</label>
                   <input
@@ -508,8 +512,7 @@ const AddStudent = ({ situation }) => {
           )}
           {/* Additional input fields */}
           
-          {/* Additional input fields */}
-<div className="formGroup">
+  <div className="formGroup">
   {stepper > 1 && (
     <button
       className="registerButton"
@@ -519,6 +522,7 @@ const AddStudent = ({ situation }) => {
     </button>
   )}
   {stepper < 3 && (
+    
     <button
       className="registerButton"
       onClick={() => setStepper(stepper + 1)}
