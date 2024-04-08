@@ -31,7 +31,6 @@ const AddStudent = ({ situation }) => {
   const [message, setMessage] = useState("");
   const [loader, setLoader] = useState(false);
   const [cnic, setCnic] = useState("");
-  const [contactNo, setContactNo] = useState("");
   const [religion, setReligion] = useState("");
   const [gender, setGender] = useState("");
   const [dob, setDob] = useState("");
@@ -50,8 +49,36 @@ const AddStudent = ({ situation }) => {
   const [fscResult, setFscResult] = useState(""); // State variable for FSC result
   const [fscDocument, setFscDocument] = useState(null); // State variable for FSC document
   const [metricDocument, setMetricDocument] = useState(null); // State variable for metric document
+  const [mobileNumber, setMobileNumber] = useState('');
+  const [whatsappNumber, setWhatsappNumber] = useState('');
+  const [degreeName, setDegreeName] = useState('');
+  const [degreeProgram, setDegreeProgram] = useState('');
+  const [serialNumber, setSerialNumber] = useState('');
+  const [rollNumber, setRollNumber] = useState('');
+  const [yearsOfPassing, setYearsOfPassing] = useState('');
 
 
+
+
+
+
+
+
+  
+  // Sample degree name options
+  const degreeOptions = [
+    { value: 'Bachelor of Science', label: 'Bachelor of Science' },
+    { value: 'Bachelor of Arts', label: 'Bachelor of Arts' },
+    { value: 'Master of Science', label: 'Master of Science' },
+    { value: 'Master of Arts', label: 'Master of Arts' },
+    { value: 'PhD', label: 'PhD' },
+    // Add more degree options as needed
+  ];
+
+  // Handle degree name change
+  const handleDegreeChange = (selectedOption) => {
+    setDegreeName(selectedOption.value);
+  };
 
    // Handler for educational document upload
    const handleEducationalDocumentUpload = (event) => {
@@ -117,7 +144,6 @@ const AddStudent = ({ situation }) => {
     role: "Student",
     attendance: [],
     cnic,
-    contactNo,
     religion,
     gender,
     dob,
@@ -169,15 +195,7 @@ const AddStudent = ({ situation }) => {
             <span className="registerTitle">Personal Details</span>
 
               <div className="flex justify-between">
-              <div className="formGroup">
-                  <label>Student Profile Photo *</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleProfilePhotoUpload}
-                    required
-                  />
-                </div>
+              
                 <div className="formGroup">
                   <label>Full Name *</label>
                   <input
@@ -202,7 +220,21 @@ const AddStudent = ({ situation }) => {
                   />
                 </div>
                 <div className="formGroup">
-                  <label>Citizenship *</label>
+                <label>CNIC *</label>
+                  <input
+                    className="registerInput"
+                    type="text"
+                    placeholder="Enter CNIC..."
+                    value={cnic}
+                    onChange={(event) => setCnic(event.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="flex justify-between">
+                
+                <div className="formGroup">
+                <label>Citizenship *</label>
                   <select
                     className="registerInput"
                     value={citizenship}
@@ -216,30 +248,15 @@ const AddStudent = ({ situation }) => {
                     <option value="PK">Country: Pakistan</option>
                     {/* Add more options as needed */}
                   </select>
-                </div>
-              </div>
-              <div className="flex justify-between">
-                
-                <div className="formGroup">
-                  <label>CNIC *</label>
-                  <input
-                    className="registerInput"
-                    type="text"
-                    placeholder="Enter CNIC..."
-                    value={cnic}
-                    onChange={(event) => setCnic(event.target.value)}
-                    required
-                  />
+                  
                 </div>
                 <div className="formGroup">
-                  <label>Contact No *</label>
+                <label>Date of Birth *</label>
                   <input
                     className="registerInput"
-                    type="tel"
-                    placeholder="Enter contact number..."
-                    value={contactNo}
-                    onChange={(event) => setContactNo(event.target.value)}
-                    pattern="[0-9]{4}-[0-9]{7}"
+                    type="date"
+                    value={dob}
+                    onChange={(event) => setDob(event.target.value)}
                     required
                   />
                 </div>
@@ -256,30 +273,31 @@ const AddStudent = ({ situation }) => {
               </div>
               <div className="flex justify-between">
                 <div className="formGroup">
-                  <label>Gender *</label>
-                  <select
-                    className="registerInput"
-                    value={gender}
-                    onChange={(event) => setGender(event.target.value)}
-                    required
-                  >
-                    <option value="">Select a gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                    {/* Add more options as needed */}
-                  </select>
+                  
+                <label>Mobile Number *</label>
+      <input
+        className="registerInput"
+        type="tel"
+        placeholder="Enter Mobile number..."
+        value={mobileNumber}
+        onChange={(event) => setMobileNumber(event.target.value)}
+        pattern="[0-9]{4}-[0-9]{7}"
+        required
+      />          
                 </div>
 
                 <div className="formGroup">
-                  <label>Date of Birth *</label>
-                  <input
-                    className="registerInput"
-                    type="date"
-                    value={dob}
-                    onChange={(event) => setDob(event.target.value)}
-                    required
-                  />
+                 
+      <label>WhatsApp Number</label>
+      <input
+        className="registerInput"
+        type="tel"
+        placeholder="Enter WhatsApp number..."
+        value={whatsappNumber}
+        onChange={(event) => setWhatsappNumber(event.target.value)}
+        pattern="[0-9]{4}-[0-9]{7}"
+      />
+                
                 </div>
 
                 <div className="formGroup">
@@ -336,65 +354,76 @@ const AddStudent = ({ situation }) => {
           ) : stepper === 2 ? (
             <>
            <span className="registerTitle">Academic Details</span>
-
             <div className="flex justify-between">
-            <div className="formGroup">
-            <label>Educational Document *</label>
-            <input
-              className="registerInput"
-              type="file"
-              accept=".pdf,.doc,.docx"
-              onChange={handleEducationalDocumentUpload}
-              required
-            />
-          </div>
-            <div className="formGroup">
-            <div className="formGroup">
-            <label>Metric Result *</label>
-            <input
-              className="registerInput"
-              type="text"
-              placeholder="Enter metric result..."
-              value={metricResult}
-              onChange={(event) => setMetricResult(event.target.value)}
-              required
-            />
-             <div className="formGroup">
-            <label>Metric Document *</label>
-            <input
-              className="registerInput"
-              type="file"
-              accept=".pdf,.doc,.docx"
-              onChange={handleMetricDocumentUpload}
-              required
-            />
-          </div>
-          </div>
+              <div className="formGroup">
+        <label>Degree Program *</label>
+        <select
+          className="registerInput"
+          value={degreeProgram}
+          onChange={(event) => setDegreeProgram(event.target.value)}
+          required
+        >
+          <option value="">Select Degree Program</option>
+          <option value="Bachelor of Science">Bachelor of Science</option>
+          <option value="Bachelor of Arts">Bachelor of Arts</option>
+          <option value="Master of Science">Master of Science</option>
+          <option value="Master of Arts">Master of Arts</option>
+          <option value="PhD">PhD</option>
+          {/* Add more degree programs as needed */}
+        </select>
+      </div>
 
-            </div>
-            <div className="formGroup">
-            <div className="formGroup">
-            <label>FSC Result *</label>
-            <input
-              className="registerInput"
-              type="text"
-              placeholder="Enter FSC result..."
-              value={fscResult}
-              onChange={(event) => setFscResult(event.target.value)}
-              required
-            />
+      <div className="formGroup">
+        <label>Serial Number *</label>
+        <input
+          className="registerInput"
+          type="text"
+          placeholder="Enter Serial Number..."
+          value={serialNumber}
+          onChange={(event) => setSerialNumber(event.target.value)}
+          required
+        />
+      </div>
+
+      <div className="formGroup">
+        <label>Roll Number *</label>
+        <input
+          className="registerInput"
+          type="text"
+          placeholder="Enter Roll Number..."
+          value={rollNumber}
+          onChange={(event) => setRollNumber(event.target.value)}
+          required
+        />
+      </div>
+      
+          
+         
+          </div>     
+          <div className="flex justify-between">
+      <div className="formGroup">
+      <label>Years of Passing *</label>
+        <input
+          className="registerInput"
+          type="text"
+          placeholder="Enter Years of Passing..."
+          value={yearsOfPassing}
+          onChange={(event) => setYearsOfPassing(event.target.value)}
+          required
+        />
+      </div>
+
+      <div className="formGroup">
+      
+      add
+      </div>
+
+      <div className="formGroup">
+    add 
+      </div>
+    </div>        
              <div className="formGroup">
-            <label>FSC Document *</label>
-            <input
-              className="registerInput"
-              type="file"
-              accept=".pdf,.doc,.docx"
-              onChange={handleFscDocumentUpload}
-              required
-            />
-          </div>
-          </div>
-            </div>
+            
           </div>
             </>
             
@@ -510,6 +539,7 @@ const AddStudent = ({ situation }) => {
                 
               </div>
           )}
+          
           {/* Additional input fields */}
           
   <div className="formGroup">
