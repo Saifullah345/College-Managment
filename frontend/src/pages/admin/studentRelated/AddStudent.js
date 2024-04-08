@@ -301,53 +301,16 @@ const AddStudent = ({ situation }) => {
                 </div>
 
                 <div className="formGroup">
-                  <label>Qualification *</label>
-                  <input
-                    className="registerInput"
-                    type="text"
-                    placeholder="Enter qualification..."
-                    value={qualification}
-                    onChange={(event) => setQualification(event.target.value)}
-                    required
-                  />
+                
                 </div>
               </div>
-              <div className="formGroup">
-                <label>Concerned Board *</label>
-                <select
-                  className="registerInput"
-                  value={concernedBoard}
-                  onChange={(event) => setConcernedBoard(event.target.value)}
-                  required
-                >
-                  <option value="">Select Concerned Board</option>
-                  <option value="Federal Board of Intermediate and Secondary Education">
-                    Federal Board of Intermediate and Secondary Education
-                  </option>
-                  <option value="Lahore Board of Intermediate and Secondary Education">
-                    Lahore Board of Intermediate and Secondary Education
-                  </option>
-                  <option value="Punjab Board of Technical Education">
-                    Punjab Board of Technical Education
-                  </option>
-                  {/* Add more board options as needed */}
-                </select>
-              </div>
-
-              
               <div className="flex justify-between">
                 
 
                 
                 <div className="formGroup">
-                  <label>Date of Admission *</label>
-                  <input
-                    className="registerInput"
-                    type="date"
-                    value={admissionDate}
-                    onChange={(event) => setAdmissionDate(event.target.value)}
-                    required
-                  />
+              
+                  
                 </div>
               </div>
             </>
