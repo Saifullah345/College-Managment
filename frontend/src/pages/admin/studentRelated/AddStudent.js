@@ -6,16 +6,18 @@ import Popup from "../../../components/Popup";
 import { underControl } from "../../../redux/userRelated/userSlice";
 import { getAllSclasses } from "../../../redux/sclassRelated/sclassHandle";
 import { CircularProgress } from "@mui/material";
-import { Stepper } from "./Stepper";
+import { PersonalInfo } from "./PersonalInfo";
+import { EducationInfo } from "./EducationInfo";
+// import { Stepper } from "./Stepper";
+// import { PersonalInfo } from "./PersonalInfo";
+// import { EducationInfo } from "./EducationInfo";
 
 const AddStudent = ({ situation }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const params = useParams();
-  const { currentUser, status, response, error } = useSelector(
-    (state) => state.user
-  );
-  const { sclassesList } = useSelector((state) => state.sclass);
+  const { currentUser, status, response } = useSelector((state) => state.user);
+  // const { sclassesList } = useSelector((state) => state.sclass);
 
   // State variables
   const [name, setName] = useState("");
@@ -31,6 +33,7 @@ const AddStudent = ({ situation }) => {
   const [message, setMessage] = useState("");
   const [loader, setLoader] = useState(false);
   const [cnic, setCnic] = useState("");
+  const [contactNo, setContactNo] = useState("");
   const [religion, setReligion] = useState("");
   const [gender, setGender] = useState("");
   const [dob, setDob] = useState("");
@@ -45,39 +48,13 @@ const AddStudent = ({ situation }) => {
   const [studentPhoto, setStudentPhoto] = useState(null);
   const [stepper, setStepper] = useState(1);
   const [educationalDocument, setEducationalDocument] = useState(null);
-  const [metricResult, setMetricResult] = useState(""); // State variable for metric result
+  const [MatricResult, setMatricResult] = useState(""); // State variable for Matric result
   const [fscResult, setFscResult] = useState(""); // State variable for FSC result
   const [fscDocument, setFscDocument] = useState(null); // State variable for FSC document
-  const [metricDocument, setMetricDocument] = useState(null); // State variable for metric document
-  const [mobileNumber, setMobileNumber] = useState('');
-  const [whatsappNumber, setWhatsappNumber] = useState('');
-  const [degreeName, setDegreeName] = useState('');
-  const [degreeProgram, setDegreeProgram] = useState('');
-  const [serialNumber, setSerialNumber] = useState('');
-  const [rollNumber, setRollNumber] = useState('');
-  const [yearsOfPassing, setYearsOfPassing] = useState('');
-  const [nameOfReference, setNameOfReference] = useState('');
-  const [numberOfReferences, setNumberOfReferences] = useState('');
-  const [relation, setRelation] = useState('');
-  const [otherDetails, setOtherDetails] = useState('');
+  const [MatricDocument, setMatricDocument] = useState(null); // State variable for Matric document
 
-
-
-
-
-
-
-
-  
- 
-
-  // Handle degree name change
-  const handleDegreeChange = (selectedOption) => {
-    setDegreeName(selectedOption.value);
-  };
-
-   // Handler for educational document upload
-   const handleEducationalDocumentUpload = (event) => {
+  // Handler for educational document upload
+  const handleEducationalDocumentUpload = (event) => {
     const file = event.target.files[0];
     setEducationalDocument(file);
   };
@@ -88,11 +65,11 @@ const AddStudent = ({ situation }) => {
     setFscDocument(file);
   };
 
-    // Handler for metric document upload
-    const handleMetricDocumentUpload = (event) => {
-      const file = event.target.files[0];
-      setMetricDocument(file);
-    };
+  // Handler for Matric document upload
+  const handleMatricDocumentUpload = (event) => {
+    const file = event.target.files[0];
+    setMatricDocument(file);
+  };
   const handleProfilePhotoUpload = (event) => {
     const file = event.target.files[0];
     // You can perform validation here if needed
@@ -140,6 +117,7 @@ const AddStudent = ({ situation }) => {
     role: "Student",
     attendance: [],
     cnic,
+    contactNo,
     religion,
     gender,
     dob,
@@ -149,7 +127,7 @@ const AddStudent = ({ situation }) => {
     citizenship,
     studentPhoto,
     educationalDocument,
-    metricResult, // Include metric result in the fields
+    MatricResult, // Include Matric result in the fields
     fscResult, // Include FSC result in the fields
   };
 
@@ -183,314 +161,101 @@ const AddStudent = ({ situation }) => {
 
   return (
     <>
-      <Stepper setStepper={setStepper} stepper={stepper} />
+      {/* <Stepper setStepper={setStepper} stepper={stepper} /> */}
       <div className="register-form">
         <form className="registerForm" onSubmit={submitHandler}>
           {stepper === 1 ? (
+            <PersonalInfo setStepper={setStepper} />
+          ) : stepper === 2 ? (
+            <EducationInfo setStepper={setStepper} />
+          ) : (
             <>
-            <span className="registerTitle">Personal Details</span>
-
+              <span className="registerTitle">Academic Details</span>
               <div className="flex justify-between">
-              
                 <div className="formGroup">
-                  <label>Full Name *</label>
-                  <input
-                    className="registerInput"
-                    type="text"
-                    placeholder="Enter full name..."
-                    value={name}
-                    onChange={(event) => setName(event.target.value)}
-                    autoComplete="name"
-                    required
-                  />
-                </div>
-                <div className="formGroup">
-                  <label>Father Name *</label>
-                  <input
-                    className="registerInput"
-                    type="text"
-                    placeholder="Enter father's name..."
-                    value={fatherName}
-                    onChange={(event) => setFatherName(event.target.value)}
-                    required
-                  />
-                </div>
-                <div className="formGroup">
-                <label>CNIC *</label>
-                  <input
-                    className="registerInput"
-                    type="text"
-                    placeholder="Enter CNIC..."
-                    value={cnic}
-                    onChange={(event) => setCnic(event.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-              <div className="flex justify-between">
-                
-                <div className="formGroup">
-                <label>Citizenship *</label>
+                  <label>Tehsil *</label>
                   <select
                     className="registerInput"
-                    value={citizenship}
-                    onChange={(event) => setCitizenship(event.target.value)}
+                    value={tehsil}
+                    onChange={(event) => setTehsil(event.target.value)}
                     required
                   >
-                    <option value="">Select Country of Citizenship</option>
-                    <option value="US">Country: United States</option>
-                    <option value="UK">Country: United Kingdom</option>
-                    <option value="CA">Country: Canada</option>
-                    <option value="PK">Country: Pakistan</option>
-                    {/* Add more options as needed */}
+                    <option value="">Select Tehsil</option>
+                    <option value="Depalpur">Depalpur</option>
+                    {/* Add more tehsil options as needed */}
                   </select>
-                  
                 </div>
                 <div className="formGroup">
-                <label>Date of Birth *</label>
-                  <input
-                    className="registerInput"
-                    type="date"
-                    value={dob}
-                    onChange={(event) => setDob(event.target.value)}
-                    required
-                  />
-                </div>
-                <div className="formGroup">
-                  <label>Religion</label>
-                  <input
-                    className="registerInput"
-                    type="text"
-                    placeholder="Enter religion..."
-                    value={religion}
-                    onChange={(event) => setReligion(event.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="flex justify-between">
-                <div className="formGroup">
-                  
-                <label>Mobile Number *</label>
-      <input
-        className="registerInput"
-        type="tel"
-        placeholder="Enter Mobile number..."
-        value={mobileNumber}
-        onChange={(event) => setMobileNumber(event.target.value)}
-        pattern="[0-9]{4}-[0-9]{7}"
-        required
-      />          
-                </div>
+                  <div className="formGroup">
+                    <label>District *</label>
 
-                <div className="formGroup">
-                 
-      <label>WhatsApp Number</label>
-      <input
-        className="registerInput"
-        type="tel"
-        placeholder="Enter WhatsApp number..."
-        value={whatsappNumber}
-        onChange={(event) => setWhatsappNumber(event.target.value)}
-        pattern="[0-9]{4}-[0-9]{7}"
-      />
-                
-                </div>
-
-                <div className="formGroup">
-                
-                </div>
-              </div>
-              <div className="flex justify-between">
-                
-
-                
-                <div className="formGroup">
-              
-                  
-                </div>
-              </div>
-            </>
-          ) : stepper === 2 ? (
-            <>
-           <span className="registerTitle">Academic Details</span>
-            <div className="flex justify-between">
-              <div className="formGroup">
-        <label>Degree Program *</label>
-        <select
-          className="registerInput"
-          value={degreeProgram}
-          onChange={(event) => setDegreeProgram(event.target.value)}
-          required
-        >
-          <option value="">Select Degree Program</option>
-          <option value="Bachelor of Science">Bachelor of Science</option>
-          <option value="Bachelor of Arts">Bachelor of Arts</option>
-          <option value="Master of Science">Master of Science</option>
-          <option value="Master of Arts">Master of Arts</option>
-          <option value="PhD">PhD</option>
-          {/* Add more degree programs as needed */}
-        </select>
-      </div>
-
-      <div className="formGroup">
-        <label>Serial Number *</label>
-        <input
-          className="registerInput"
-          type="text"
-          placeholder="Enter Serial Number..."
-          value={serialNumber}
-          onChange={(event) => setSerialNumber(event.target.value)}
-          required
-        />
-      </div>
-
-      <div className="formGroup">
-        <label>Roll Number *</label>
-        <input
-          className="registerInput"
-          type="text"
-          placeholder="Enter Roll Number..."
-          value={rollNumber}
-          onChange={(event) => setRollNumber(event.target.value)}
-          required
-        />
-      </div>
-      
-          
-         
-          </div>     
-          <div className="flex justify-between">
-      <div className="formGroup">
-      <label>Years of Passing *</label>
-        <input
-          className="registerInput"
-          type="text"
-          placeholder="Enter Years of Passing..."
-          value={yearsOfPassing}
-          onChange={(event) => setYearsOfPassing(event.target.value)}
-          required
-        />
-      </div>
-
-      <div className="formGroup">
-      
-      add
-      </div>
-
-      <div className="formGroup">
-    add 
-      </div>
-    </div>        
-             <div className="formGroup">
-            
-          </div>
-            </>
-            
-          ) : (
-            <div className="flex justify-between">
-                <div className="formGroup">
-                <h2>Address Details</h2>
-                <label>District *</label>
-
-<select
-  className="registerInput"
-  value={district}
-  onChange={(event) => setDistrict(event.target.value)}
-  required
->
-  <option value="">Select District</option>
-  <option value="Abbottabad">Abbottabad</option>
-  <option value="Bahawalpur">Bahawalpur</option>
-  <option value="Bannu">Bannu</option>
-  <option value="Bhakkar">Bhakkar</option>
-  <option value="Chakwal">Chakwal</option>
-  <option value="Charsadda">Charsadda</option>
-  <option value="Chiniot">Chiniot</option>
-  <option value="Dadu">Dadu</option>
-  <option value="Dera Ghazi Khan">Dera Ghazi Khan</option>
-  <option value="Faisalabad">Faisalabad</option>
-  <option value="Ghotki">Ghotki</option>
-  <option value="Gujranwala">Gujranwala</option>
-  <option value="Gujrat">Gujrat</option>
-  <option value="Hafizabad">Hafizabad</option>
-  <option value="Hyderabad">Hyderabad</option>
-  <option value="Islamabad">Islamabad</option>
-  <option value="Jacobabad">Jacobabad</option>
-  <option value="Jhang">Jhang</option>
-  <option value="Karachi">Karachi</option>
-  <option value="Kasur">Kasur</option>
-  <option value="Khairpur">Khairpur</option>
-  <option value="Khanewal">Khanewal</option>
-  <option value="Khushab">Khushab</option>
-  <option value="Kohat">Kohat</option>
-  <option value="Lahore">Lahore</option>
-  <option value="Larkana">Larkana</option>
-  <option value="Lodhran">Lodhran</option>
-  <option value="Mandi Bahauddin">Mandi Bahauddin</option>
-  <option value="Mansehra">Mansehra</option>
-  <option value="Mardan">Mardan</option>
-  <option value="Mianwali">Mianwali</option>
-  <option value="Multan">Multan</option>
-  <option value="Muzaffargarh">Muzaffargarh</option>
-  <option value="Narowal">Narowal</option>
-  <option value="Nawabshah">Nawabshah</option>
-  <option value="Nowshera">Nowshera</option>
-  <option value="Okara">Okara</option>
-  <option value="Peshawar">Peshawar</option>
-  <option value="Quetta">Quetta</option>
-  <option value="Rahim Yar Khan">Rahim Yar Khan</option>
-  <option value="Rajanpur">Rajanpur</option>
-  <option value="Rawalpindi">Rawalpindi</option>
-  <option value="Sahiwal">Sahiwal</option>
-  <option value="Sargodha">Sargodha</option>
-  <option value="Sheikhupura">Sheikhupura</option>
-  <option value="Shikarpur">Shikarpur</option>
-  <option value="Sialkot">Sialkot</option>
-  <option value="Sukkur">Sukkur</option>
-  <option value="Swabi">Swabi</option>
-  <option value="Swat">Swat</option>
-  <option value="Toba Tek Singh">Toba Tek Singh</option>
-  <option value="Vehari">Vehari</option>
-  {/* Add more districts as needed */}
-</select>
-
-
-
-
-
-
-
-
-
-
-
-                    <div className="formGroup">
-                      
-                    <label>Tehsil *</label>
                     <select
                       className="registerInput"
-                      value={tehsil}
-                      onChange={(event) => setTehsil(event.target.value)}
+                      value={district}
+                      onChange={(event) => setDistrict(event.target.value)}
                       required
                     >
-                      <option value="">Select Tehsil</option>
-                      <option value="Depalpur">Depalpur</option>
-                      {/* Add more tehsil options as needed */}
+                      <option value="">Select District</option>
+                      <option value="Abbottabad">Abbottabad</option>
+                      <option value="Bahawalpur">Bahawalpur</option>
+                      <option value="Bannu">Bannu</option>
+                      <option value="Bhakkar">Bhakkar</option>
+                      <option value="Chakwal">Chakwal</option>
+                      <option value="Charsadda">Charsadda</option>
+                      <option value="Chiniot">Chiniot</option>
+                      <option value="Dadu">Dadu</option>
+                      <option value="Dera Ghazi Khan">Dera Ghazi Khan</option>
+                      <option value="Faisalabad">Faisalabad</option>
+                      <option value="Ghotki">Ghotki</option>
+                      <option value="Gujranwala">Gujranwala</option>
+                      <option value="Gujrat">Gujrat</option>
+                      <option value="Hafizabad">Hafizabad</option>
+                      <option value="Hyderabad">Hyderabad</option>
+                      <option value="Islamabad">Islamabad</option>
+                      <option value="Jacobabad">Jacobabad</option>
+                      <option value="Jhang">Jhang</option>
+                      <option value="Karachi">Karachi</option>
+                      <option value="Kasur">Kasur</option>
+                      <option value="Khairpur">Khairpur</option>
+                      <option value="Khanewal">Khanewal</option>
+                      <option value="Khushab">Khushab</option>
+                      <option value="Kohat">Kohat</option>
+                      <option value="Lahore">Lahore</option>
+                      <option value="Larkana">Larkana</option>
+                      <option value="Lodhran">Lodhran</option>
+                      <option value="Mandi Bahauddin">Mandi Bahauddin</option>
+                      <option value="Mansehra">Mansehra</option>
+                      <option value="Mardan">Mardan</option>
+                      <option value="Mianwali">Mianwali</option>
+                      <option value="Multan">Multan</option>
+                      <option value="Muzaffargarh">Muzaffargarh</option>
+                      <option value="Narowal">Narowal</option>
+                      <option value="Nawabshah">Nawabshah</option>
+                      <option value="Nowshera">Nowshera</option>
+                      <option value="Okara">Okara</option>
+                      <option value="Peshawar">Peshawar</option>
+                      <option value="Quetta">Quetta</option>
+                      <option value="Rahim Yar Khan">Rahim Yar Khan</option>
+                      <option value="Rajanpur">Rajanpur</option>
+                      <option value="Rawalpindi">Rawalpindi</option>
+                      <option value="Sahiwal">Sahiwal</option>
+                      <option value="Sargodha">Sargodha</option>
+                      <option value="Sheikhupura">Sheikhupura</option>
+                      <option value="Shikarpur">Shikarpur</option>
+                      <option value="Sialkot">Sialkot</option>
+                      <option value="Sukkur">Sukkur</option>
+                      <option value="Swabi">Swabi</option>
+                      <option value="Swat">Swat</option>
+                      <option value="Toba Tek Singh">Toba Tek Singh</option>
+                      <option value="Vehari">Vehari</option>
+                      {/* Add more districts as needed */}
                     </select>
-                    
-                    {/* Candidate Postal Address */}
-                    <label>Candidate Postal Address *</label>
-                  <input
-                    className="registerInput"
-                    type="text"
-                    placeholder="Enter Postal Address..."
-                    value={postalAddress}
-                    onChange={(event) => setPostalAddress(event.target.value)}
-                    autoComplete="postal-address"
-                    required
-                  />
-                    </div>
-                    <label>Candidate Permanent Address *</label>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-between">
+                <div className="formGroup">
+                  <label>Candidate Permanent Address *</label>
                   <input
                     className="registerInput"
                     type="text"
@@ -502,105 +267,56 @@ const AddStudent = ({ situation }) => {
                     autoComplete="permanent-address"
                     required
                   />
-                  
-                  </div>
-
-
-                 
-
-                <div className="formGroup">
-                
-                
                 </div>
-
-
                 <div className="formGroup">
-                <h2>Reference</h2>
-                {/* Name of reference */}
-        <label>Name of Reference *</label>
-        <input
-          className="registerInput"
-          type="text"
-          value={nameOfReference}
-          placeholder="Enter Name Reference..."
-          onChange={(event) => setNameOfReference(event.target.value)}
-          required
-        />
-                  <label>Number of References *</label>
-        <input
-          className="registerInput"
-          type="number"
-          placeholder="Enter Number of References"
-          value={numberOfReferences}
-          onChange={(event) => setNumberOfReferences(event.target.value)}
-          required
-        />
-        {/* Relation */}
-        <label>Relation *</label>
-        <input
-          className="registerInput"
-          type="text"
-          placeholder="Enter Relation"
-          value={relation}
-          onChange={(event) => setRelation(event.target.value)}
-          required
-        />
-        
-         {/* Other details regarding the reference */}
-         <label>Other Details Regarding the Reference</label>
-        <textarea
-          className="registerInput"
-          placeholder="Enter other details..."
-          value={otherDetails}
-          onChange={(event) => setOtherDetails(event.target.value)}
-        />
+                  <label>Candidate Postal Address *</label>
+                  <input
+                    className="registerInput"
+                    type="text"
+                    placeholder="Enter Postal Address..."
+                    value={postalAddress}
+                    onChange={(event) => setPostalAddress(event.target.value)}
+                    autoComplete="postal-address"
+                    required
+                  />
                 </div>
-
-                
               </div>
+            </>
           )}
-          
           {/* Additional input fields */}
-          
-  <div className="formGroup">
-  {stepper > 1 && (
-    <button
-      className="registerButton"
-      onClick={() => setStepper(stepper - 1)}
-    >
-     Back Page
-    </button>
-  )}
-  {stepper < 3 && (
-    
-    <button
-      className="registerButton"
-      onClick={() => setStepper(stepper + 1)}
-    >
-      Next Page
-    </button>
-  )}
-  {stepper === 3 && (
-    <button className="registerButton" type="submit" disabled={loader}>
-      {loader ? (
-        <CircularProgress size={24} color="inherit" />
-      ) : (
-        "submit"
-      )}
-    </button>
-  )}
-</div>
 
-    </form>
-  </div>
-  <Popup
-    message={message}
-    setShowPopup={setShowPopup}
-    showPopup={showPopup}
-  />
-  
-</>
+          <div className="formGroup">
+            {stepper === 3 && (
+              <button
+                className="registerButton"
+                onClick={() => setStepper(stepper - 1)}
+              >
+                Previous Step
+              </button>
+            )}
 
+            {stepper === 3 && (
+              <button
+                className="registerButton"
+                type="submit"
+                disabled={loader}
+              >
+                {loader ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  "Submit"
+                )}
+              </button>
+            )}
+          </div>
+        </form>
+      </div>
+      <Popup
+        message={message}
+        setShowPopup={setShowPopup}
+        showPopup={showPopup}
+      />
+    </>
   );
 };
 
