@@ -171,9 +171,11 @@ export const PersonalInfo = ({ setStepper }) => {
               </select>
             </div>
           </div>
-          <button className="registerButton" onClick={() => setStepper(2)}>
-            Next Step
-          </button>
+          <div className="flex justify-end">
+            <button className="registerButton" onClick={() => setStepper(2)}>
+              Next Step
+            </button>
+          </div>
         </form>
       </div>
     </div>

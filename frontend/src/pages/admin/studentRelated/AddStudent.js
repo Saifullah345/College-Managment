@@ -32,7 +32,7 @@ const AddStudent = ({ situation }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
   const [loader, setLoader] = useState(false);
-  const [cnic, setCnic] = useState("");
+  // const [cnic, setCnic] = useState("");
   const [contactNo, setContactNo] = useState("");
   const [religion, setReligion] = useState("");
   const [gender, setGender] = useState("");
@@ -116,7 +116,7 @@ const AddStudent = ({ situation }) => {
     adminID: currentUser._id,
     role: "Student",
     attendance: [],
-    cnic,
+    // cnic,
     contactNo,
     religion,
     gender,
@@ -285,7 +285,7 @@ const AddStudent = ({ situation }) => {
           )}
           {/* Additional input fields */}
 
-          <div className="formGroup">
+          <div className="flex justify-between">
             {stepper === 3 && (
               <button
                 className="registerButton"
