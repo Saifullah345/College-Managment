@@ -267,6 +267,15 @@ const AddStudent = ({ situation }) => {
                     autoComplete="permanent-address"
                     required
                   />
+                  
+                  </div>
+
+
+                 
+
+                  <div className="formGroup">
+                
+                
                 </div>
                 <div className="formGroup">
                   <label>Candidate Postal Address *</label>
