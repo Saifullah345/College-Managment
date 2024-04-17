@@ -26,6 +26,8 @@ import ViewStudent from './studentRelated/ViewStudent';
 
 import AddNotice from './noticeRelated/AddNotice';
 import ShowNotices from './noticeRelated/ShowNotices';
+import Add from './generalSitting/Add';
+
 
 import ShowSubjects from './subjectRelated/ShowSubjects';
 import SubjectForm from './subjectRelated/SubjectForm';
@@ -42,6 +44,7 @@ import AddClass from './classRelated/AddClass';
 import ClassDetails from './classRelated/ClassDetails';
 import ShowClasses from './classRelated/ShowClasses';
 import AccountMenu from '../../components/AccountMenu';
+import { AddAddress } from './studentRelated/AddAddress';
 
 const AdminDashboard = () => {
     const [open, setOpen] = useState(false);
@@ -103,6 +106,11 @@ const AdminDashboard = () => {
                         <Route path="/Admin/addnotice" element={<AddNotice />} />
                         <Route path="/Admin/notices" element={<ShowNotices />} />
 
+                        {/* generalsitting */}
+                        <Route path="/Admin/generalSitting" element={<Add/>} />
+
+                        
+
                         {/* Subject */}
                         <Route path="/Admin/subjects" element={<ShowSubjects />} />
                         <Route path="/Admin/subjects/subject/:classID/:subjectID" element={<ViewSubject />} />
@@ -134,6 +142,7 @@ const AdminDashboard = () => {
                         <Route path="/Admin/teachers/choosesubject/:id" element={<ChooseSubject situation="Norm" />} />
                         <Route path="/Admin/teachers/choosesubject/:classID/:teacherID" element={<ChooseSubject situation="Teacher" />} />
                         <Route path="/Admin/teachers/addteacher/:id" element={<AddTeacher />} />
+                        <Route path="/AddAddress" element={<AddAddress />} />
 
                         <Route path="/logout" element={<Logout />} />
                     </Routes>
