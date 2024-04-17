@@ -9,6 +9,7 @@ import { CircularProgress } from "@mui/material";
 import { PersonalInfo } from "./PersonalInfo";
 import { EducationInfo } from "./EducationInfo";
 import { AcademicDetail } from "./AcademicDetail";
+import { RelationInfo } from "./RelationInfo";
 // import { Stepper } from "./Stepper";
 // import { PersonalInfo } from "./PersonalInfo";
 // import { EducationInfo } from "./EducationInfo";
@@ -53,6 +54,18 @@ const AddStudent = ({ situation }) => {
   const [fscResult, setFscResult] = useState(""); // State variable for FSC result
   const [fscDocument, setFscDocument] = useState(null); // State variable for FSC document
   const [MatricDocument, setMatricDocument] = useState(null); // State variable for Matric document
+  // const [name, setName] = useState('');
+  // const [fatherName, setFatherName] = useState('');
+  const [cnic, setCnic] = useState('');
+  // const [citizenship, setCitizenship] = useState('');
+  // const [dob, setDob] = useState('');
+  // const [religion, setReligion] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
+  const [whatsappNumber, setWhatsappNumber] = useState('');
+  const [fullName, setFullName] = useState('');
+
+
+  
 
   // Handler for educational document upload
   const handleEducationalDocumentUpload = (event) => {
@@ -169,13 +182,15 @@ const AddStudent = ({ situation }) => {
             <PersonalInfo setStepper={setStepper} />
           ) : stepper === 2 ? (
             <EducationInfo setStepper={setStepper} />
+          ) : stepper === 3 ? (
+            <RelationInfo  setStepper={setStepper}/>
           ) : (
             <AcademicDetail />
           )}
           {/* Additional input fields */}
 
           <div className="flex justify-between">
-            {stepper === 3 && (
+            {stepper === 4 && (
               <button
                 className="registerButton"
                 onClick={() => setStepper(stepper - 1)}
@@ -184,7 +199,7 @@ const AddStudent = ({ situation }) => {
               </button>
             )}
 
-            {stepper === 3 && (
+            {stepper === 4 && (
               <button
                 className="registerButton"
                 type="submit"
