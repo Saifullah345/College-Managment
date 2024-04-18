@@ -58,9 +58,24 @@ export const AddAddress = () => {
         {/* Location Details Section */}
         <Card sx={{ width: '300px' }}>
           <CardContent>
-            <TextField label="Add Province" value={province} onChange={handleChange(setProvince)} />
-            <TextField label="Add District" value={district} onChange={handleChange(setDistrict)} />
-            <TextField label="Add Tehsil" value={tehsil} onChange={handleChange(setTehsil)} />
+          <div>
+  <div style={{ display: 'flex', alignItems: 'center' }}>
+    <TextField label="Add Province" value={province} onChange={handleChange(setProvince)} />
+    <Button variant="contained" onClick={handleAdd}>Add</Button>
+  </div>
+
+  <div style={{ display: 'flex', alignItems: 'center' }}>
+    <TextField label="Add District" value={district} onChange={handleChange(setDistrict)} />
+    <Button variant="contained" onClick={handleAdd}>Add</Button>
+  </div>
+
+  <div style={{ display: 'flex', alignItems: 'center' }}>
+    <TextField label="Add Tehsil" value={tehsil} onChange={handleChange(setTehsil)} />
+    <Button variant="contained" onClick={handleAdd}>Add</Button>
+  </div>
+</div>
+
+
             <Button variant="contained" onClick={handleAdd} fullWidth sx={{ mt: 2 }}>
               Add Location
             </Button>          </CardContent>
