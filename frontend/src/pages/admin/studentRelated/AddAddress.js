@@ -56,24 +56,74 @@ export const AddAddress = () => {
         sx={{ border: '2px solid grey', borderRadius: '10px' }}
       >
         {/* Location Details Section */}
+       
         <Card sx={{ width: '300px' }}>
           <CardContent>
           <div>
-  <div style={{ display: 'flex', alignItems: 'center' }}>
-    <TextField label="Add Province" value={province} onChange={handleChange(setProvince)} />
+          <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        gap={2}
+        p={2}
+        sx={{ border: '2px solid grey', borderRadius: '10px' }}
+        
+        >
+
+          <h2 >Province</h2>
+            
+  <div style={{ display: 'flex', alignItems: 'center'  }}>
+    <TextField label="Province Name " value={province} onChange={handleChange(setProvince)} />
     <Button variant="contained" onClick={handleAdd}>Add</Button>
   </div>
+  
+
+  </Box>
+  
+  
+  <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        gap={2}
+        p={2}
+        sx={{ border: '2px solid grey', borderRadius: '10px' }}
+        
+        >
+  <h2 >District</h2>
 
   <div style={{ display: 'flex', alignItems: 'center' }}>
-    <TextField label="Add District" value={district} onChange={handleChange(setDistrict)} />
-    <Button variant="contained" onClick={handleAdd}>Add</Button>
+    
+  <TextField label=" Select Province " value={province} onChange={handleChange(setProvince)} />
+    
   </div>
-
   <div style={{ display: 'flex', alignItems: 'center' }}>
-    <TextField label="Add Tehsil" value={tehsil} onChange={handleChange(setTehsil)} />
-    <Button variant="contained" onClick={handleAdd}>Add</Button>
+
+  <TextField label=" District Name " value={district} onChange={handleChange(setDistrict)} />
+
   </div>
+  
+  </Box>
+
+  <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        gap={2}
+        p={2}
+        sx={{ border: '2px solid grey', borderRadius: '10px' }}
+        
+        >
+<h2>Tehsil</h2>
+  <div style={{ display: 'flex', alignItems: 'center' }}>
+  <TextField label=" Select  District  " value={district} onChange={handleChange(setDistrict)} />
+
+  </div>
+  <TextField label="  Tehsil Name " value={tehsil} onChange={handleChange(setTehsil)} />
+
+  </Box>
 </div>
+
 
 
             <Button variant="contained" onClick={handleAdd} fullWidth sx={{ mt: 2 }}>
@@ -111,7 +161,7 @@ export const AddAddress = () => {
         </Card>
       </Box>
       <Box
-      
+
         display="flex"
         flexDirection="column"
         alignItems="center"
