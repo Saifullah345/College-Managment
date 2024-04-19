@@ -44,8 +44,8 @@ const AddStudent = ({ situation }) => {
   const [district, setDistrict] = useState("");
   const [tehsil, setTehsil] = useState("");
   const [postalAddress, setPostalAddress] = useState("");
-  const [permanentAddress, setPermanentAddress] = useState("");
-  const [admissionDate, setAdmissionDate] = useState("");
+  // const [permanentAddress, setPermanentAddress] = useState("");
+  // const [admissionDate, setAdmissionDate] = useState("");
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [studentPhoto, setStudentPhoto] = useState(null);
   const [stepper, setStepper] = useState(1);
@@ -56,16 +56,13 @@ const AddStudent = ({ situation }) => {
   const [MatricDocument, setMatricDocument] = useState(null); // State variable for Matric document
   // const [name, setName] = useState('');
   // const [fatherName, setFatherName] = useState('');
-  const [cnic, setCnic] = useState('');
+  const [cnic, setCnic] = useState("");
   // const [citizenship, setCitizenship] = useState('');
   // const [dob, setDob] = useState('');
   // const [religion, setReligion] = useState('');
-  const [mobileNumber, setMobileNumber] = useState('');
-  const [whatsappNumber, setWhatsappNumber] = useState('');
-  const [fullName, setFullName] = useState('');
-
-
-  
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [fullName, setFullName] = useState("");
 
   // Handler for educational document upload
   const handleEducationalDocumentUpload = (event) => {
@@ -183,7 +180,7 @@ const AddStudent = ({ situation }) => {
           ) : stepper === 2 ? (
             <EducationInfo setStepper={setStepper} />
           ) : stepper === 3 ? (
-            <RelationInfo  setStepper={setStepper}/>
+            <RelationInfo setStepper={setStepper} />
           ) : (
             <AcademicDetail />
           )}

@@ -1,190 +1,243 @@
-import React, { useState } from "react";
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
+import React, { useRef, useState } from "react";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import { Stack, Typography } from "@mui/material";
+import axios from "axios";
+import Popup from "../../../components/Popup";
 
 export const AddAddress = () => {
   const [province, setProvince] = useState("");
   const [district, setDistrict] = useState("");
-  const [tehsil, setTehsil] = useState("");
   const [boardName, setBoardName] = useState("");
   const [boardAddress, setBoardAddress] = useState("");
-  const [boardDetails, setBoardDetails] = useState("");
+  // const [boardDetails, setBoardDetails] = useState("");
   const [session, setSession] = useState("");
+  const [tehsil, setTehsil] = useState([]);
+  const tagRef = useRef();
+  const [showPopup, setShowPopup] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleDelete = (value) => {
+    const newtehsil = tehsil.filter((val) => val !== value);
+    setTehsil(newtehsil);
+  };
+  const handleOnSubmit = (e) => {
+    e.preventDefault();
+    setTehsil([...tehsil, tagRef.current.value]);
+    tagRef.current.value = "";
+  };
 
   const handleChange = (setState) => (event) => {
     setState(event.target.value);
   };
+  const Tags = ({ data, handleDelete }) => {
+    return (
+      <Box
+        sx={{
+          background: "#283240",
+          height: "100%",
+          display: "flex",
+          padding: "0.2rem",
+          margin: "0 0.5rem 0 0",
+          justifyContent: "center",
+          alignContent: "center",
+          color: "#ffffff",
+          borderRadius: "100%",
+        }}
+      >
+        <Stack direction="row" gap={1}>
+          <Typography>{data}</Typography>
+          <Box
+            sx={{ cursor: "pointer" }}
+            onClick={() => {
+              handleDelete(data);
+            }}
+          >
+            X
+          </Box>
+        </Stack>
+      </Box>
+    );
+  };
 
-  const handleAdd = () => {
-    // Here you can add logic to Add the Added location data or perform further actions
-    console.log("Province:", province);
-    console.log("District:", district);
-    console.log("Tehsil:", tehsil);
-    console.log("Session:", session);
-
-    // Here you can add logic to Add the board information or perform further actions
-    console.log("Board Name:", boardName);
-    console.log("Board Address:", boardAddress);
-    console.log("Board Details:", boardDetails);
-
-    // Clear the input fields after saving
-    setProvince("");
-    setDistrict("");
-    setTehsil("");
-    setSession("");
-    setBoardName("");
-    setBoardAddress("");
-    setBoardDetails("");
+  const handleAdd = async (e) => {
+    e.preventDefault();
+    const fields = {
+      province,
+      district,
+      tehsil,
+    };
+    try {
+      const result = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/districtCreate`,
+        fields,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      console.log(result);
+      if (result.data) {
+        setMessage("Done Successfully");
+        setShowPopup(true);
+        setProvince("");
+        setDistrict("");
+        setTehsil([]);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleAddBoard = async (e) => {
+    e.preventDefault();
+    const fields = {
+      boardName,
+      boardAddress,
+      session,
+    };
+    try {
+      const result = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/boardCreate`,
+        fields,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      console.log(result);
+      if (result.data) {
+        setMessage("Done Successfully");
+        setShowPopup(true);
+        setBoardAddress("");
+        setSession("");
+        setBoardName("");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      minHeight="100vh"
-    >
+    <>
       <Box
         display="flex"
-        flexDirection="column"
+        flexDirection={"column"}
+        justifyContent="center"
         alignItems="center"
-        gap={2}
-        p={2}
-        sx={{ border: '2px solid grey', borderRadius: '10px' }}
+        minHeight="100vh"
       >
-        {/* Location Details Section */}
-       
-        <Card sx={{ width: '300px' }}>
-          <CardContent>
-          <div>
-          <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        gap={2}
-        p={2}
-        sx={{ border: '2px solid grey', borderRadius: '10px' }}
-        
+        <Box
+          display="flex"
+          marginTop={"10px"}
+          flexDirection="column"
+          // alignItems="center"
+          gap={2}
+          // p={2}
+          //
         >
+          {/* Location Details Section */}
 
-          <h2 >Province</h2>
-            
-  <div style={{ display: 'flex', alignItems: 'center'  }}>
-    <TextField label="Province Name " value={province} onChange={handleChange(setProvince)} />
-    <Button variant="contained" onClick={handleAdd}>Add</Button>
-  </div>
-  
-
-  </Box>
-  
-  
-  <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        gap={2}
-        p={2}
-        sx={{ border: '2px solid grey', borderRadius: '10px' }}
-        
-        >
-  <h2 >District</h2>
-
-  <div style={{ display: 'flex', alignItems: 'center' }}>
-    
-  <TextField label=" Select Province " value={province} onChange={handleChange(setProvince)} />
-    
-  </div>
-  <div style={{ display: 'flex', alignItems: 'center' }}>
-
-  <TextField label=" District Name " value={district} onChange={handleChange(setDistrict)} />
-
-  </div>
-  
-  </Box>
-
-  <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        gap={2}
-        p={2}
-        sx={{ border: '2px solid grey', borderRadius: '10px' }}
-        
-        >
-<h2>Tehsil</h2>
-  <div style={{ display: 'flex', alignItems: 'center' }}>
-  <TextField label=" Select  District  " value={district} onChange={handleChange(setDistrict)} />
-
-  </div>
-  <TextField label="  Tehsil Name " value={tehsil} onChange={handleChange(setTehsil)} />
-
-  </Box>
-</div>
-
-
-
-            <Button variant="contained" onClick={handleAdd} fullWidth sx={{ mt: 2 }}>
-              Add Location
-            </Button>          </CardContent>
-        </Card>
-
-        {/* Session Information Section */}
-       
+          <h2>District</h2>
+          <Box display="flex" flexDirection={"column"}>
+            <Box display="flex" alignItems="center" gap={2}>
+              <div style={{ display: "flex" }}>
+                <TextField
+                  label="Enter Province Name"
+                  value={province}
+                  onChange={handleChange(setProvince)}
+                />
+              </div>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <TextField
+                  label=" District Name "
+                  value={district}
+                  onChange={handleChange(setDistrict)}
+                />
+              </div>
+            </Box>
+            <Box display="flex" flexDirection="column" gap={2}>
+              <Box sx={{ flexGrow: 1 }}>
+                <form onSubmit={handleOnSubmit}>
+                  <TextField
+                    inputRef={tagRef}
+                    fullWidth
+                    // variant="standard"
+                    size="medium"
+                    sx={{ margin: "1rem 0" }}
+                    margin="none"
+                    placeholder={tehsil.length < 5 ? "Enter Tehsil" : ""}
+                    InputProps={{
+                      startAdornment: (
+                        <Box sx={{ margin: "0 0.2rem 0 0", display: "flex" }}>
+                          {tehsil.map((data, index) => {
+                            return (
+                              <Tags
+                                data={data}
+                                handleDelete={handleDelete}
+                                key={index}
+                              />
+                            );
+                          })}
+                        </Box>
+                      ),
+                    }}
+                  />
+                </form>
+              </Box>
+            </Box>{" "}
+          </Box>
+          <Button
+            variant="contained"
+            onClick={handleAdd}
+            fullWidth
+            sx={{ mt: 2 }}
+          >
+            Add
+          </Button>
+        </Box>
+        <hr
+          style={{
+            width: "90%",
+            backgroundColor: "black",
+            color: "gray",
+            marginTop: "20px",
+          }}
+        />
+        <Box display="flex" flexDirection="column" gap={2} p={2}>
+          <h2>Board</h2>
+          <Box display={"flex"} alignItems="center" gap={2}>
+            <TextField
+              label="Add Board Name"
+              value={boardName}
+              onChange={handleChange(setBoardName)}
+            />
+            <TextField
+              label="Add Board Address"
+              value={boardAddress}
+              onChange={handleChange(setBoardAddress)}
+            />
+          </Box>
+          <Box width={"100%"}>
+            <TextField
+              label="Add Session"
+              value={session}
+              onChange={handleChange(setSession)}
+            />
+          </Box>
+          <Button
+            variant="contained"
+            onClick={handleAddBoard}
+            fullWidth
+            sx={{ mt: 2 }}
+          >
+            Add Board Information
+          </Button>
+        </Box>
       </Box>
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        gap={2}
-        p={2}
-        sx={{ border: '2px solid grey', borderRadius: '10px' }}
-      >
-        {/* Location Details Section */}
-        
-
-        {/* Session Information Section */}
-        
-
-        {/* Board Information Section */}
-        <Card sx={{ width: '300px' }}>
-          <CardContent>
-            <TextField label="Add Board Name" value={boardName} onChange={handleChange(setBoardName)} />
-            <TextField label="Add Board Address" value={boardAddress} onChange={handleChange(setBoardAddress)} />
-            <TextField label="Add Board Details" value={boardDetails} onChange={handleChange(setBoardDetails)} />
-            <Button variant="contained" onClick={handleAdd} fullWidth sx={{ mt: 2 }}>
-              Add Board Information
-            </Button>
-          </CardContent>
-        </Card>
-      </Box>
-      <Box
-
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        gap={2}
-        p={2}
-        sx={{ border: '2px solid grey', borderRadius: '10px' }}
-      >
-        {/* Location Details Section */}
-        
-
-        {/* Session Information Section */}
-        <Card sx={{ width: '300px' }}>
-          <CardContent>
-            <TextField label="Add Session" value={session} onChange={handleChange(setSession)} />
-            <Button variant="contained" onClick={handleAdd} fullWidth sx={{ mt: 2 }}>
-              Add Session
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Board Information Section */}
-        
-      </Box>
-    </Box>
+      <Popup
+        message={message}
+        setShowPopup={setShowPopup}
+        showPopup={showPopup}
+      />
+    </>
   );
 };
