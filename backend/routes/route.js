@@ -23,6 +23,8 @@ const {
 const {
   districtCreate,
   boardCreate,
+  allDistrict,
+  allBoard,
 } = require("../controllers/generalSetting-controller.js");
 const {
   noticeCreate,
@@ -165,6 +167,8 @@ router.delete("/SubjectsClass/:id", deleteSubjectsByClass);
 
 //General Setting
 router.post("/districtCreate", districtCreate);
+router.get("/districtview", allDistrict);
+router.get("/boardview", allBoard);
 router.post("/boardCreate", boardCreate);
 
 module.exports = router;

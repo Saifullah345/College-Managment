@@ -41,54 +41,54 @@ const AddStudent = ({ situation }) => {
   const [dob, setDob] = useState("");
   const [qualification, setQualification] = useState("");
   const [concernedBoard, setConcernedBoard] = useState("");
-  const [district, setDistrict] = useState("");
-  const [tehsil, setTehsil] = useState("");
-  const [postalAddress, setPostalAddress] = useState("");
+  // const [district, setDistrict] = useState("");
+  // const [tehsil, setTehsil] = useState("");
+  // const [postalAddress, setPostalAddress] = useState("");
   // const [permanentAddress, setPermanentAddress] = useState("");
   // const [admissionDate, setAdmissionDate] = useState("");
-  const [profilePhoto, setProfilePhoto] = useState(null);
+  // const [profilePhoto, setProfilePhoto] = useState(null);
   const [studentPhoto, setStudentPhoto] = useState(null);
   const [stepper, setStepper] = useState(1);
   const [educationalDocument, setEducationalDocument] = useState(null);
   const [MatricResult, setMatricResult] = useState(""); // State variable for Matric result
   const [fscResult, setFscResult] = useState(""); // State variable for FSC result
-  const [fscDocument, setFscDocument] = useState(null); // State variable for FSC document
-  const [MatricDocument, setMatricDocument] = useState(null); // State variable for Matric document
+  // const [fscDocument, setFscDocument] = useState(null); // State variable for FSC document
+  // const [MatricDocument, setMatricDocument] = useState(null); // State variable for Matric document
   // const [name, setName] = useState('');
   // const [fatherName, setFatherName] = useState('');
-  const [cnic, setCnic] = useState("");
+  // const [cnic, setCnic] = useState("");
   // const [citizenship, setCitizenship] = useState('');
   // const [dob, setDob] = useState('');
   // const [religion, setReligion] = useState('');
-  const [mobileNumber, setMobileNumber] = useState("");
-  const [whatsappNumber, setWhatsappNumber] = useState("");
-  const [fullName, setFullName] = useState("");
+  // const [mobileNumber, setMobileNumber] = useState("");
+  // const [whatsappNumber, setWhatsappNumber] = useState("");
+  // const [fullName, setFullName] = useState("");
 
   // Handler for educational document upload
-  const handleEducationalDocumentUpload = (event) => {
-    const file = event.target.files[0];
-    setEducationalDocument(file);
-  };
+  // const handleEducationalDocumentUpload = (event) => {
+  //   const file = event.target.files[0];
+  //   setEducationalDocument(file);
+  // };
 
-  // Handler for FSC document upload
-  const handleFscDocumentUpload = (event) => {
-    const file = event.target.files[0];
-    setFscDocument(file);
-  };
+  // // Handler for FSC document upload
+  // const handleFscDocumentUpload = (event) => {
+  //   const file = event.target.files[0];
+  //   setFscDocument(file);
+  // };
 
-  // Handler for Matric document upload
-  const handleMatricDocumentUpload = (event) => {
-    const file = event.target.files[0];
-    setMatricDocument(file);
-  };
-  const handleProfilePhotoUpload = (event) => {
-    const file = event.target.files[0];
-    // You can perform validation here if needed
+  // // Handler for Matric document upload
+  // const handleMatricDocumentUpload = (event) => {
+  //   const file = event.target.files[0];
+  //   setMatricDocument(file);
+  // };
+  // const handleProfilePhotoUpload = (event) => {
+  //   const file = event.target.files[0];
+  //   // You can perform validation here if needed
 
-    // Now, you can upload the file to your server or store it in state
-    // For example, you can store it in state like this:
-    setProfilePhoto(file);
-  };
+  //   // Now, you can upload the file to your server or store it in state
+  //   // For example, you can store it in state like this:
+  //   setProfilePhoto(file);
+  // };
 
   // Effect for setting sclassName based on situation
   useEffect(() => {

@@ -28,7 +28,18 @@ const districtCreate = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
-
+const allDistrict = async (req, res) => {
+  try {
+    let subjects = await District.find();
+    if (subjects.length > 0) {
+      res.send(subjects);
+    } else {
+      res.send({ message: "No District found" });
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
 const boardCreate = async (req, res) => {
   try {
     console.log(req.body);
@@ -39,4 +50,16 @@ const boardCreate = async (req, res) => {
     res.status(500).json(err);
   }
 };
-module.exports = { districtCreate, boardCreate };
+const allBoard = async (req, res) => {
+  try {
+    let subjects = await Board.find();
+    if (subjects.length > 0) {
+      res.send(subjects);
+    } else {
+      res.send({ message: "No Board found" });
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+module.exports = { districtCreate, boardCreate, allDistrict, allBoard };

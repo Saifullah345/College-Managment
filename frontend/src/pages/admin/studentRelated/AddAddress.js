@@ -47,7 +47,7 @@ export const AddAddress = () => {
         }}
       >
         <Stack direction="row" gap={1}>
-          <Typography>{data}</Typography>
+          <Typography whiteSpace={"nowrap"}>{data}</Typography>
           <Box
             sx={{ cursor: "pointer" }}
             onClick={() => {
