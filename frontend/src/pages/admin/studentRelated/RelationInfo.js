@@ -1,65 +1,145 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-export const RelationInfo = ({ setStepper }) => {
-  const [districts, setDistricts] = useState([]);
-  const [select, setSelect] = useState({});
+export const RelationInfo = ({ setStepper, formData, setFormData }) => {
+  const [viewTehsil, setViewTehsil] = useState([]);
+  const [district, setDistrict] = useState([]);
+  const [provinces, setProvinces] = useState([]);
 
+  const ViewTehsil = async () => {
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/allTehsil`,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      // console.log(result);
+      if (result.data) {
+        console.log(result);
+        setViewTehsil(result.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const ViewDistrict = async () => {
     try {
       const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/districtview`,
+        `${process.env.REACT_APP_BASE_URL}/allDistrict`,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      // console.log(result);
+      if (result.data) {
+        console.log(result);
+        setDistrict(result.data);
+        setFormData((prevState) => ({
+          ...prevState,
+          district: result.data.filter(
+            (val) => val.provinceId._id === formData.provinces
+          )[0]?.name,
+        }));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const ViewProvinces = async () => {
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/allProvinces`,
         {
           headers: { "Content-Type": "application/json" },
         }
       );
       console.log(result);
       if (result.data) {
-        console.log(result);
-        setDistricts(result.data);
+        // console.log(result);
+        ViewDistrict();
+        setProvinces(result.data);
+        setFormData((prevState) => ({
+          ...prevState,
+          provinces: result.data[0]?.name,
+        }));
       }
     } catch (error) {
       console.log(error);
     }
   };
-
   useEffect(() => {
+    ViewTehsil();
     ViewDistrict();
-  }, []);
-
+    ViewProvinces();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionStorage.getItem("loader")]);
   return (
     <div>
       <div className="flex justify-between">
         <div className="formGroup">
-          <span className="registerTitle">Adress Details</span>
+          <span className="registerTitle">Address Details</span>
+          <label>Provinces *</label>
+          <select
+            className="registerInput"
+            required
+            value={formData.provinces}
+            onChange={(e) => {
+              setFormData((prevState) => ({
+                ...prevState,
+                provinces: e.target.value,
+              }));
+            }}
+          >
+            <option value="">Select Province</option>
+
+            {provinces.map((val) => (
+              <option value={val.province}>{val.province}</option>
+            ))}
+          </select>
           <label>District *</label>
           <select
             className="registerInput"
             required
-            onChange={(e) => setSelect(e.target.value)}
+            value={formData.district}
+            onChange={(e) => {
+              setFormData((prevState) => ({
+                ...prevState,
+                district: e.target.value,
+              }));
+            }}
           >
             <option value="">Select District</option>
-            {districts.map((district) => (
-              <option key={district.id} value={district._id}>
-                {district.district}
-              </option>
-            ))}
+
+            {district
+              ?.filter(
+                (val) => val?.provinceId?.province === formData?.provinces
+              )
+              ?.map((val) => (
+                <option value={val.district}>{val.district}</option>
+              ))}
           </select>
           <div className="formGroup">
             <label>Tehsil *</label>
             <select
               className="registerInput"
-              // value={tehsil}
-              // onChange={(event) => setTehsil(event.target.value)}
+              value={formData.tehsil}
+              onChange={(e) => {
+                setFormData((prevState) => ({
+                  ...prevState,
+                  tehsil: e.target.value,
+                }));
+              }}
               required
             >
               <option value="">Select Tehsil</option>
-              {districts
-                ?.find((val) => val._id === select)
-                ?.tehsil?.map((val) => (
-                  <option value={val}>{val}</option>
+              {viewTehsil
+                ?.filter(
+                  (val) => val?.districtId.district === formData?.district
+                )
+                ?.map((val) => (
+                  <option value={val.tehsil}>{val.tehsil}</option>
                 ))}
-              {/* Add more tehsil options as needed */}
             </select>
 
             {/* Candidate Postal Address */}
@@ -68,8 +148,13 @@ export const RelationInfo = ({ setStepper }) => {
               className="registerInput"
               type="text"
               placeholder="Enter Postal Address..."
-              // value={postalAddress}
-              // onChange={(event) => setPostalAddress(event.target.value)}
+              value={formData.postalAddress}
+              onChange={(e) => {
+                setFormData((prevState) => ({
+                  ...prevState,
+                  postalAddress: e.target.value,
+                }));
+              }}
               autoComplete="postal-address"
               required
             />
@@ -79,10 +164,13 @@ export const RelationInfo = ({ setStepper }) => {
             className="registerInput"
             type="text"
             placeholder="Enter Permanent Address..."
-            // value={permanentAddress}
-            // onChange={(event) =>
-            // setPermanentAddress(event.target.value)
-            // }
+            value={formData.permanentAddress}
+            onChange={(e) => {
+              setFormData((prevState) => ({
+                ...prevState,
+                permanentAddress: e.target.value,
+              }));
+            }}
             autoComplete="permanent-address"
             required
           />
@@ -96,9 +184,14 @@ export const RelationInfo = ({ setStepper }) => {
           <input
             className="registerInput"
             type="text"
-            // value={nameOfReference}
             placeholder="Enter Name Reference..."
-            // onChange={(event) => setNameOfReference(event.target.value)}
+            value={formData.nameOfReference}
+            onChange={(e) => {
+              setFormData((prevState) => ({
+                ...prevState,
+                nameOfReference: e.target.value,
+              }));
+            }}
             required
           />
           <label>Number of References *</label>
@@ -106,8 +199,13 @@ export const RelationInfo = ({ setStepper }) => {
             className="registerInput"
             type="number"
             placeholder="Enter Number of References"
-            // value={numberOfReferences}
-            // onChange={(event) => setNumberOfReferences(event.target.value)}
+            value={formData.numberOfReference}
+            onChange={(e) => {
+              setFormData((prevState) => ({
+                ...prevState,
+                numberOfReference: e.target.value,
+              }));
+            }}
             required
           />
           {/* Relation */}
@@ -116,8 +214,13 @@ export const RelationInfo = ({ setStepper }) => {
             className="registerInput"
             type="text"
             placeholder="Enter Relation"
-            // value={relation}
-            // onChange={(event) => setRelation(event.target.value)}
+            value={formData.relationWithReference}
+            onChange={(e) => {
+              setFormData((prevState) => ({
+                ...prevState,
+                relationWithReference: e.target.value,
+              }));
+            }}
             required
           />
 
@@ -126,8 +229,13 @@ export const RelationInfo = ({ setStepper }) => {
           <textarea
             className="registerInput"
             placeholder="Enter other details..."
-            // value={otherDetails}
-            // onChange={(event) => setOtherDetails(event.target.value)}
+            value={formData.otherDetailWithReference}
+            onChange={(e) => {
+              setFormData((prevState) => ({
+                ...prevState,
+                otherDetailWithReference: e.target.value,
+              }));
+            }}
           />
         </div>
       </div>

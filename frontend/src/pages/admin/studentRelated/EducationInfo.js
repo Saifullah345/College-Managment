@@ -1,13 +1,13 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-export const EducationInfo = ({ setStepper }) => {
-  const [board, setBoard] = useState([]);
+export const EducationInfo = ({ setStepper, formData, setFormData }) => {
+  const [viewBoard, setViewBoard] = useState([]);
 
-  const ViewDistrict = async () => {
+  const ViewBoard = async () => {
     try {
       const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/boardview`,
+        `${process.env.REACT_APP_BASE_URL}/allBoard`,
         {
           headers: { "Content-Type": "application/json" },
         }
@@ -15,16 +15,16 @@ export const EducationInfo = ({ setStepper }) => {
       console.log(result);
       if (result.data) {
         console.log(result);
-        setBoard(result.data);
+        setViewBoard(result.data);
       }
     } catch (error) {
       console.log(error);
     }
   };
-
   useEffect(() => {
-    ViewDistrict();
-  }, []);
+    ViewBoard();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionStorage.getItem("loader")]);
   return (
     <div>
       <div className="register-form">
@@ -36,8 +36,13 @@ export const EducationInfo = ({ setStepper }) => {
               <label>Degree Program *</label>
               <select
                 className="registerInput"
-                // value={degreeProgram}
-                // onChange={(event) => setDegreeProgram(event.target.value)}
+                value={formData.program}
+                onChange={(e) => {
+                  setFormData((prevState) => ({
+                    ...prevState,
+                    program: e.target.value,
+                  }));
+                }}
                 required
               >
                 <option value="">Select Degree Program</option>
@@ -52,13 +57,18 @@ export const EducationInfo = ({ setStepper }) => {
                 <label>Board *</label>
                 <select
                   className="registerInput"
-                  // value={board}
-                  // onChange={(event) => setBoard(event.target.value)}
+                  value={formData.board}
+                  onChange={(e) => {
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      board: e.target.value,
+                    }));
+                  }}
                   required
                 >
                   <option value="">Select Board</option>
-                  {board?.map((val) => (
-                    <option value={val?.boardName}>{val?.boardName}</option>
+                  {viewBoard?.map((val) => (
+                    <option value={val?.name}>{val?.name}</option>
                   ))}
                 </select>
               </div>
@@ -67,8 +77,13 @@ export const EducationInfo = ({ setStepper }) => {
                 className="registerInput"
                 type="text"
                 placeholder="Enter Serial Number..."
-                // value={serialNumber}
-                // onChange={(event) => setSerialNumber(event.target.value)}
+                value={formData.serialNumber}
+                onChange={(e) => {
+                  setFormData((prevState) => ({
+                    ...prevState,
+                    serialNumber: e.target.value,
+                  }));
+                }}
                 required
               />
               <label>Roll Number *</label>
@@ -76,8 +91,13 @@ export const EducationInfo = ({ setStepper }) => {
                 className="registerInput"
                 type="text"
                 placeholder="Enter Roll Number..."
-                // value={rollNumber}
-                // onChange={(event) => setRollNumber(event.target.value)}
+                value={formData.rollNumber}
+                onChange={(e) => {
+                  setFormData((prevState) => ({
+                    ...prevState,
+                    rollNumber: e.target.value,
+                  }));
+                }}
                 required
               />
               <label>Years of Passing *</label>
@@ -85,8 +105,13 @@ export const EducationInfo = ({ setStepper }) => {
                 className="registerInput"
                 type="text"
                 placeholder="Enter Years of Passing..."
-                // value={yearsOfPassing}
-                // onChange={(event) => setYearsOfPassing(event.target.value)}
+                value={formData.yearOfPassing}
+                onChange={(e) => {
+                  setFormData((prevState) => ({
+                    ...prevState,
+                    yearOfPassing: e.target.value,
+                  }));
+                }}
                 required
               />
             </div>

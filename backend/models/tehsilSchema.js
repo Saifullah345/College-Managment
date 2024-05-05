@@ -1,11 +1,16 @@
 const mongoose = require("mongoose");
 
-const districtSchema = new mongoose.Schema(
+const tehsilSchema = new mongoose.Schema(
   {
-    district: {
+    tehsil: {
       type: String,
       required: true,
       index: true,
+    },
+    districtId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "district",
+      required: true,
     },
     provinceId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -18,4 +23,4 @@ const districtSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("district", districtSchema);
+module.exports = mongoose.model("tehsil", tehsilSchema);

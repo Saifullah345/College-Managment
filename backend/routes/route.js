@@ -7,6 +7,11 @@ const {
   adminLogIn,
   getAdminDetail,
 } = require("../controllers/admin-controller.js");
+const {
+  boardCreate,
+  allBoard,
+  sessionCreate,
+} = require("../controllers/board-controller.js");
 
 const {
   sclassCreate,
@@ -22,10 +27,9 @@ const {
 } = require("../controllers/complain-controller.js");
 const {
   districtCreate,
-  boardCreate,
   allDistrict,
-  allBoard,
-} = require("../controllers/generalSetting-controller.js");
+} = require("../controllers/district-controller.js");
+
 const {
   noticeCreate,
   noticeList,
@@ -33,6 +37,10 @@ const {
   deleteNotice,
   updateNotice,
 } = require("../controllers/notice-controller.js");
+const {
+  provincesCreate,
+  allProvinces,
+} = require("../controllers/province-controller.js");
 const {
   studentRegister,
   studentLogIn,
@@ -70,6 +78,10 @@ const {
   updateTeacherSubject,
   teacherAttendance,
 } = require("../controllers/teacher-controller.js");
+const {
+  tehsilCreate,
+  allTehsil,
+} = require("../controllers/tehsil-controller.js");
 
 // Admin
 router.post("/AdminReg", adminRegister);
@@ -166,9 +178,14 @@ router.delete("/Subjects/:id", deleteSubjects);
 router.delete("/SubjectsClass/:id", deleteSubjectsByClass);
 
 //General Setting
+router.post("/provincesCreate", provincesCreate);
+router.get("/allProvinces", allProvinces);
 router.post("/districtCreate", districtCreate);
-router.get("/districtview", allDistrict);
-router.get("/boardview", allBoard);
+router.get("/allDistrict", allDistrict);
+router.post("/tehsilCreate", tehsilCreate);
+router.get("/allTehsil", allTehsil);
+router.get("/allBoard", allBoard);
 router.post("/boardCreate", boardCreate);
+router.post("/sessionCreate", sessionCreate);
 
 module.exports = router;

@@ -2,17 +2,16 @@ const mongoose = require("mongoose");
 
 const boardSchema = new mongoose.Schema(
   {
-    boardName: {
+    name: {
       type: String,
       required: true,
       index: true,
     },
-    boardAddress: {
+    address: {
       type: String,
       required: true,
       index: true,
     },
-    session: { type: Number, required: true },
   },
   {
     timestamps: true,

@@ -59,8 +59,9 @@ const ShowStudents = () => {
 
   const studentColumns = [
     { id: "name", label: "Name", minWidth: 170 },
+    { id: "fatherName", label: "Father Name", minWidth: 170 },
     { id: "rollNum", label: "Roll Number", minWidth: 100 },
-    { id: "sclassName", label: "Class", minWidth: 170 },
+    // { id: "sclassName", label: "Class", minWidth: 170 },
     { id: "provinces", label: "Province", minWidth: 170 },
     { id: "address", label: "Address", minWidth: 170 },
   ];
@@ -71,11 +72,12 @@ const ShowStudents = () => {
     studentsList.map((student) => {
       return {
         name: student.name,
-        rollNum: student.rollNum,
-        sclassName: student.sclassName.sclassName,
+        fatherName: student.fatherName,
+        rollNum: student.rollNumber,
+        // sclassName: student.sclassName.sclassName,
         id: student._id,
-        address: student.address,
-        provinces: student.provinces,
+        provinces: student.provinces || "",
+        address: student.tehsil,
       };
     });
 

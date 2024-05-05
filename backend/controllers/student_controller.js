@@ -1,36 +1,82 @@
 const bcrypt = require("bcrypt");
 const Student = require("../models/studentSchema.js");
 const Subject = require("../models/subjectSchema.js");
+const driveHandlers = require("../utilits/drive_handlers.js");
+const multer = require("multer");
+
+const upload = multer().fields([
+  { name: "idCardFront", maxCount: 1 },
+  { name: "idCardBack", maxCount: 1 },
+  { name: "studentProfile", maxCount: 1 },
+  { name: "MetricDMC", maxCount: 1 },
+]);
+// const studentRegister = async (req, res) => {
+//   try {
+//     const salt = await bcrypt.genSalt(10);
+//     const hashedPass = await bcrypt.hash(req.body.password, salt);
+
+//     const existingStudent = await Student.findOne({
+//       rollNum: req.body.rollNum,
+//       school: req.body.adminID,
+//       sclassName: req.body.sclassName,
+//       provinces: req.body.provinces,
+//       address: req.body.provinces,
+//     });
+
+//     if (existingStudent) {
+//       res.send({ message: "Roll Number already exists" });
+//     } else {
+//       const student = new Student({
+//         ...req.body,
+//         school: req.body.adminID,
+//         password: hashedPass,
+//       });
+
+//       let result = await student.save();
+
+//       result.password = undefined;
+//       res.send(result);
+//     }
+//   } catch (err) {
+//     res.status(500).json(err);
+//   }
+// };
 
 const studentRegister = async (req, res) => {
   try {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPass = await bcrypt.hash(req.body.password, salt);
-
-    const existingStudent = await Student.findOne({
-      rollNum: req.body.rollNum,
-      school: req.body.adminID,
-      sclassName: req.body.sclassName,
-      provinces: req.body.provinces,
-      address: req.body.provinces,
+    upload(req, res, async (error) => {
+      if (error) {
+        console.log(req.files["studentProfile"]);
+        return res.status(400).json({ error: error.message });
+      } else if (
+        !req.files["idCardFront"] ||
+        !req.files["idCardBack"] ||
+        !req.files["MetricDMC"] ||
+        !req.files["studentProfile"]
+      ) {
+        console.log(req.files["studentProfile"]);
+        return res.status(400).json({ error: "File(s) missing" });
+      }
+      // console.log(await driveHandlers.uploadImage(req.files["idCardFront"][0]));
+      const student = new Student(req.body);
+      student.idCardFront = await driveHandlers.uploadImage(
+        req.files["idCardFront"][0]
+      ).url;
+      student.idCardBack = await driveHandlers.uploadImage(
+        req.files["idCardBack"][0]
+      ).url;
+      student.MetricDMC = await driveHandlers.uploadImage(
+        req.files["MetricDMC"][0]
+      ).url;
+      student.studentProfile = await driveHandlers.uploadImage(
+        req.files["studentProfile"][0]
+      ).url;
+      await student.save();
+      return res.status(201).send("Student data saved successfully");
     });
-
-    if (existingStudent) {
-      res.send({ message: "Roll Number already exists" });
-    } else {
-      const student = new Student({
-        ...req.body,
-        school: req.body.adminID,
-        password: hashedPass,
-      });
-
-      let result = await student.save();
-
-      result.password = undefined;
-      res.send(result);
-    }
   } catch (err) {
-    res.status(500).json(err);
+    console.error(err);
+    res.status(500).send("Internal Server Error");
   }
 };
 
@@ -65,15 +111,9 @@ const studentLogIn = async (req, res) => {
 
 const getStudents = async (req, res) => {
   try {
-    let students = await Student.find({ school: req.params.id }).populate(
-      "sclassName",
-      "sclassName"
-    );
+    let students = await Student.find();
     if (students.length > 0) {
-      let modifiedStudents = students.map((student) => {
-        return { ...student._doc, password: undefined };
-      });
-      res.send(modifiedStudents);
+      res.send(students);
     } else {
       res.send({ message: "No students found" });
     }
