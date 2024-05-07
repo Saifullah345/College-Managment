@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const sessionSchema = new mongoose.Schema(
   {
-    session: { type: Number, required: true },
+    session: { type: String, required: true },
   },
   {
     timestamps: true,

@@ -38,6 +38,10 @@ const {
   updateNotice,
 } = require("../controllers/notice-controller.js");
 const {
+  programCreate,
+  allPrograms,
+} = require("../controllers/program-controller.js");
+const {
   provincesCreate,
   allProvinces,
 } = require("../controllers/province-controller.js");
@@ -187,5 +191,7 @@ router.get("/allTehsil", allTehsil);
 router.get("/allBoard", allBoard);
 router.post("/boardCreate", boardCreate);
 router.post("/sessionCreate", sessionCreate);
+router.post("/programCreate", programCreate);
+router.get("/allProgram", allPrograms);
 
 module.exports = router;

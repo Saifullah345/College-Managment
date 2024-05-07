@@ -11,6 +11,7 @@ import { Typography } from "@mui/material";
 import { AddBoard } from "./AddBoard.js";
 import { BoardTable } from "./boardTable.js";
 import { AddSession } from "./AddSession.js";
+import { AddProgram } from "./AddProgram.jsx";
 
 const AddAddress = () => {
   const [addProvinces, setAddProvinces] = useState(false);
@@ -132,13 +133,6 @@ const AddAddress = () => {
       console.log(error);
     }
   };
-  console.log(
-    district.length > 0 &&
-      district
-        ?.filter((val) => val?.provinceId?._id === provinceId)
-        ?.map((val) => val)
-  );
-  console.log(districtId);
 
   useEffect(() => {
     ViewProvinces();
@@ -191,6 +185,18 @@ const AddAddress = () => {
                 }}
               >
                 Session
+              </Typography>
+              <Typography
+                onClick={() => setActive("Program")}
+                sx={{
+                  fontSize: "18px",
+                  fontWeight: active === "Program" ? "600" : "300",
+                  textDecoration: active === "Program" ? "underline" : "",
+                  textUnderlineOffset: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                Program
               </Typography>
             </Box>
             {active === "Tehsil" ? (
@@ -270,8 +276,10 @@ const AddAddress = () => {
               </Box>
             ) : active === "Board" ? (
               <AddBoard setMessage={setMessage} setShowPopup={setShowPopup} />
-            ) : (
+            ) : active === "Session" ? (
               <AddSession setMessage={setMessage} setShowPopup={setShowPopup} />
+            ) : (
+              <AddProgram setMessage={setMessage} setShowPopup={setShowPopup} />
             )}
           </Box>
           {/* <hr
