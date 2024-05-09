@@ -2,27 +2,26 @@ import { Box, Button } from "@mui/material";
 import axios from "axios";
 import React, { useState } from "react";
 
-export const AddSession = ({ setMessage, setShowPopup }) => {
+export const AddProgram = ({ setMessage, setShowPopup }) => {
   const [data, setData] = useState({
-    session: "",
+    program: "",
   });
   const [loading, setloading] = useState(false);
   const Add = async () => {
     setloading(true);
     try {
       const result = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/sessionCreate`,
+        `${process.env.REACT_APP_BASE_URL}/programCreate`,
         data,
         {
           headers: { "Content-Type": "application/json" },
         }
       );
-      console.log(result);
       if (result.data) {
         setloading(false);
         console.log(result);
         setShowPopup(true);
-        sessionStorage.setItem("loader", true);
+        sessionStorage.setItem("loader", !sessionStorage.getItem("loader"));
         setMessage("Done Successfully");
       }
     } catch (error) {
@@ -35,17 +34,17 @@ export const AddSession = ({ setMessage, setShowPopup }) => {
     <div>
       {" "}
       <Box display="flex" flexDirection="column" gap={2} p={2}>
-        <h2>Session</h2>
+        <h2>Program</h2>
         <Box display={"flex"} width={"50%"} alignItems="center" gap={2}>
           <input
             className="registerInput"
             type="text"
-            placeholder="Add session"
-            value={data.session}
+            placeholder="Add program"
+            value={data.program}
             onChange={(e) => {
               setData((prev) => ({
                 ...prev,
-                session: e.target.value,
+                program: e.target.value,
               }));
             }}
             required

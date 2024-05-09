@@ -39,7 +39,7 @@ const ShowClasses = () => {
   }
 
   const [showPopup, setShowPopup] = useState(false);
-  const [message, setMessage] = useState("");
+  // const [message, setMessage] = useState("");
 
   const deleteHandler = (deleteID, address) => {
     // setMessage("Sorry the delete function has been disabled for now.");
@@ -135,7 +135,7 @@ const ShowClasses = () => {
         </>
       )}
       <Popup
-        message={message}
+        // message={message}
         setShowPopup={setShowPopup}
         showPopup={showPopup}
       />

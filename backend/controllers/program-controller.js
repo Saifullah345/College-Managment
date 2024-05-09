@@ -39,4 +39,22 @@ const allPrograms = async (req, res) => {
     res.status(500).json(err);
   }
 };
-module.exports = { programCreate, allPrograms };
+const deleteProgram = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const program = await Program.findById(id);
+
+    if (!program) {
+      return res.status(404).json({ error: "Program not found" });
+    }
+
+    await Program.findByIdAndDelete(id);
+
+    return res.send({ message: "Program deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+module.exports = { programCreate, allPrograms, deleteProgram };

@@ -11,6 +11,8 @@ const {
   boardCreate,
   allBoard,
   sessionCreate,
+  allSession,
+  deleteSession,
 } = require("../controllers/board-controller.js");
 
 const {
@@ -40,6 +42,7 @@ const {
 const {
   programCreate,
   allPrograms,
+  deleteProgram,
 } = require("../controllers/program-controller.js");
 const {
   provincesCreate,
@@ -190,8 +193,13 @@ router.post("/tehsilCreate", tehsilCreate);
 router.get("/allTehsil", allTehsil);
 router.get("/allBoard", allBoard);
 router.post("/boardCreate", boardCreate);
+//
 router.post("/sessionCreate", sessionCreate);
+router.get("/allSession", allSession);
+router.delete("/deleteSession/:id", deleteSession);
+//
 router.post("/programCreate", programCreate);
 router.get("/allProgram", allPrograms);
+router.delete("/deleteProgram/:id", deleteProgram);
 
 module.exports = router;

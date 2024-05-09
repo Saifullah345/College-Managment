@@ -66,4 +66,41 @@ const sessionCreate = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
-module.exports = { boardCreate, sessionCreate, allBoard };
+const allSession = async (req, res) => {
+  try {
+    let sessions = await Session.find();
+    if (sessions.length > 0) {
+      res.send(sessions);
+    } else {
+      res.send({ message: "No Sessions found" });
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+const deleteSession = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const session = await Session.findById(id);
+
+    if (!session) {
+      return res.status(404).json({ error: "Session not found" });
+    }
+
+    await Session.findByIdAndDelete(id);
+
+    return res.send({ message: "Session deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+module.exports = {
+  boardCreate,
+  sessionCreate,
+  allBoard,
+  allSession,
+  deleteSession,
+};

@@ -10,8 +10,10 @@ import { TehsilTable } from "./TehsilTable.js";
 import { Typography } from "@mui/material";
 import { AddBoard } from "./AddBoard.js";
 import { BoardTable } from "./boardTable.js";
-import { AddSession } from "./AddSession.js";
-import { AddProgram } from "./AddProgram.jsx";
+import { AddSession } from "./Session/AddSession.js";
+import { AddProgram } from "./Program/AddProgram.jsx";
+import { ProgramTable } from "./Program/ProgramTable.jsx";
+import { SessionTable } from "./Session/SessionTable.jsx";
 
 const AddAddress = () => {
   const [addProvinces, setAddProvinces] = useState(false);
@@ -27,6 +29,8 @@ const AddAddress = () => {
   const [viewTehsil, setViewTehsil] = useState([]);
   const [viewBoard, setViewBoard] = useState([]);
   const [active, setActive] = useState("Tehsil");
+  const [viewProgram, setViewProgram] = useState([]);
+  const [viewSession, setViewSession] = useState([]);
 
   const Add = async () => {
     setloading(true);
@@ -133,12 +137,46 @@ const AddAddress = () => {
       console.log(error);
     }
   };
+  const ViewProgram = async () => {
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/allProgram`,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (result.data) {
+        console.log(result);
+        setViewProgram(result.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const ViewSession = async () => {
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/allSession`,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (result.data) {
+        // console.log(result);
+        setViewSession(result.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     ViewProvinces();
     ViewTehsil();
     ViewDistrict();
     ViewBoard();
+    ViewProgram();
+    ViewSession();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionStorage.getItem("loader"), active, provinceId]);
   useEffect(() => {}, []);
@@ -295,6 +333,18 @@ const AddAddress = () => {
           <TehsilTable tehsil={viewTehsil} />
         ) : active === "Board" ? (
           <BoardTable board={viewBoard} />
+        ) : active === "Program" ? (
+          <ProgramTable
+            program={viewProgram}
+            setShowPopup={setShowPopup}
+            setMessage={setMessage}
+          />
+        ) : active === "Session" ? (
+          <SessionTable
+            session={viewSession}
+            setShowPopup={setShowPopup}
+            setMessage={setMessage}
+          />
         ) : null}
       </Box>
       <AddProvinces open={addProvinces} setOpen={setAddProvinces} />

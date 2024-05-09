@@ -18,7 +18,7 @@ export const AddBoard = ({ setMessage, setShowPopup }) => {
           headers: { "Content-Type": "application/json" },
         }
       );
-      console.log(result);
+      // console.log(result);
       if (result.data) {
         setloading(false);
         console.log(result);
