@@ -75,178 +75,155 @@ export const RelationInfo = ({ setStepper, formData, setFormData }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionStorage.getItem("loader")]);
   return (
-    <div>
-      <div className="flex justify-between">
-        <div className="formGroup">
-          <span className="registerTitle">Address Details</span>
-          <label>Provinces *</label>
-          <select
-            className="registerInput"
-            required
-            value={formData.provinces}
-            onChange={(e) => {
-              setFormData((prevState) => ({
-                ...prevState,
-                provinces: e.target.value,
-              }));
-            }}
-          >
-            <option value="">Select Province</option>
+    <div className="flex justify-between">
+      <div className="formGroup">
+        <span className="registerTitle">Address Details</span>
+        <label>Provinces *</label>
+        <select
+          className="registerInput"
+          value={formData.provinces}
+          onChange={(e) => {
+            setFormData((prevState) => ({
+              ...prevState,
+              provinces: e.target.value,
+            }));
+          }}
+        >
+          <option value="">Select Province</option>
 
-            {provinces.map((val) => (
-              <option value={val.province}>{val.province}</option>
+          {provinces.map((val) => (
+            <option value={val.province}>{val.province}</option>
+          ))}
+        </select>
+        <label>District *</label>
+        <select
+          className="registerInput"
+          value={formData.district}
+          onChange={(e) => {
+            setFormData((prevState) => ({
+              ...prevState,
+              district: e.target.value,
+            }));
+          }}
+        >
+          <option value="">Select District</option>
+
+          {district
+            ?.filter((val) => val?.provinceId?.province === formData?.provinces)
+            ?.map((val) => (
+              <option value={val.district}>{val.district}</option>
             ))}
-          </select>
-          <label>District *</label>
+        </select>
+        <div className="formGroup">
+          <label>Tehsil *</label>
           <select
             className="registerInput"
-            required
-            value={formData.district}
+            value={formData.tehsil}
             onChange={(e) => {
               setFormData((prevState) => ({
                 ...prevState,
-                district: e.target.value,
+                tehsil: e.target.value,
               }));
             }}
           >
-            <option value="">Select District</option>
-
-            {district
-              ?.filter(
-                (val) => val?.provinceId?.province === formData?.provinces
-              )
+            <option value="">Select Tehsil</option>
+            {viewTehsil
+              ?.filter((val) => val?.districtId.district === formData?.district)
               ?.map((val) => (
-                <option value={val.district}>{val.district}</option>
+                <option value={val.tehsil}>{val.tehsil}</option>
               ))}
           </select>
-          <div className="formGroup">
-            <label>Tehsil *</label>
-            <select
-              className="registerInput"
-              value={formData.tehsil}
-              onChange={(e) => {
-                setFormData((prevState) => ({
-                  ...prevState,
-                  tehsil: e.target.value,
-                }));
-              }}
-              required
-            >
-              <option value="">Select Tehsil</option>
-              {viewTehsil
-                ?.filter(
-                  (val) => val?.districtId.district === formData?.district
-                )
-                ?.map((val) => (
-                  <option value={val.tehsil}>{val.tehsil}</option>
-                ))}
-            </select>
 
-            {/* Candidate Postal Address */}
-            <label>Candidate Postal Address *</label>
-            <input
-              className="registerInput"
-              type="text"
-              placeholder="Enter Postal Address..."
-              value={formData.postalAddress}
-              onChange={(e) => {
-                setFormData((prevState) => ({
-                  ...prevState,
-                  postalAddress: e.target.value,
-                }));
-              }}
-              autoComplete="postal-address"
-              required
-            />
-          </div>
-          <label>Candidate Permanent Address *</label>
+          {/* Candidate Postal Address */}
+          <label>Candidate Postal Address *</label>
           <input
             className="registerInput"
             type="text"
-            placeholder="Enter Permanent Address..."
-            value={formData.permanentAddress}
+            placeholder="Enter Postal Address..."
+            value={formData.postalAddress}
             onChange={(e) => {
               setFormData((prevState) => ({
                 ...prevState,
-                permanentAddress: e.target.value,
+                postalAddress: e.target.value,
               }));
             }}
-            autoComplete="permanent-address"
-            required
+            autoComplete="postal-address"
           />
         </div>
-        {/* <div className="formGroup">
-                </div> */}
-        <div className="formGroup">
-          <span className="registerTitle">Reference Details</span>
-          {/* Name of reference */}
-          <label>Name of Reference *</label>
-          <input
-            className="registerInput"
-            type="text"
-            placeholder="Enter Name Reference..."
-            value={formData.nameOfReference}
-            onChange={(e) => {
-              setFormData((prevState) => ({
-                ...prevState,
-                nameOfReference: e.target.value,
-              }));
-            }}
-            required
-          />
-          <label>Number of References *</label>
-          <input
-            className="registerInput"
-            type="number"
-            placeholder="Enter Number of References"
-            value={formData.numberOfReference}
-            onChange={(e) => {
-              setFormData((prevState) => ({
-                ...prevState,
-                numberOfReference: e.target.value,
-              }));
-            }}
-            required
-          />
-          {/* Relation */}
-          <label>Relation *</label>
-          <input
-            className="registerInput"
-            type="text"
-            placeholder="Enter Relation"
-            value={formData.relationWithReference}
-            onChange={(e) => {
-              setFormData((prevState) => ({
-                ...prevState,
-                relationWithReference: e.target.value,
-              }));
-            }}
-            required
-          />
-
-          {/* Other details regarding the reference */}
-          <label>Other Details Regarding the Reference</label>
-          <textarea
-            className="registerInput"
-            placeholder="Enter other details..."
-            value={formData.otherDetailWithReference}
-            onChange={(e) => {
-              setFormData((prevState) => ({
-                ...prevState,
-                otherDetailWithReference: e.target.value,
-              }));
-            }}
-          />
-        </div>
+        <label>Candidate Permanent Address *</label>
+        <input
+          className="registerInput"
+          type="text"
+          placeholder="Enter Permanent Address..."
+          value={formData.permanentAddress}
+          onChange={(e) => {
+            setFormData((prevState) => ({
+              ...prevState,
+              permanentAddress: e.target.value,
+            }));
+          }}
+          autoComplete="permanent-address"
+        />
       </div>
+      {/* <div className="formGroup">
+                </div> */}
+      <div className="formGroup">
+        <span className="registerTitle">Reference Details</span>
+        {/* Name of reference */}
+        <label>Name of Reference *</label>
+        <input
+          className="registerInput"
+          type="text"
+          placeholder="Enter Name Reference..."
+          value={formData.nameOfReference}
+          onChange={(e) => {
+            setFormData((prevState) => ({
+              ...prevState,
+              nameOfReference: e.target.value,
+            }));
+          }}
+        />
+        <label>Number of References *</label>
+        <input
+          className="registerInput"
+          type="number"
+          placeholder="Enter Number of References"
+          value={formData.numberOfReference}
+          onChange={(e) => {
+            setFormData((prevState) => ({
+              ...prevState,
+              numberOfReference: e.target.value,
+            }));
+          }}
+        />
+        {/* Relation */}
+        <label>Relation *</label>
+        <input
+          className="registerInput"
+          type="text"
+          placeholder="Enter Relation"
+          value={formData.relationWithReference}
+          onChange={(e) => {
+            setFormData((prevState) => ({
+              ...prevState,
+              relationWithReference: e.target.value,
+            }));
+          }}
+        />
 
-      <div className="flex justify-between">
-        <button className="registerButton" onClick={() => setStepper(1)}>
-          Previous Step
-        </button>
-        <button className="registerButton" onClick={() => setStepper(4)}>
-          Next Step
-        </button>
+        {/* Other details regarding the reference */}
+        <label>Other Details Regarding the Reference</label>
+        <textarea
+          className="registerInput"
+          placeholder="Enter other details..."
+          value={formData.otherDetailWithReference}
+          onChange={(e) => {
+            setFormData((prevState) => ({
+              ...prevState,
+              otherDetailWithReference: e.target.value,
+            }));
+          }}
+        />
       </div>
     </div>
   );

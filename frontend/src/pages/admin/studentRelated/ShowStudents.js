@@ -224,6 +224,7 @@ const ShowStudents = () => {
               >
                 Add Students
               </GreenButton>
+              <SpeedDialTemplate actions={actions} />
             </Box>
           ) : (
             <Paper sx={{ width: "100%", overflow: "hidden" }}>
@@ -234,6 +235,7 @@ const ShowStudents = () => {
                   rows={studentRows}
                 />
               )}
+
               <SpeedDialTemplate actions={actions} />
             </Paper>
           )}

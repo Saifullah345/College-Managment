@@ -10,6 +10,9 @@ const studentSchema = new mongoose.Schema({
   citizenship: {
     type: String,
   },
+  session: {
+    type: String,
+  },
   cnic: {
     type: Number,
   },

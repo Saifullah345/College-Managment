@@ -41,6 +41,24 @@ const allBoard = async (req, res) => {
     res.status(500).json(err);
   }
 };
+const deleteBoard = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const session = await Board.findById(id);
+
+    if (!session) {
+      return res.status(404).json({ error: "Board not found" });
+    }
+
+    await Board.findByIdAndDelete(id);
+
+    return res.send({ message: "Board deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
 const sessionCreate = async (req, res) => {
   try {
     const { session } = req.body;
@@ -103,4 +121,5 @@ module.exports = {
   allBoard,
   allSession,
   deleteSession,
+  deleteBoard,
 };

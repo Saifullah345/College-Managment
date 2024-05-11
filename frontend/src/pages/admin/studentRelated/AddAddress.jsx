@@ -52,7 +52,7 @@ const AddAddress = () => {
         setloading(false);
         console.log(result);
         setShowPopup(true);
-        sessionStorage.setItem("loader", true);
+        sessionStorage.setItem("loader", !sessionStorage.getItem("loader"));
         setMessage("Done Successfully");
       }
     } catch (error) {
@@ -330,9 +330,17 @@ const AddAddress = () => {
         /> */}
         </Box>
         {active === "Tehsil" ? (
-          <TehsilTable tehsil={viewTehsil} />
+          <TehsilTable
+            tehsil={viewTehsil}
+            setShowPopup={setShowPopup}
+            setMessage={setMessage}
+          />
         ) : active === "Board" ? (
-          <BoardTable board={viewBoard} />
+          <BoardTable
+            board={viewBoard}
+            setShowPopup={setShowPopup}
+            setMessage={setMessage}
+          />
         ) : active === "Program" ? (
           <ProgramTable
             program={viewProgram}

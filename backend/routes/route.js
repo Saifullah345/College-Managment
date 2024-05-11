@@ -12,6 +12,7 @@ const {
   allBoard,
   sessionCreate,
   allSession,
+  deleteBoard,
   deleteSession,
 } = require("../controllers/board-controller.js");
 
@@ -88,6 +89,7 @@ const {
 const {
   tehsilCreate,
   allTehsil,
+  deleteTehsil,
 } = require("../controllers/tehsil-controller.js");
 
 // Admin
@@ -189,10 +191,14 @@ router.post("/provincesCreate", provincesCreate);
 router.get("/allProvinces", allProvinces);
 router.post("/districtCreate", districtCreate);
 router.get("/allDistrict", allDistrict);
+//
 router.post("/tehsilCreate", tehsilCreate);
 router.get("/allTehsil", allTehsil);
+router.delete("/deleteTehsil/:id", deleteTehsil);
+//
 router.get("/allBoard", allBoard);
 router.post("/boardCreate", boardCreate);
+router.delete("/deleteBoard/:id", deleteBoard);
 //
 router.post("/sessionCreate", sessionCreate);
 router.get("/allSession", allSession);

@@ -62,10 +62,16 @@ a {
 }
 
 .registerForm {
-  margin-top: -50px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+.menu-card {
+  transition: background-color 0.3s ease; /* Smooth transition for background color change */
+}
+
+.menu-card:hover {
+  background-color: #f0f0f0; /* New background color on hover */
 }
 
 .registerForm > label {
@@ -75,7 +81,7 @@ a {
 .formGroup {
   display: flex;
   flex-direction: column;
-  gap: "2px";
+  gap: "10px" !important;
   width: 100%;
 }
 .registerInput {

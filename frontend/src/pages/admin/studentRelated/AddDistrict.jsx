@@ -30,7 +30,7 @@ export const AddDistrict = ({ open, setOpen }) => {
       if (result.data) {
         setloading(false);
         // console.log(result);
-        sessionStorage.setItem("loader", true);
+        sessionStorage.setItem("loader", !sessionStorage.getItem("loader"));
         setShowPopup(true);
         setMessage("Done Successfully");
         setOpen(false);

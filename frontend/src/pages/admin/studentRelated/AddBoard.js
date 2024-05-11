@@ -23,7 +23,7 @@ export const AddBoard = ({ setMessage, setShowPopup }) => {
         setloading(false);
         console.log(result);
         setShowPopup(true);
-        sessionStorage.setItem("loader", true);
+        sessionStorage.setItem("loader", !sessionStorage.getItem("loader"));
         setMessage("Done Successfully");
       }
     } catch (error) {

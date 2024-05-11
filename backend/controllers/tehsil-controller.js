@@ -47,4 +47,22 @@ const allTehsil = async (req, res) => {
     res.status(500).json(err);
   }
 };
-module.exports = { tehsilCreate, allTehsil };
+const deleteTehsil = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const session = await Tehsil.findById(id);
+
+    if (!session) {
+      return res.status(404).json({ error: "Tehsil not found" });
+    }
+
+    await Tehsil.findByIdAndDelete(id);
+
+    return res.send({ message: "Tehsil deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+module.exports = { tehsilCreate, allTehsil, deleteTehsil };

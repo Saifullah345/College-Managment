@@ -17,7 +17,7 @@ import SideBar from "./SideBar";
 import AdminProfile from "./AdminProfile";
 import AdminHomePage from "./AdminHomePage";
 
-import AddStudent from "./studentRelated/AddStudent";
+import AddStudent from "./studentRelated/AddStudent/AddStudent";
 import SeeComplains from "./studentRelated/SeeComplains";
 import ShowStudents from "./studentRelated/ShowStudents";
 import StudentAttendance from "./studentRelated/StudentAttendance";
@@ -43,6 +43,7 @@ import ClassDetails from "./classRelated/ClassDetails";
 import ShowClasses from "./classRelated/ShowClasses";
 import AccountMenu from "../../components/AccountMenu";
 import AddAddress from "./studentRelated/AddAddress";
+import { Student } from "./studentRelated";
 
 const AdminDashboard = () => {
   const [open, setOpen] = useState(false);
@@ -148,7 +149,7 @@ const AdminDashboard = () => {
               path="/Admin/addstudents"
               element={<AddStudent situation="Student" />}
             />
-            <Route path="/Admin/students" element={<ShowStudents />} />
+            <Route path="/Admin/students" element={<Student />} />
             <Route
               path="/Admin/students/student/:id"
               element={<ViewStudent />}
