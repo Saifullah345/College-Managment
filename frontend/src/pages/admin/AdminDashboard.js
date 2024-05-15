@@ -44,6 +44,7 @@ import ShowClasses from "./classRelated/ShowClasses";
 import AccountMenu from "../../components/AccountMenu";
 import AddAddress from "./studentRelated/AddAddress";
 import { Student } from "./studentRelated";
+import { AddFee } from "./FeeRelated/AddFee";
 
 const AdminDashboard = () => {
   const [open, setOpen] = useState(false);
@@ -104,6 +105,7 @@ const AdminDashboard = () => {
             <Route path="/Admin/dashboard" element={<AdminHomePage />} />
             <Route path="/Admin/profile" element={<AdminProfile />} />
             <Route path="/Admin/complains" element={<SeeComplains />} />
+            <Route path="/Admin/fee" element={<AddFee />} />
 
             {/* Notice */}
             <Route path="/Admin/addnotice" element={<AddNotice />} />

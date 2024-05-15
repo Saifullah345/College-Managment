@@ -155,8 +155,6 @@ export const AddStudent = ({ setActive }) => {
                         {val.program}
                       </option>
                     ))}
-
-                    {/* Add more options as needed */}
                   </select>
                 </div>
                 <div className="formGroup">

@@ -49,6 +49,18 @@ const SideBar = () => {
           </ListItemIcon>
           <ListItemText primary="Classes" />
         </ListItemButton>
+        <ListItemButton component={Link} to="/Admin/fee">
+          <ListItemIcon>
+            <ClassOutlinedIcon
+              color={
+                location.pathname.startsWith("/Admin/fee")
+                  ? "primary"
+                  : "inherit"
+              }
+            />
+          </ListItemIcon>
+          <ListItemText primary="Fee" />
+        </ListItemButton>
         <ListItemButton component={Link} to="/Admin/subjects">
           <ListItemIcon>
             <AssignmentIcon
