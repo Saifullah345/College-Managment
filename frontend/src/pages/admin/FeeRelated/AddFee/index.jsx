@@ -80,7 +80,6 @@ export const AddFee = () => {
       sclass: classes,
       ...addFee,
     };
-    console.log(data);
     try {
       const result = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/addFee`,
@@ -132,11 +131,12 @@ export const AddFee = () => {
               required
             >
               <option value="">Select Session</option>
-              {viewSession.map((val) => (
-                <option key={val.session} value={val._id}>
-                  {val.session}
-                </option>
-              ))}
+              {viewSession.length > 0 &&
+                viewSession?.map((val) => (
+                  <option key={val.session} value={val._id}>
+                    {val.session}
+                  </option>
+                ))}
 
               {/* Add more options as needed */}
             </select>
@@ -151,11 +151,12 @@ export const AddFee = () => {
               required
             >
               <option value="">Select Class</option>
-              {viewClasses.map((val) => (
-                <option key={val.sclassName} value={val._id}>
-                  {val.sclassName}
-                </option>
-              ))}
+              {viewClasses.length < 0 &&
+                viewClasses?.map((val) => (
+                  <option key={val.sclassName} value={val._id}>
+                    {val.sclassName}
+                  </option>
+                ))}
 
               {/* Add more options as needed */}
             </select>
