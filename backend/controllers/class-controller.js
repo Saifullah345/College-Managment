@@ -31,7 +31,7 @@ const sclassCreate = async (req, res) => {
 
 const sclassList = async (req, res) => {
   try {
-    let sclasses = await Sclass.find({ school: req.params.id });
+    let sclasses = await Sclass.find();
     if (sclasses.length > 0) {
       res.send(sclasses);
     } else {

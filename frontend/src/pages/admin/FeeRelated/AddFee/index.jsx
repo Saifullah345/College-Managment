@@ -97,7 +97,7 @@ export const AddFee = () => {
         sessionStorage.setItem("loader", !sessionStorage.getItem("loader"));
         setMessage("Done Successfully");
         setTimeout(() => {
-          navigate("Admin/fee");
+          navigate("/Admin/fee");
         }, 1000);
       }
     } catch (error) {

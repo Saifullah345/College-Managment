@@ -12,7 +12,7 @@ const AddFee = async (req, res) => {
 };
 const getAllFee = async (req, res) => {
   try {
-    const fees = await Fee.findOne({ session: req.params.id })
+    const fees = await Fee.find({ session: req.params.id })
       .populate("session")
       .populate("sclass");
     if (fees) {

@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Backdrop, Box, CircularProgress } from "@mui/material";
 
 export const ViewFee = () => {
-  const [viewFee, setViewFee] = useState({});
+  const [viewFee, setViewFee] = useState([]);
   const [message, setMessage] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [viewSession, setViewSession] = useState([]);
@@ -102,7 +102,7 @@ export const ViewFee = () => {
           <CircularProgress color="inherit" />
           Please Wait
         </Backdrop>
-        {Object.keys(viewFee).length > 0 ? (
+        {viewFee.length > 0 ? (
           <FeeTable
             session={viewFee}
             setShowPopup={setShowPopup}

@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { StyledTableCell, StyledTableRow } from "../../../../components/styles";
 
-export const FeeTable = ({ session, setShowPopup, setMessage }) => {
+export const FeeTable = ({ session }) => {
   const fees = Object.keys(initialFeeState);
 
   // const deleteHandler = async (deleteID, address) => {
@@ -54,7 +54,9 @@ export const FeeTable = ({ session, setShowPopup, setMessage }) => {
             <TableHead>
               <StyledTableRow>
                 <StyledTableCell>Fees</StyledTableCell>
-                <StyledTableCell>{session?.sclass?.sclassName}</StyledTableCell>
+                {session.map((val) => (
+                  <StyledTableCell>{val.sclass.sclassName}</StyledTableCell>
+                ))}
               </StyledTableRow>
             </TableHead>
             <TableBody>
@@ -63,9 +65,11 @@ export const FeeTable = ({ session, setShowPopup, setMessage }) => {
                   <StyledTableCell className="capitalize">
                     {fee}: {initialFeeState[fee]}
                   </StyledTableCell>
-                  <StyledTableCell className="capitalize">
-                    {session[fee]}
-                  </StyledTableCell>
+                  {session.map((val) => (
+                    <StyledTableCell key={val._id + fee} className="capitalize">
+                      {val[fee] ?? "-"}
+                    </StyledTableCell>
+                  ))}
                 </TableRow>
               ))}
             </TableBody>
