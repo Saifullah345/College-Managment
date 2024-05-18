@@ -6,7 +6,10 @@ const feeSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "session",
     },
-    sclass: { type: mongoose.Schema.Types.ObjectId, ref: "sclass" },
+    sclass: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "sclass",
+    },
     admissionFee: {
       type: String,
     },
