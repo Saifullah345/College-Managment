@@ -11,6 +11,13 @@ a {
   display: flex;
   gap: 5rem;
 }
+.flex-col {
+  flex-direction: column;
+  gap: 1rem;
+}
+.capitalize {
+  text-transform: capitalize;
+}
 .justify-between {
   justify-content: space-between;
 }

@@ -179,7 +179,6 @@ const AddAddress = () => {
     ViewSession();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionStorage.getItem("loader"), active, provinceId]);
-  useEffect(() => {}, []);
 
   return (
     <div className="register-form">

@@ -5,6 +5,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import Popup from "../../../../components/Popup";
 import { Box, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export const AddFee = () => {
   const [addFee, setAddFee] = useState(initialFeeState);
@@ -15,8 +16,9 @@ export const AddFee = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
-  const [loading, setloading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const adminID = currentUser._id;
+  const navigate = useNavigate();
 
   const handleFeeChange = (e) => {
     const { name, value } = e.target;
@@ -72,10 +74,10 @@ export const AddFee = () => {
     }
   };
   const Add = async () => {
-    setloading(true);
+    setLoading(true);
     const data = {
       session,
-      class: classes,
+      sclass: classes,
       ...addFee,
     };
     console.log(data);
@@ -89,14 +91,17 @@ export const AddFee = () => {
       );
       console.log(result);
       if (result.data) {
-        setloading(false);
+        setLoading(false);
         console.log(result);
         setShowPopup(true);
         sessionStorage.setItem("loader", !sessionStorage.getItem("loader"));
         setMessage("Done Successfully");
+        setTimeout(() => {
+          navigate("Admin/fee");
+        }, 1000);
       }
     } catch (error) {
-      setloading(false);
+      setLoading(false);
       setShowPopup(true);
       setMessage(error?.response?.data?.error);
     }
@@ -128,7 +133,7 @@ export const AddFee = () => {
             >
               <option value="">Select Session</option>
               {viewSession.map((val) => (
-                <option key={val.session} value={val.session}>
+                <option key={val.session} value={val._id}>
                   {val.session}
                 </option>
               ))}

@@ -210,6 +210,6 @@ router.get("/allProgram", allPrograms);
 router.delete("/deleteProgram/:id", deleteProgram);
 
 router.post("/addFee", AddFee);
-router.get("/allFee", getAllFee);
+router.get("/allFee/:id", getAllFee);
 
 module.exports = router;

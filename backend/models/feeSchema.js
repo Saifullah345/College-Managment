@@ -3,12 +3,10 @@ const mongoose = require("mongoose");
 const feeSchema = new mongoose.Schema(
   {
     session: {
-      type: String,
-    },
-    class: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "sclass",
+      ref: "session",
     },
+    sclass: { type: mongoose.Schema.Types.ObjectId, ref: "sclass" },
     admissionFee: {
       type: String,
     },

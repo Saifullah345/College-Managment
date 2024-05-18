@@ -19,7 +19,7 @@ import AdminHomePage from "./AdminHomePage";
 
 import AddStudent from "./studentRelated/AddStudent/AddStudent";
 import SeeComplains from "./studentRelated/SeeComplains";
-import ShowStudents from "./studentRelated/ShowStudents";
+// import ShowStudents from "./studentRelated/ShowStudents";
 import StudentAttendance from "./studentRelated/StudentAttendance";
 import StudentExamMarks from "./studentRelated/StudentExamMarks";
 import ViewStudent from "./studentRelated/ViewStudent";
@@ -45,6 +45,7 @@ import AccountMenu from "../../components/AccountMenu";
 import AddAddress from "./studentRelated/AddAddress";
 import { Student } from "./studentRelated";
 import { AddFee } from "./FeeRelated/AddFee";
+import { ViewFee } from "./FeeRelated/ViewFee";
 
 const AdminDashboard = () => {
   const [open, setOpen] = useState(false);
@@ -105,7 +106,8 @@ const AdminDashboard = () => {
             <Route path="/Admin/dashboard" element={<AdminHomePage />} />
             <Route path="/Admin/profile" element={<AdminProfile />} />
             <Route path="/Admin/complains" element={<SeeComplains />} />
-            <Route path="/Admin/fee" element={<AddFee />} />
+            <Route path="/Admin/addFee" element={<AddFee />} />
+            <Route path="/Admin/fee" element={<ViewFee />} />
 
             {/* Notice */}
             <Route path="/Admin/addnotice" element={<AddNotice />} />

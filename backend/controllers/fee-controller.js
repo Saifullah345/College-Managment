@@ -10,17 +10,19 @@ const AddFee = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
-const getAllFee = async () => {
+const getAllFee = async (req, res) => {
   try {
-    const fees = await Fee.findOne();
-    if (fees.length > 0) {
-      return fees;
+    const fees = await Fee.findOne({ session: req.params.id })
+      .populate("session")
+      .populate("sclass");
+    if (fees) {
+      return res.send(fees);
     } else {
-      res.send({ message: "No Fees found" });
+      return res.send({ message: "No Fees found" });
     }
   } catch (error) {
     console.error("Error retrieving fees:", error);
-    throw error;
+    return res.send(error);
   }
 };
 module.exports = { AddFee, getAllFee };
