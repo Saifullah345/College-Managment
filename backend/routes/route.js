@@ -166,7 +166,7 @@ router.get("/ComplainList/:id", complainList);
 
 router.post("/SclassCreate", sclassCreate);
 
-router.get("/SclassList/:id", sclassList);
+router.get("/SclassList", sclassList);
 router.get("/Sclass/:id", getSclassDetail);
 
 router.get("/Sclass/Students/:id", getSclassStudents);

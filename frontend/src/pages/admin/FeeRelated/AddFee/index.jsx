@@ -13,11 +13,11 @@ export const AddFee = () => {
   const [viewClasses, setViewClasses] = useState([]);
   const [session, setSession] = useState("");
   const [classes, setClasses] = useState("");
-  const { currentUser } = useSelector((state) => state.user);
+  // const { currentUser } = useSelector((state) => state.user);
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const adminID = currentUser._id;
+  // const adminID = currentUser._id;
   const navigate = useNavigate();
 
   const handleFeeChange = (e) => {
@@ -47,9 +47,9 @@ export const AddFee = () => {
           headers: { "Content-Type": "application/json" },
         }
       );
-      console.log(result);
+      // console.log(result);
       if (result.data) {
-        console.log(result);
+        // console.log(result);
         setViewSession(result.data);
       }
     } catch (error) {
@@ -59,7 +59,7 @@ export const AddFee = () => {
   const ViewClasses = async () => {
     try {
       const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/SclassList/${adminID}`,
+        `${process.env.REACT_APP_BASE_URL}/SclassList`,
         {
           headers: { "Content-Type": "application/json" },
         }
@@ -111,6 +111,7 @@ export const AddFee = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionStorage.getItem("loader")]);
 
+  console.log(viewClasses);
   return (
     <div className="register-form">
       <span className="registerTitle">Add Fee</span>
@@ -151,7 +152,7 @@ export const AddFee = () => {
               required
             >
               <option value="">Select Class</option>
-              {viewClasses.length < 0 &&
+              {viewClasses.length > 0 &&
                 viewClasses?.map((val) => (
                   <option key={val.sclassName} value={val._id}>
                     {val.sclassName}
