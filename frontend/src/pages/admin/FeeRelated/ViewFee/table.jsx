@@ -11,8 +11,20 @@ import {
 import { StyledTableCell, StyledTableRow } from "../../../../components/styles";
 
 export const FeeTable = ({ session }) => {
-  const fees = Object.keys(initialFeeState);
+  const fees = [...Object.keys(initialFeeState), "Total"];
+  const calculateTotal = (val) => {
+    console.log("Value object:", val); // Log the value object to check its content
+    return Object.keys(initialFeeState).reduce(
+      (sum, key) => sum + (Number(val[key]) || 0),
+      0
+    );
+  };
 
+  const formatNumber = (value) => {
+    const number = Number(value);
+
+    return number;
+  };
   // const deleteHandler = async (deleteID, address) => {
   //   try {
   //     const result = await axios.delete(
@@ -67,7 +79,9 @@ export const FeeTable = ({ session }) => {
                   </StyledTableCell>
                   {session.map((val) => (
                     <StyledTableCell key={val._id + fee} className="capitalize">
-                      {val[fee] ?? "-"}
+                      {fee !== "Total"
+                        ? formatNumber(val[fee] ?? 0)
+                        : formatNumber(calculateTotal(val))}
                     </StyledTableCell>
                   ))}
                 </TableRow>
