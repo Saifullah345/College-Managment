@@ -5,13 +5,15 @@ import {
   Table,
   TableBody,
   TableContainer,
+  TableFooter,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
 import { StyledTableCell, StyledTableRow } from "../../../../components/styles";
 
 export const FeeTable = ({ session }) => {
-  const fees = [...Object.keys(initialFeeState), "Total"];
+  const fees = [...Object.keys(initialFeeState), "SubTotal"];
   const calculateTotal = (val) => {
     console.log("Value object:", val); // Log the value object to check its content
     return Object.keys(initialFeeState).reduce(
@@ -22,8 +24,10 @@ export const FeeTable = ({ session }) => {
 
   const formatNumber = (value) => {
     const number = Number(value);
-
     return number;
+  };
+  const calculateGrandTotal = () => {
+    return session.reduce((sum, val) => sum + calculateTotal(val), 0);
   };
   // const deleteHandler = async (deleteID, address) => {
   //   try {
@@ -79,7 +83,7 @@ export const FeeTable = ({ session }) => {
                   </StyledTableCell>
                   {session.map((val) => (
                     <StyledTableCell key={val._id + fee} className="capitalize">
-                      {fee !== "Total"
+                      {fee !== "SubTotal"
                         ? formatNumber(val[fee] ?? 0)
                         : formatNumber(calculateTotal(val))}
                     </StyledTableCell>
@@ -87,6 +91,15 @@ export const FeeTable = ({ session }) => {
                 </TableRow>
               ))}
             </TableBody>
+            <TableFooter>
+              <StyledTableRow>
+                <StyledTableCell colSpan={session.length + 1} align="right">
+                  <Typography fontWeight={"600"}>
+                    Grand Total: {formatNumber(calculateGrandTotal())}
+                  </Typography>
+                </StyledTableCell>
+              </StyledTableRow>
+            </TableFooter>
           </Table>
         </TableContainer>
       ) : null}
