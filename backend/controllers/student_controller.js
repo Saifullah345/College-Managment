@@ -46,7 +46,6 @@ const studentRegister = async (req, res) => {
   try {
     upload(req, res, async (error) => {
       if (error) {
-        console.log(req.files["studentProfile"]);
         return res.status(400).json({ error: error.message });
       } else if (
         !req.files["idCardFront"] ||
@@ -54,7 +53,6 @@ const studentRegister = async (req, res) => {
         !req.files["MetricDMC"] ||
         !req.files["studentProfile"]
       ) {
-        console.log(req.files["studentProfile"]);
         return res.status(400).json({ error: "File(s) missing" });
       }
       // console.log(await driveHandlers.uploadImage(req.files["idCardFront"][0]));

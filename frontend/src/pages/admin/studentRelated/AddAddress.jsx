@@ -14,6 +14,7 @@ import { AddSession } from "./Session/AddSession.js";
 import { AddProgram } from "./Program/AddProgram.jsx";
 import { ProgramTable } from "./Program/ProgramTable.jsx";
 import { SessionTable } from "./Session/SessionTable.jsx";
+import { Institute } from "./Institute/index.jsx";
 
 const AddAddress = () => {
   const [addProvinces, setAddProvinces] = useState(false);
@@ -235,6 +236,18 @@ const AddAddress = () => {
               >
                 Program
               </Typography>
+              <Typography
+                onClick={() => setActive("Institute")}
+                sx={{
+                  fontSize: "18px",
+                  fontWeight: active === "Institute" ? "600" : "300",
+                  textDecoration: active === "Institute" ? "underline" : "",
+                  textUnderlineOffset: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                Institute
+              </Typography>
             </Box>
             {active === "Tehsil" ? (
               <Box display="flex" flexDirection={"column"} gap={2}>
@@ -315,9 +328,9 @@ const AddAddress = () => {
               <AddBoard setMessage={setMessage} setShowPopup={setShowPopup} />
             ) : active === "Session" ? (
               <AddSession setMessage={setMessage} setShowPopup={setShowPopup} />
-            ) : (
+            ) : active === "Program" ? (
               <AddProgram setMessage={setMessage} setShowPopup={setShowPopup} />
-            )}
+            ) : null}
           </Box>
           {/* <hr
           style={{
@@ -352,6 +365,8 @@ const AddAddress = () => {
             setShowPopup={setShowPopup}
             setMessage={setMessage}
           />
+        ) : active === "Institute" ? (
+          <Institute setMessage={setMessage} setShowPopup={setShowPopup} />
         ) : null}
       </Box>
       <AddProvinces open={addProvinces} setOpen={setAddProvinces} />

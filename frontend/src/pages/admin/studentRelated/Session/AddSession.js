@@ -6,9 +6,9 @@ export const AddSession = ({ setMessage, setShowPopup }) => {
   const [data, setData] = useState({
     session: "",
   });
-  const [loading, setloading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const Add = async () => {
-    setloading(true);
+    setLoading(true);
     try {
       const result = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/sessionCreate`,
@@ -19,14 +19,14 @@ export const AddSession = ({ setMessage, setShowPopup }) => {
       );
       console.log(result);
       if (result.data) {
-        setloading(false);
+        setLoading(false);
         console.log(result);
         setShowPopup(true);
         sessionStorage.setItem("loader", !sessionStorage.getItem("loader"));
         setMessage("Done Successfully");
       }
     } catch (error) {
-      setloading(false);
+      setLoading(false);
       setShowPopup(true);
       setMessage(error?.response?.data?.error);
     }

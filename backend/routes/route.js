@@ -33,6 +33,11 @@ const {
   allDistrict,
 } = require("../controllers/district-controller.js");
 const { AddFee, getAllFee } = require("../controllers/fee-controller.js");
+const {
+  AddInstitute,
+  getAllInstitute,
+  updateInstitute,
+} = require("../controllers/institute-controller.js");
 
 const {
   noticeCreate,
@@ -211,5 +216,9 @@ router.delete("/deleteProgram/:id", deleteProgram);
 
 router.post("/addFee", AddFee);
 router.get("/allFee/:id", getAllFee);
+
+router.post("/addInstitute", AddInstitute);
+router.get("/allInstitute", getAllInstitute);
+router.post("/updateInstitute/:id", updateInstitute);
 
 module.exports = router;
