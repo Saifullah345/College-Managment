@@ -31,6 +31,12 @@ const studentSchema = new mongoose.Schema({
   program: {
     type: String,
   },
+  gender: {
+    type: String,
+  },
+  enrollmentNo: {
+    type: String,
+  },
   board: {
     type: String,
   },

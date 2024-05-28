@@ -12,12 +12,14 @@ export const AddStudent = ({ setActive }) => {
     name: "",
     fatherName: "",
     cnic: "",
+    enrollmentNo: "",
     dob: "",
     religion: "",
     mobileNumber: "",
     whatsAppNumber: "",
     program: "",
     board: "",
+    gender: "",
     serialNumber: "",
     rollNumber: "",
     provinces: "",
@@ -180,6 +182,19 @@ export const AddStudent = ({ setActive }) => {
                     {/* Add more options as needed */}
                   </select>
                 </div>
+                <input
+                  className="registerInput"
+                  type="text"
+                  placeholder="Enrollment No"
+                  value={formData.enrollmentNo}
+                  onChange={(e) => {
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      enrollmentNo: e.target.value,
+                    }));
+                  }}
+                  autoComplete="enrollmentNo"
+                />
                 <button
                   className="registerButton"
                   onClick={() => setShow(true)}

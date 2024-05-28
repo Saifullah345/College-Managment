@@ -67,7 +67,9 @@ export const PersonalInfo = ({ formData, setFormData }) => {
                 }));
               }}
             >
-              <option value="">Select Country of Citizenship</option>
+              <option value="" disabled>
+                Select Country of Citizenship
+              </option>
               <option value="US">Country: United States</option>
               <option value="UK">Country: United Kingdom</option>
               <option value="CA">Country: Canada</option>
@@ -107,6 +109,27 @@ export const PersonalInfo = ({ formData, setFormData }) => {
         </div>
 
         <div className="flex justify-between">
+          <div className="formGroup">
+            <label>Gender *</label>
+            <select
+              className="registerInput"
+              value={formData.gender}
+              onChange={(e) => {
+                setFormData((prevState) => ({
+                  ...prevState,
+                  gender: e.target.value,
+                }));
+              }}
+            >
+              <option value="" disabled>
+                Select Gender
+              </option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+
+              {/* Add more options as needed */}
+            </select>
+          </div>
           <div className="formGroup">
             <label>Mobile Number *</label>
             <input

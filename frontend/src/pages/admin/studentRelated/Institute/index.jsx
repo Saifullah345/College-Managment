@@ -72,7 +72,6 @@ export const Institute = ({ setShowPopup, setMessage }) => {
       console.log(error);
     }
   };
-  console.log(filePreview);
   const handleFileChange = (e) => {
     const file = e.target.files[0]; // Get the selected file
     if (file) {
