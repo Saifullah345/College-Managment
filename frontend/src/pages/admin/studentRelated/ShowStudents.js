@@ -3,13 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getAllStudents } from "../../../redux/studentRelated/studentHandle";
 // import { deleteUser } from "../../../redux/userRelated/userHandle";
-import { Paper, Box, IconButton } from "@mui/material";
+import { Paper, Box } from "@mui/material";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
-import {
-  BlackButton,
-  BlueButton,
-  GreenButton,
-} from "../../../components/buttonStyles";
+import { BlackButton, GreenButton } from "../../../components/buttonStyles";
 import TableTemplate from "../../../components/TableTemplate";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import SpeedDialTemplate from "../../../components/SpeedDialTemplate";
@@ -25,6 +21,8 @@ import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
 import Popup from "../../../components/Popup";
+import { getAllSclasses } from "../../../redux/sclassRelated/sclassHandle";
+import axios from "axios";
 
 const ShowStudents = () => {
   const navigate = useNavigate();
@@ -32,11 +30,15 @@ const ShowStudents = () => {
   const { studentsList, loading, error, response } = useSelector(
     (state) => state.student
   );
+  const { sclassesList } = useSelector((state) => state.sclass);
   const { currentUser } = useSelector((state) => state.user);
-
   useEffect(() => {
     dispatch(getAllStudents(currentUser._id));
   }, [currentUser._id, dispatch]);
+
+  useEffect(() => {
+    dispatch(getAllSclasses("Sclass"));
+  }, [dispatch]);
 
   if (error) {
     console.log(error);
@@ -66,6 +68,30 @@ const ShowStudents = () => {
     { id: "address", label: "Address", minWidth: 170 },
   ];
 
+  const Update = async (classId, sclassName) => {
+    try {
+      const result = await axios.put(
+        `${process.env.REACT_APP_BASE_URL}/studentClass/${classId}`,
+        {
+          sclassName,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      // console.log(result);
+      if (result.data) {
+        console.log(result);
+        setShowPopup(true);
+        sessionStorage.setItem("loader", !sessionStorage.getItem("loader"));
+        setMessage("Done Successfully");
+        dispatch(getAllStudents(currentUser._id));
+      }
+    } catch (error) {
+      setShowPopup(true);
+      setMessage(error?.response?.data?.error);
+    }
+  };
   const studentRows =
     studentsList &&
     studentsList.length > 0 &&
@@ -74,41 +100,33 @@ const ShowStudents = () => {
         name: student.name,
         fatherName: student.fatherName,
         rollNum: student.rollNumber,
-        // sclassName: student.sclassName.sclassName,
+        sclassName: student.sclassName,
         id: student._id,
         provinces: student.provinces || "",
         address: student.tehsil,
       };
     });
-
   const StudentButtonHaver = ({ row }) => {
-    const options = ["Take Attendance", "Provide Marks"];
-
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
-    const [selectedIndex, setSelectedIndex] = React.useState(0);
+    console.log(row);
+    const [selectedId, setSelectedId] = React.useState(
+      row.sclassName?._id || sclassesList[0]?._id || ""
+    );
 
     const handleClick = () => {
-      console.info(`You clicked ${options[selectedIndex]}`);
-      if (selectedIndex === 0) {
-        handleAttendance();
-      } else if (selectedIndex === 1) {
-        handleMarks();
-      }
+      console.info(`You clicked ${selectedId}`);
     };
 
-    const handleAttendance = () => {
-      navigate("/Admin/students/student/attendance/" + row.id);
-    };
-    const handleMarks = () => {
-      navigate("/Admin/students/student/marks/" + row.id);
-    };
+    const handleMenuItemClick = async (event, id) => {
+      setSelectedId(id);
+      await Update(row.id, id);
 
-    const handleMenuItemClick = (event, index) => {
-      setSelectedIndex(index);
+      // Update the row object with the new class
+      row.sclassName = sclassesList.find((sclass) => sclass._id === id);
+
       setOpen(false);
     };
-
     const handleToggle = () => {
       setOpen((prevOpen) => !prevOpen);
     };
@@ -117,76 +135,69 @@ const ShowStudents = () => {
       if (anchorRef.current && anchorRef.current.contains(event.target)) {
         return;
       }
-
       setOpen(false);
     };
+
+    const selectedClass = sclassesList?.find(
+      (sclass) => sclass._id === selectedId
+    );
+
     return (
       <>
-        <IconButton onClick={() => deleteHandler(row.id, "Student")}>
-          <PersonRemoveIcon color="error" />
-        </IconButton>
-        <BlueButton
+        <ButtonGroup
           variant="contained"
-          onClick={() => navigate("/Admin/students/student/" + row.id)}
+          ref={anchorRef}
+          aria-label="split button"
         >
-          View
-        </BlueButton>
-        <React.Fragment>
-          <ButtonGroup
-            variant="contained"
-            ref={anchorRef}
-            aria-label="split button"
+          <Button onClick={handleClick}>{selectedClass?.sclassName}</Button>
+          <BlackButton
+            size="small"
+            aria-controls={open ? "split-button-menu" : undefined}
+            aria-expanded={open ? "true" : undefined}
+            aria-label="select merge strategy"
+            aria-haspopup="menu"
+            onClick={handleToggle}
           >
-            <Button onClick={handleClick}>{options[selectedIndex]}</Button>
-            <BlackButton
-              size="small"
-              aria-controls={open ? "split-button-menu" : undefined}
-              aria-expanded={open ? "true" : undefined}
-              aria-label="select merge strategy"
-              aria-haspopup="menu"
-              onClick={handleToggle}
+            {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+          </BlackButton>
+        </ButtonGroup>
+        <Popper
+          sx={{ zIndex: 1 }}
+          open={open}
+          anchorEl={anchorRef.current}
+          role={undefined}
+          transition
+          disablePortal
+        >
+          {({ TransitionProps, placement }) => (
+            <Grow
+              {...TransitionProps}
+              style={{
+                transformOrigin:
+                  placement === "bottom" ? "center top" : "center bottom",
+              }}
             >
-              {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-            </BlackButton>
-          </ButtonGroup>
-          <Popper
-            sx={{
-              zIndex: 1,
-            }}
-            open={open}
-            anchorEl={anchorRef.current}
-            role={undefined}
-            transition
-            disablePortal
-          >
-            {({ TransitionProps, placement }) => (
-              <Grow
-                {...TransitionProps}
-                style={{
-                  transformOrigin:
-                    placement === "bottom" ? "center top" : "center bottom",
-                }}
-              >
-                <Paper>
-                  <ClickAwayListener onClickAway={handleClose}>
-                    <MenuList id="split-button-menu" autoFocusItem>
-                      {options.map((option, index) => (
-                        <MenuItem
-                          key={option}
-                          disabled={index === 2}
-                          selected={index === selectedIndex}
-                          onClick={(event) => handleMenuItemClick(event, index)}
-                        >
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </MenuList>
-                  </ClickAwayListener>
-                </Paper>
-              </Grow>
-            )}
-          </Popper>
-        </React.Fragment>
+              <Paper>
+                <ClickAwayListener onClickAway={handleClose}>
+                  <MenuList id="split-button-menu" autoFocusItem>
+                    {sclassesList.map((option) => (
+                      <MenuItem
+                        key={option.id}
+                        disabled={option.disabled}
+                        selected={option._id === selectedId}
+                        onClick={(event) => {
+                          handleMenuItemClick(event, option._id);
+                        }}
+                      >
+                        {option.sclassName}
+                      </MenuItem>
+                    ))}
+                  </MenuList>
+                </ClickAwayListener>
+              </Paper>
+            </Grow>
+          )}
+        </Popper>
       </>
     );
   };
@@ -233,6 +244,7 @@ const ShowStudents = () => {
                   buttonHaver={StudentButtonHaver}
                   columns={studentColumns}
                   rows={studentRows}
+                  // showAction={false}
                 />
               )}
 

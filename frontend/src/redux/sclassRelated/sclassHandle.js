@@ -12,7 +12,7 @@ import {
   getSubDetailsRequest,
 } from "./sclassSlice";
 
-export const getAllSclasses = (id, address) => async (dispatch) => {
+export const getAllSclasses = (address) => async (dispatch) => {
   dispatch(getRequest());
 
   try {

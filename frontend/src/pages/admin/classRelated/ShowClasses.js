@@ -31,7 +31,7 @@ const ShowClasses = () => {
   const adminID = currentUser._id;
 
   useEffect(() => {
-    dispatch(getAllSclasses(adminID, "Sclass"));
+    dispatch(getAllSclasses("Sclass"));
   }, [adminID, dispatch]);
 
   if (error) {

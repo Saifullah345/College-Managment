@@ -89,20 +89,19 @@ const studentSchema = new mongoose.Schema({
     type: String,
   },
 
-  // sclassName: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: "sclass",
-  //
-  // },
+  sclassName: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "sclass",
+  },
   // school: {
   //   type: mongoose.Schema.Types.ObjectId,
   //   ref: "admin",
   //
   // },
-  // role: {
-  //   type: String,
-  //   default: "Student",
-  // },
+  role: {
+    type: String,
+    default: "Student",
+  },
   // examResult: [
   //   {
   //     subName: {

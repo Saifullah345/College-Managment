@@ -109,7 +109,7 @@ const studentLogIn = async (req, res) => {
 
 const getStudents = async (req, res) => {
   try {
-    let students = await Student.find();
+    let students = await Student.find().populate("sclassName");
     if (students.length > 0) {
       res.send(students);
     } else {
@@ -189,6 +189,29 @@ const updateStudent = async (req, res) => {
     res.send(result);
   } catch (error) {
     res.status(500).json(error);
+  }
+};
+const updateStudentClass = async (req, res) => {
+  try {
+    const { sclassName } = req.body;
+
+    // Ensure sclassName is provided in the request body
+    if (!sclassName) {
+      return res.status(400).json({ message: "sclassName is required" });
+    }
+
+    // Update only the sclassName field
+    let result = await Student.findByIdAndUpdate(
+      req.params.id,
+      { $set: { sclassName } },
+      { new: true }
+    ).populate("sclassName");
+    // Exclude password from the response
+    result.password = undefined;
+
+    return res.send(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -330,7 +353,7 @@ module.exports = {
   studentAttendance,
   deleteStudentsByClass,
   updateExamResult,
-
+  updateStudentClass,
   clearAllStudentsAttendanceBySubject,
   clearAllStudentsAttendance,
   removeStudentAttendanceBySubject,

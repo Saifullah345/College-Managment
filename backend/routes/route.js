@@ -70,6 +70,7 @@ const {
   clearAllStudentsAttendance,
   removeStudentAttendanceBySubject,
   removeStudentAttendance,
+  updateStudentClass,
 } = require("../controllers/student_controller.js");
 const {
   subjectCreate,
@@ -120,6 +121,7 @@ router.delete("/StudentsClass/:id", deleteStudentsByClass);
 router.delete("/Student/:id", deleteStudent);
 
 router.put("/Student/:id", updateStudent);
+router.put("/studentClass/:id", updateStudentClass);
 
 router.put("/UpdateExamResult/:id", updateExamResult);
 
