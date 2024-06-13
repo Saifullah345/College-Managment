@@ -113,7 +113,7 @@ router.get("/Admin/:id", getAdminDetail);
 router.post("/StudentReg", studentRegister);
 router.post("/StudentLogin", studentLogIn);
 
-router.get("/Students/:id", getStudents);
+router.get("/Students", getStudents);
 router.get("/Student/:id", getStudentDetail);
 
 router.delete("/Students/:id", deleteStudents);

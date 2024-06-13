@@ -37,7 +37,10 @@ export const AddStudent = ({ setActive }) => {
     idCardBack: "",
     MetricDMC: "",
     session: "",
+    sclassName: "",
+    discount: "",
   });
+  console.log(formData);
 
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
@@ -84,9 +87,7 @@ export const AddStudent = ({ setActive }) => {
           headers: { "Content-Type": "application/json" },
         }
       );
-      console.log(result);
       if (result.data) {
-        console.log(result);
         setViewProgram(result.data);
       }
     } catch (error) {
@@ -102,9 +103,8 @@ export const AddStudent = ({ setActive }) => {
           headers: { "Content-Type": "application/json" },
         }
       );
-      console.log(result);
+
       if (result.data) {
-        console.log(result);
         setViewSession(result.data);
       }
     } catch (error) {
@@ -174,7 +174,7 @@ export const AddStudent = ({ setActive }) => {
                   >
                     <option value="">Select Session</option>
                     {viewSession.map((val) => (
-                      <option key={val.session} value={val.session}>
+                      <option key={val._id} value={val._id}>
                         {val.session}
                       </option>
                     ))}
@@ -182,19 +182,6 @@ export const AddStudent = ({ setActive }) => {
                     {/* Add more options as needed */}
                   </select>
                 </div>
-                <input
-                  className="registerInput"
-                  type="text"
-                  placeholder="Enrollment No"
-                  value={formData.enrollmentNo}
-                  onChange={(e) => {
-                    setFormData((prevState) => ({
-                      ...prevState,
-                      enrollmentNo: e.target.value,
-                    }));
-                  }}
-                  autoComplete="enrollmentNo"
-                />
                 <button
                   className="registerButton"
                   onClick={() => setShow(true)}

@@ -46,6 +46,7 @@ import AddAddress from "./studentRelated/AddAddress";
 import { Student } from "./studentRelated";
 import { AddFee } from "./FeeRelated/AddFee";
 import { ViewFee } from "./FeeRelated/ViewFee";
+import { Fee } from "./FeeRelated";
 
 const AdminDashboard = () => {
   const [open, setOpen] = useState(false);
@@ -107,7 +108,7 @@ const AdminDashboard = () => {
             <Route path="/Admin/profile" element={<AdminProfile />} />
             <Route path="/Admin/complains" element={<SeeComplains />} />
             <Route path="/Admin/addFee" element={<AddFee />} />
-            <Route path="/Admin/fee" element={<ViewFee />} />
+            <Route path="/Admin/fee" element={<Fee />} />
 
             {/* Notice */}
             <Route path="/Admin/addnotice" element={<AddNotice />} />

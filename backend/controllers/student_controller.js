@@ -3,6 +3,7 @@ const Student = require("../models/studentSchema.js");
 const Subject = require("../models/subjectSchema.js");
 const driveHandlers = require("../utilits/drive_handlers.js");
 const multer = require("multer");
+const Fee = require("../models/feeSchema");
 
 const upload = multer().fields([
   { name: "idCardFront", maxCount: 1 },
@@ -55,21 +56,69 @@ const studentRegister = async (req, res) => {
       ) {
         return res.status(400).json({ error: "File(s) missing" });
       }
-      // console.log(await driveHandlers.uploadImage(req.files["idCardFront"][0]));
-      const student = new Student(req.body);
-      student.idCardFront = await driveHandlers.uploadImage(
+
+      const studentData = req.body;
+
+      // Upload images and get their URLs
+      studentData.idCardFront = await driveHandlers.uploadImage(
         req.files["idCardFront"][0]
       ).url;
-      student.idCardBack = await driveHandlers.uploadImage(
+      studentData.idCardBack = await driveHandlers.uploadImage(
         req.files["idCardBack"][0]
       ).url;
-      student.MetricDMC = await driveHandlers.uploadImage(
+      studentData.MetricDMC = await driveHandlers.uploadImage(
         req.files["MetricDMC"][0]
       ).url;
-      student.studentProfile = await driveHandlers.uploadImage(
+      studentData.studentProfile = await driveHandlers.uploadImage(
         req.files["studentProfile"][0]
       ).url;
+
+      // Fetch fee details based on class and session
+      const feeDetails = await Fee.findOne({
+        sclass: studentData.sclassName,
+        session: studentData.session,
+      });
+
+      if (!feeDetails) {
+        return res.status(400).json({
+          error: "Fee details not found for the specified class and session",
+        });
+      }
+
+      const feeValues = feeDetails.toObject();
+      let totalFee = Object.keys(feeValues).reduce((sum, key) => {
+        if (
+          key !== "_id" &&
+          key !== "createdAt" &&
+          key !== "updatedAt" &&
+          key !== "__v" &&
+          key !== "session" &&
+          key !== "sclass"
+        ) {
+          const fee = parseFloat(feeValues[key]) || 0;
+          console.log(`Key: ${key}, Fee: ${fee}`);
+          sum += fee;
+        }
+        return sum;
+      }, 0);
+
+      const tuitionFee = parseFloat(feeValues.tuitionFee) || 0;
+
+      console.log(totalFee, "Total Fee");
+      console.log(tuitionFee);
+      const discountPercent = parseFloat(studentData.discount) || 0;
+      const discountAmount = (tuitionFee * discountPercent) / 100;
+      console.log(discountAmount);
+      const remainingFee = totalFee - discountAmount;
+
+      // Set fee details in student data
+      studentData.discountFee = discountAmount.toString();
+      studentData.remainingFee = remainingFee.toString();
+      studentData.paidFee = "0"; // Assuming initial paid fee is 0
+
+      const student = new Student(studentData);
       await student.save();
+
       return res.status(201).send("Student data saved successfully");
     });
   } catch (err) {
@@ -109,7 +158,9 @@ const studentLogIn = async (req, res) => {
 
 const getStudents = async (req, res) => {
   try {
-    let students = await Student.find().populate("sclassName");
+    let students = await Student.find()
+      .populate("sclassName")
+      .populate("session");
     if (students.length > 0) {
       res.send(students);
     } else {
@@ -174,11 +225,13 @@ const deleteStudentsByClass = async (req, res) => {
 };
 
 const updateStudent = async (req, res) => {
+  console.log(req.params.id, "Params");
   try {
     if (req.body.password) {
       const salt = await bcrypt.genSalt(10);
       res.body.password = await bcrypt.hash(res.body.password, salt);
     }
+    console.log(req.body);
     let result = await Student.findByIdAndUpdate(
       req.params.id,
       { $set: req.body },
@@ -186,9 +239,9 @@ const updateStudent = async (req, res) => {
     );
 
     result.password = undefined;
-    res.send(result);
+    return res.send(result);
   } catch (error) {
-    res.status(500).json(error);
+    return res.status(500).json(error);
   }
 };
 const updateStudentClass = async (req, res) => {

@@ -11,7 +11,8 @@ const studentSchema = new mongoose.Schema({
     type: String,
   },
   session: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "session",
   },
   cnic: {
     type: Number,
@@ -93,45 +94,22 @@ const studentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "sclass",
   },
-  // school: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: "admin",
-  //
-  // },
+  admissionStatus: {
+    type: String,
+  },
+  remainingFee: {
+    type: String,
+  },
+  discountFee: {
+    type: String,
+  },
+  paidFee: {
+    type: String,
+  },
   role: {
     type: String,
     default: "Student",
   },
-  // examResult: [
-  //   {
-  //     subName: {
-  //       type: mongoose.Schema.Types.ObjectId,
-  //       ref: "subject",
-  //     },
-  //     marksObtained: {
-  //       type: Number,
-  //       default: 0,
-  //     },
-  //   },
-  // ],
-  // attendance: [
-  //   {
-  //     date: {
-  //       type: Date,
-  //
-  //     },
-  //     status: {
-  //       type: String,
-  //       enum: ["Present", "Absent"],
-  //
-  //     },
-  //     subName: {
-  //       type: mongoose.Schema.Types.ObjectId,
-  //       ref: "subject",
-  //
-  //     },
-  //   },
-  // ],
 });
 
 module.exports = mongoose.model("student", studentSchema);

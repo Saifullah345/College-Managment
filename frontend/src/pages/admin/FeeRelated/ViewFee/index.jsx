@@ -60,12 +60,9 @@ export const ViewFee = () => {
     setLoader(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionStorage.getItem("loader"), session]);
-  console.log(viewFee);
   return (
-    <div className="register-form">
-      <Box
-        sx={{ display: "flex", justifyContent: "flex-end", marginTop: "16px" }}
-      >
+    <div>
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
         <GreenButton
           variant="contained"
           onClick={() => navigate("/Admin/addFee")}
