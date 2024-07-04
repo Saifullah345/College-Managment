@@ -2,11 +2,15 @@ import { Box, Grid, Typography } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Popup from "../../../../components/Popup";
 
 const StudentDetail = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({});
   const { id } = useParams();
+  const [admissionStatus, setAdmissionStatus] = useState("pending");
+  const [showPopup, setShowPopup] = useState(false);
+  const [message, setMessage] = useState("");
   const viewStudentDetail = async () => {
     setLoading(false);
     try {
@@ -25,11 +29,39 @@ const StudentDetail = () => {
       setLoading(false);
     }
   };
+  const Update = async () => {
+    try {
+      const result = await axios.put(
+        `${process.env.REACT_APP_BASE_URL}/Student/${id}`,
+        {
+          admissionStatus,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      // console.log(result);
+      if (result.data) {
+        setShowPopup(true);
+        sessionStorage.setItem("loader", !sessionStorage.getItem("loader"));
+        setMessage("Done Successfully");
+        setLoading(true);
+        viewStudentDetail();
+      }
+    } catch (error) {
+      setShowPopup(true);
+      setMessage(error?.response?.data?.error);
+    }
+  };
   useEffect(() => {
     viewStudentDetail();
     setLoading(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+  useEffect(() => {
+    Update();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [admissionStatus]);
 
   return (
     <div className="register-form">
@@ -47,7 +79,7 @@ const StudentDetail = () => {
         "Loading..."
       ) : (
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid item lg={6} xs={12}>
             <Box
               display={"flex"}
               border={"1px solid black"}
@@ -130,7 +162,7 @@ const StudentDetail = () => {
               </Box>
             </Box>
           </Grid>
-          <Grid item xs={6} gap={3}>
+          <Grid item xs={12} lg={6} gap={3}>
             <Box
               display={"flex"}
               border={"1px solid black"}
@@ -187,12 +219,35 @@ const StudentDetail = () => {
             >
               <Box display={"flex"} justifyContent={"space-between"}>
                 <h4>Admission Status</h4>
-                <h4 style={{ color: "red" }}>{data.admissionStatus}</h4>
+                <h4 style={{ color: "red", textTransform: "capitalize" }}>
+                  {data.admissionStatus}
+                </h4>
               </Box>
+              <div className="formGroup">
+                <select
+                  defaultValue={data.admissionStatus}
+                  className="registerInput"
+                  value={admissionStatus}
+                  onChange={(e) => {
+                    setAdmissionStatus(e.target.value);
+                  }}
+                  required
+                >
+                  <option value="">Select Admission Status</option>
+                  <option value="pending">Pending</option>
+                  <option value="continue">Continue</option>
+                  <option value="dropout">Dropout</option>
+                </select>
+              </div>
             </Box>
           </Grid>
         </Grid>
       )}
+      <Popup
+        message={message}
+        setShowPopup={setShowPopup}
+        showPopup={showPopup}
+      />
     </div>
   );
 };

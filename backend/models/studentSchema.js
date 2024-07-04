@@ -99,7 +99,7 @@ const studentSchema = new mongoose.Schema({
   },
   admissionStatus: {
     type: String,
-    default: "Pending",
+    default: "pending",
   },
   remainingFee: {
     type: String,

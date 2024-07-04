@@ -238,7 +238,6 @@ const updateStudent = async (req, res) => {
       const salt = await bcrypt.genSalt(10);
       res.body.password = await bcrypt.hash(res.body.password, salt);
     }
-    console.log(req.body);
     let result = await Student.findByIdAndUpdate(
       req.params.id,
       { $set: req.body },

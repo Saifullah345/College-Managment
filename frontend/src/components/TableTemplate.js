@@ -13,6 +13,7 @@ const TableTemplate = ({
   columns,
   rows,
   showAction = true,
+  header = "Actions",
 }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -32,7 +33,7 @@ const TableTemplate = ({
                 </StyledTableCell>
               ))}
               {showAction && (
-                <StyledTableCell align="center">Actions</StyledTableCell>
+                <StyledTableCell align="center">{header}</StyledTableCell>
               )}
             </StyledTableRow>
           </TableHead>

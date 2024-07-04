@@ -27,6 +27,7 @@ import MenuList from "@mui/material/MenuList";
 import Popup from "../../../components/Popup";
 import { getAllSclasses } from "../../../redux/sclassRelated/sclassHandle";
 import axios from "axios";
+import { useState } from "react";
 
 const ShowStudents = () => {
   const navigate = useNavigate();
@@ -34,6 +35,8 @@ const ShowStudents = () => {
   const { studentsList, loading, error, response } = useSelector(
     (state) => state.student
   );
+  const [showPopup, setShowPopup] = useState(false);
+  const [message, setMessage] = useState("");
   const { sclassesList } = useSelector((state) => state.sclass);
   const { currentUser } = useSelector((state) => state.user);
   useEffect(() => {
@@ -47,9 +50,6 @@ const ShowStudents = () => {
   if (error) {
     console.log(error);
   }
-
-  const [showPopup, setShowPopup] = React.useState(false);
-  const [message, setMessage] = React.useState("");
 
   const deleteHandler = (deleteID, address) => {
     console.log(deleteID);
@@ -81,7 +81,6 @@ const ShowStudents = () => {
       );
       // console.log(result);
       if (result.data) {
-        console.log(result);
         setShowPopup(true);
         sessionStorage.setItem("loader", !sessionStorage.getItem("loader"));
         setMessage("Done Successfully");
@@ -250,7 +249,8 @@ const ShowStudents = () => {
                   buttonHaver={StudentButtonHaver}
                   columns={studentColumns}
                   rows={studentRows}
-                  showAction={false}
+                  showAction={true}
+                  header="Class"
                 />
               )}
 
