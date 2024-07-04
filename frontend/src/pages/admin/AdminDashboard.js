@@ -22,7 +22,7 @@ import SeeComplains from "./studentRelated/SeeComplains";
 // import ShowStudents from "./studentRelated/ShowStudents";
 import StudentAttendance from "./studentRelated/StudentAttendance";
 import StudentExamMarks from "./studentRelated/StudentExamMarks";
-import ViewStudent from "./studentRelated/ViewStudent";
+// import ViewStudent from "./studentRelated/ViewStudent";
 
 import AddNotice from "./noticeRelated/AddNotice";
 import ShowNotices from "./noticeRelated/ShowNotices";
@@ -45,8 +45,9 @@ import AccountMenu from "../../components/AccountMenu";
 import AddAddress from "./studentRelated/AddAddress";
 import { Student } from "./studentRelated";
 import { AddFee } from "./FeeRelated/AddFee";
-import { ViewFee } from "./FeeRelated/ViewFee";
+// import { ViewFee } from "./FeeRelated/ViewFee";
 import { Fee } from "./FeeRelated";
+import StudentDetail from "./studentRelated/StudentDetail";
 
 const AdminDashboard = () => {
   const [open, setOpen] = useState(false);
@@ -157,7 +158,7 @@ const AdminDashboard = () => {
             <Route path="/Admin/students" element={<Student />} />
             <Route
               path="/Admin/students/student/:id"
-              element={<ViewStudent />}
+              element={<StudentDetail />}
             />
             <Route
               path="/Admin/students/student/attendance/:id"

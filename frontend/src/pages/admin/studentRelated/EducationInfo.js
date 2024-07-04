@@ -60,12 +60,10 @@ export const EducationInfo = ({ setStepper, formData, setFormData }) => {
                 // }}
               >
                 <option value="">Select Degree Program</option>
-                <option value="Bachelor of Science">Bachelor of Science</option>
-                <option value="Bachelor of Arts">Bachelor of Arts</option>
-                <option value="Master of Science">Master of Science</option>
-                <option value="Master of Arts">Master of Arts</option>
-                <option value="PhD">PhD</option>
-                {/* Add more degree programs as needed */}
+                <option value="matric">Matric</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="graduation">Graduation</option>
+                <option value="master">Master</option>
               </select>
             </div>
             <div className="formGroup">

@@ -56,24 +56,34 @@ const studentRegister = async (req, res) => {
       ) {
         return res.status(400).json({ error: "File(s) missing" });
       }
-
       const studentData = req.body;
 
-      // Upload images and get their URLs
-      studentData.idCardFront = await driveHandlers.uploadImage(
+      let idCardFront = await driveHandlers.uploadImage(
         req.files["idCardFront"][0]
-      ).url;
-      studentData.idCardBack = await driveHandlers.uploadImage(
+      );
+      console.log(idCardFront);
+      if (idCardFront.uploaded === true) {
+        studentData.idCardFront = idCardFront.url;
+      }
+      let idCardBack = await driveHandlers.uploadImage(
         req.files["idCardBack"][0]
-      ).url;
-      studentData.MetricDMC = await driveHandlers.uploadImage(
+      );
+      if (idCardBack.uploaded === true) {
+        studentData.idCardBack = idCardBack.url;
+      }
+      let MetricDMC = await driveHandlers.uploadImage(
         req.files["MetricDMC"][0]
-      ).url;
-      studentData.studentProfile = await driveHandlers.uploadImage(
+      );
+      if (MetricDMC.uploaded === true) {
+        studentData.MetricDMC = MetricDMC.url;
+      }
+      let studentProfile = await driveHandlers.uploadImage(
         req.files["studentProfile"][0]
-      ).url;
+      );
+      if (studentProfile.uploaded === true) {
+        studentData.studentProfile = studentProfile.url;
+      }
 
-      // Fetch fee details based on class and session
       const feeDetails = await Fee.findOne({
         sclass: studentData.sclassName,
         session: studentData.session,
@@ -96,19 +106,14 @@ const studentRegister = async (req, res) => {
           key !== "sclass"
         ) {
           const fee = parseFloat(feeValues[key]) || 0;
-          console.log(`Key: ${key}, Fee: ${fee}`);
           sum += fee;
         }
         return sum;
       }, 0);
 
       const tuitionFee = parseFloat(feeValues.tuitionFee) || 0;
-
-      console.log(totalFee, "Total Fee");
-      console.log(tuitionFee);
       const discountPercent = parseFloat(studentData.discount) || 0;
       const discountAmount = (tuitionFee * discountPercent) / 100;
-      console.log(discountAmount);
       const remainingFee = totalFee - discountAmount;
 
       // Set fee details in student data
@@ -117,9 +122,13 @@ const studentRegister = async (req, res) => {
       studentData.paidFee = "0"; // Assuming initial paid fee is 0
 
       const student = new Student(studentData);
-      await student.save();
+      let result = await student.save();
 
-      return res.status(201).send("Student data saved successfully");
+      return res.status(201).json({
+        code: 200,
+        data: result,
+        message: "Student data saved successfully",
+      });
     });
   } catch (err) {
     console.error(err);
@@ -174,10 +183,8 @@ const getStudents = async (req, res) => {
 const getStudentDetail = async (req, res) => {
   try {
     let student = await Student.findById(req.params.id)
-      .populate("school", "schoolName")
-      .populate("sclassName", "sclassName")
-      .populate("examResult.subName", "subName")
-      .populate("attendance.subName", "subName sessions");
+      .populate("sclassName")
+      .populate("session");
     if (student) {
       student.password = undefined;
       res.send(student);

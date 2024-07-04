@@ -14,7 +14,11 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 // import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { KeyboardArrowUp, KeyboardArrowDown } from "@mui/icons-material";
+import {
+  KeyboardArrowUp,
+  KeyboardArrowDown,
+  Visibility,
+} from "@mui/icons-material";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Grow from "@mui/material/Grow";
 import Popper from "@mui/material/Popper";
@@ -52,11 +56,6 @@ const ShowStudents = () => {
     console.log(address);
     setMessage("Sorry the delete function has been disabled for now.");
     setShowPopup(true);
-
-    // dispatch(deleteUser(deleteID, address))
-    //     .then(() => {
-    //         dispatch(getAllStudents(currentUser._id));
-    //     })
   };
 
   const studentColumns = [
@@ -66,6 +65,7 @@ const ShowStudents = () => {
     // { id: "sclassName", label: "Class", minWidth: 170 },
     { id: "provinces", label: "Province", minWidth: 170 },
     { id: "address", label: "Address", minWidth: 170 },
+    { id: "actions", label: "Actions", minWidth: 170 },
   ];
 
   const Update = async (classId, sclassName) => {
@@ -104,12 +104,18 @@ const ShowStudents = () => {
         id: student._id,
         provinces: student.provinces || "",
         address: student.tehsil,
+        actions: (
+          <Button
+            onClick={() => navigate(`/Admin/students/student/${student._id}`)}
+          >
+            <Visibility />
+          </Button>
+        ),
       };
     });
   const StudentButtonHaver = ({ row }) => {
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
-    console.log(row);
     const [selectedId, setSelectedId] = React.useState(
       row.sclassName?._id || sclassesList[0]?._id || ""
     );
@@ -244,7 +250,7 @@ const ShowStudents = () => {
                   buttonHaver={StudentButtonHaver}
                   columns={studentColumns}
                   rows={studentRows}
-                  // showAction={false}
+                  showAction={false}
                 />
               )}
 

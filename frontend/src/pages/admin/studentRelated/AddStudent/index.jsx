@@ -40,7 +40,6 @@ export const AddStudent = ({ setActive }) => {
     sclassName: "",
     discount: "",
   });
-  console.log(formData);
 
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");

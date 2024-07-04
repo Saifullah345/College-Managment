@@ -79,23 +79,27 @@ const studentSchema = new mongoose.Schema({
   },
   studentProfile: {
     type: String,
+    default: "",
   },
   idCardFront: {
     type: String,
+    default: "",
   },
   idCardBack: {
     type: String,
+    default: "",
   },
   MetricDMC: {
     type: String,
+    default: "",
   },
-
   sclassName: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "sclass",
   },
   admissionStatus: {
     type: String,
+    default: "Pending",
   },
   remainingFee: {
     type: String,

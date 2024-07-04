@@ -23,7 +23,7 @@ const AddAddress = () => {
   const [district, setDistrict] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
-  const [loading, setloading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [districtId, setDistrictId] = useState("");
   const [provinceId, setProvinceId] = useState("");
   const [tehsil, setTehsil] = useState("");
@@ -34,9 +34,8 @@ const AddAddress = () => {
   const [viewSession, setViewSession] = useState([]);
 
   const Add = async () => {
-    setloading(true);
+    setLoading(true);
     try {
-      console.log(districtId);
       const result = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/tehsilCreate`,
         {
@@ -48,9 +47,8 @@ const AddAddress = () => {
           headers: { "Content-Type": "application/json" },
         }
       );
-      console.log(result);
       if (result.data) {
-        setloading(false);
+        setLoading(false);
         console.log(result);
         setShowPopup(true);
         sessionStorage.setItem("loader", !sessionStorage.getItem("loader"));
@@ -58,7 +56,7 @@ const AddAddress = () => {
       }
     } catch (error) {
       setShowPopup(true);
-      setloading(false);
+      setLoading(false);
       setMessage(error?.response?.data?.error);
     }
   };

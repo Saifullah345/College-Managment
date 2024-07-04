@@ -183,11 +183,11 @@ export const RelationInfo = ({ setStepper, formData, setFormData }) => {
             }));
           }}
         />
-        <label>Number of References *</label>
+        <label>Mobile Number of References*</label>
         <input
           className="registerInput"
           type="number"
-          placeholder="Enter Number of References"
+          placeholder="Enter Mobile Number of References"
           value={formData.numberOfReference}
           onChange={(e) => {
             setFormData((prevState) => ({

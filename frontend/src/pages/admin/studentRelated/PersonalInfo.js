@@ -70,9 +70,6 @@ export const PersonalInfo = ({ formData, setFormData }) => {
               <option value="" disabled>
                 Select Country of Citizenship
               </option>
-              <option value="US">Country: United States</option>
-              <option value="UK">Country: United Kingdom</option>
-              <option value="CA">Country: Canada</option>
               <option value="PK">Country: Pakistan</option>
               {/* Add more options as needed */}
             </select>
