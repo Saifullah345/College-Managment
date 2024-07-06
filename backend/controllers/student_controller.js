@@ -183,8 +183,6 @@ const updateStudent = async (req, res) => {
         const discountPercent = parseFloat(updateData.discount) || 0;
         const discountAmount = (tuitionFee * discountPercent) / 100;
         const remainingFee = totalFee - discountAmount;
-        console.log(discountAmount);
-        console.log(totalFee);
 
         student.feeHistory.push({
           sclassName: student.sclassName,
@@ -195,7 +193,6 @@ const updateStudent = async (req, res) => {
           paidFee: student.paidFee || 0,
           year: student.year, // Maintain the year field if necessary
         });
-        console.log(student.feeHistory);
       }
     }
 
@@ -245,7 +242,6 @@ const updateStudent = async (req, res) => {
     // }
 
     const updatedStudent = await student.save();
-    console.log(updatedStudent);
 
     return res.status(200).json({
       code: 200,
