@@ -1,119 +1,147 @@
 const mongoose = require("mongoose");
 
-const studentSchema = new mongoose.Schema({
-  name: {
-    type: String,
+const feeHistorySchema = new mongoose.Schema(
+  {
+    sclassName: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "sclass",
+    },
+    session: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "session",
+    },
+    totalFee: {
+      type: Number,
+      default: 0,
+    },
+    discountFee: {
+      type: Number,
+      default: 0,
+    },
+    remainingFee: {
+      type: Number,
+      default: 0,
+    },
+    paidFee: {
+      type: Number,
+      default: 0,
+    },
+    year: {
+      type: String,
+    },
   },
-  fatherName: {
-    type: String,
+  { timestamps: true }
+);
+
+const studentSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+    },
+    fatherName: {
+      type: String,
+    },
+    citizenship: {
+      type: String,
+    },
+    session: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "session",
+    },
+    cnic: {
+      type: String,
+    },
+    dob: {
+      type: String,
+    },
+    religion: {
+      type: String,
+    },
+    mobileNumber: {
+      type: Number,
+    },
+    whatsAppNumber: {
+      type: Number,
+    },
+    program: {
+      type: String,
+    },
+    gender: {
+      type: String,
+    },
+    enrollmentNo: {
+      type: String,
+    },
+    board: {
+      type: String,
+    },
+    serialNumber: {
+      type: Number,
+    },
+    rollNumber: {
+      type: String,
+    },
+    yearOfPassing: {
+      type: Number,
+    },
+    provinces: {
+      type: String,
+    },
+    district: {
+      type: String,
+    },
+    tehsil: {
+      type: String,
+    },
+    postalAddress: {
+      type: String,
+    },
+    permanentAddress: {
+      type: String,
+    },
+    nameOfReference: {
+      type: String,
+    },
+    numberOfReference: {
+      type: Number,
+    },
+    relationWithReference: {
+      type: String,
+    },
+    otherDetailWithReference: {
+      type: String,
+    },
+    studentProfile: {
+      type: String,
+      default: "",
+    },
+    idCardFront: {
+      type: String,
+      default: "",
+    },
+    idCardBack: {
+      type: String,
+      default: "",
+    },
+    MetricDMC: {
+      type: String,
+      default: "",
+    },
+    sclassName: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "sclass",
+    },
+    admissionStatus: {
+      type: String,
+      default: "pending",
+    },
+    role: {
+      type: String,
+      default: "Student",
+    },
+    feeHistory: [feeHistorySchema],
   },
-  citizenship: {
-    type: String,
-  },
-  session: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "session",
-  },
-  cnic: {
-    type: Number,
-  },
-  dob: {
-    type: String,
-  },
-  religion: {
-    type: String,
-  },
-  mobileNumber: {
-    type: Number,
-  },
-  whatsAppNumber: {
-    type: Number,
-  },
-  program: {
-    type: String,
-  },
-  gender: {
-    type: String,
-  },
-  enrollmentNo: {
-    type: String,
-  },
-  board: {
-    type: String,
-  },
-  serialNumber: {
-    type: Number,
-  },
-  rollNumber: {
-    type: String,
-  },
-  yearOfPassing: {
-    type: Number,
-  },
-  provinces: {
-    type: String,
-  },
-  district: {
-    type: String,
-  },
-  tehsil: {
-    type: String,
-  },
-  postalAddress: {
-    type: String,
-  },
-  permanentAddress: {
-    type: String,
-  },
-  nameOfReference: {
-    type: String,
-  },
-  numberOfReference: {
-    type: Number,
-  },
-  relationWithReference: {
-    type: String,
-  },
-  otherDetailWithReference: {
-    type: String,
-  },
-  studentProfile: {
-    type: String,
-    default: "",
-  },
-  idCardFront: {
-    type: String,
-    default: "",
-  },
-  idCardBack: {
-    type: String,
-    default: "",
-  },
-  MetricDMC: {
-    type: String,
-    default: "",
-  },
-  sclassName: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "sclass",
-  },
-  admissionStatus: {
-    type: String,
-    default: "pending",
-  },
-  remainingFee: {
-    type: String,
-  },
-  discountFee: {
-    type: String,
-  },
-  paidFee: {
-    type: String,
-  },
-  role: {
-    type: String,
-    default: "Student",
-  },
-});
+  { timestamps: true }
+);
 
 module.exports = mongoose.model("student", studentSchema);

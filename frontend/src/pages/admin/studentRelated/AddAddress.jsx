@@ -16,6 +16,8 @@ import { ProgramTable } from "./Program/ProgramTable.jsx";
 import { SessionTable } from "./Session/SessionTable.jsx";
 import { Institute } from "./Institute/index.jsx";
 
+const categories = ["Tehsil", "Board", "Session", "Program", "Institute"];
+
 const AddAddress = () => {
   const [addProvinces, setAddProvinces] = useState(false);
   const [addDistrict, setAddDistrict] = useState(false);
@@ -186,66 +188,21 @@ const AddAddress = () => {
           <Box display="flex" marginTop={"10px"} flexDirection="column" gap={2}>
             <h2>General Setting</h2>
             <Box display="flex" gap={10}>
-              <Typography
-                onClick={() => setActive("Tehsil")}
-                sx={{
-                  fontSize: "18px",
-                  fontWeight: active === "Tehsil" ? "600" : "300",
-                  textDecoration: active === "Tehsil" ? "underline" : "",
-                  textUnderlineOffset: "5px",
-                  cursor: "pointer",
-                }}
-              >
-                Tehsil
-              </Typography>
-              <Typography
-                onClick={() => setActive("Board")}
-                sx={{
-                  fontSize: "18px",
-                  fontWeight: active === "Board" ? "600" : "300",
-                  textDecoration: active === "Board" ? "underline" : "",
-                  textUnderlineOffset: "5px",
-                  cursor: "pointer",
-                }}
-              >
-                Board
-              </Typography>
-              <Typography
-                onClick={() => setActive("Session")}
-                sx={{
-                  fontSize: "18px",
-                  fontWeight: active === "Session" ? "600" : "300",
-                  textDecoration: active === "Session" ? "underline" : "",
-                  textUnderlineOffset: "5px",
-                  cursor: "pointer",
-                }}
-              >
-                Session
-              </Typography>
-              <Typography
-                onClick={() => setActive("Program")}
-                sx={{
-                  fontSize: "18px",
-                  fontWeight: active === "Program" ? "600" : "300",
-                  textDecoration: active === "Program" ? "underline" : "",
-                  textUnderlineOffset: "5px",
-                  cursor: "pointer",
-                }}
-              >
-                Program
-              </Typography>
-              <Typography
-                onClick={() => setActive("Institute")}
-                sx={{
-                  fontSize: "18px",
-                  fontWeight: active === "Institute" ? "600" : "300",
-                  textDecoration: active === "Institute" ? "underline" : "",
-                  textUnderlineOffset: "5px",
-                  cursor: "pointer",
-                }}
-              >
-                Institute
-              </Typography>
+              {categories.map((category) => (
+                <Typography
+                  key={category}
+                  onClick={() => setActive(category)}
+                  sx={{
+                    fontSize: "18px",
+                    fontWeight: active === category ? "600" : "300",
+                    textDecoration: active === category ? "underline" : "",
+                    textUnderlineOffset: "5px",
+                    cursor: "pointer",
+                  }}
+                >
+                  {category}
+                </Typography>
+              ))}
             </Box>
             {active === "Tehsil" ? (
               <Box display="flex" flexDirection={"column"} gap={2}>

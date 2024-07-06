@@ -15,8 +15,8 @@ import { StyledTableCell, StyledTableRow } from "../../../../components/styles";
 
 export const FeeTable = ({ session }) => {
   const fees = [...Object.keys(initialFeeState), "SubTotal"];
+
   const calculateTotal = (val) => {
-    console.log("Value object:", val); // Log the value object to check its content
     return Object.keys(initialFeeState).reduce(
       (sum, key) => sum + (Number(val[key]) || 0),
       0
@@ -27,11 +27,29 @@ export const FeeTable = ({ session }) => {
     const number = Number(value);
     return number;
   };
+
   const calculateGrandTotal = () => {
     return session.reduce((sum, val) => sum + calculateTotal(val), 0);
   };
-  const [calculateValue, setCalculateValue] = useState(200);
-  const [calculateSecondValue, setCalculateSecondValue] = useState(200);
+
+  const [studentCounts, setStudentCounts] = useState({
+    firstYear: 1,
+    secondYear: 1,
+    thirdYear: 1,
+    fourthYear: 1,
+  });
+
+  const handleStudentCountChange = (year, value) => {
+    setStudentCounts((prevState) => ({
+      ...prevState,
+      [year]: value,
+    }));
+  };
+
+  const getFeePerStudent = (val) => {
+    return calculateTotal(val);
+  };
+
   return (
     <>
       {fees.length > 0 ? (
@@ -41,7 +59,9 @@ export const FeeTable = ({ session }) => {
               <StyledTableRow>
                 <StyledTableCell>Fees</StyledTableCell>
                 {session.map((val) => (
-                  <StyledTableCell>{val.sclass.sclassName}</StyledTableCell>
+                  <StyledTableCell key={val._id}>
+                    {val.sclass.sclassName}
+                  </StyledTableCell>
                 ))}
               </StyledTableRow>
             </TableHead>
@@ -70,58 +90,38 @@ export const FeeTable = ({ session }) => {
                     flexDirection={"column"}
                     gap={"10px"}
                   >
-                    <Typography
-                      fontWeight={"600"}
-                      margin={"auto"}
-                      className="flex"
-                    >
-                      1st Year:
-                      <input
-                        style={{
-                          width: "100px",
-                          borderRadius: "5px",
-                          padding: "3px",
-                          outline: "none",
-                          border: "none",
-                          boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 10px",
-                        }}
-                        type="tel"
-                        placeholder="Students"
-                        value={calculateValue}
-                        onChange={(e) => setCalculateValue(e.target.value)}
-                        name=""
-                        id=""
-                      />{" "}
-                      {calculateValue === 0 ? "" : 200 * calculateValue}
-                    </Typography>
-                    <Typography
-                      fontWeight={"600"}
-                      margin={"auto"}
-                      className="flex"
-                    >
-                      2nd Year:
-                      <input
-                        style={{
-                          width: "100px",
-                          borderRadius: "5px",
-                          padding: "3px",
-                          outline: "none",
-                          border: "none",
-                          boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 10px",
-                        }}
-                        type="tel"
-                        placeholder="Students"
-                        value={calculateSecondValue}
-                        onChange={(e) =>
-                          setCalculateSecondValue(e.target.value)
-                        }
-                        name=""
-                        id=""
-                      />{" "}
-                      {calculateSecondValue === 0
-                        ? ""
-                        : 200 * calculateSecondValue}
-                    </Typography>
+                    {["firstYear", "secondYear", "thirdYear", "fourthYear"].map(
+                      (year, index) => (
+                        <Typography
+                          key={year}
+                          fontWeight={"600"}
+                          margin={"auto"}
+                          className="flex"
+                        >
+                          {`${index + 1}st Year:`}
+                          <input
+                            style={{
+                              width: "100px",
+                              borderRadius: "5px",
+                              padding: "3px",
+                              outline: "none",
+                              border: "none",
+                              boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 10px",
+                            }}
+                            type="tel"
+                            placeholder="Students"
+                            value={studentCounts[year]}
+                            onChange={(e) =>
+                              handleStudentCountChange(year, e.target.value)
+                            }
+                          />{" "}
+                          {studentCounts[year]
+                            ? formatNumber(getFeePerStudent(session[index])) *
+                              studentCounts[year]
+                            : ""}
+                        </Typography>
+                      )
+                    )}
                   </Box>
                 </StyledTableCell>
                 <StyledTableCell colSpan={session.length + 1} align="right">

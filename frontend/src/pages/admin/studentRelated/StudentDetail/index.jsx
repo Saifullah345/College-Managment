@@ -8,7 +8,7 @@ const StudentDetail = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({});
   const { id } = useParams();
-  const [admissionStatus, setAdmissionStatus] = useState("pending");
+  const [admissionStatus, setAdmissionStatus] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
   const viewStudentDetail = async () => {
@@ -46,11 +46,13 @@ const StudentDetail = () => {
         sessionStorage.setItem("loader", !sessionStorage.getItem("loader"));
         setMessage("Done Successfully");
         setLoading(true);
+        setAdmissionStatus("");
         viewStudentDetail();
       }
     } catch (error) {
       setShowPopup(true);
       setMessage(error?.response?.data?.error);
+      setAdmissionStatus("");
     }
   };
   useEffect(() => {
@@ -59,7 +61,7 @@ const StudentDetail = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
   useEffect(() => {
-    Update();
+    if (admissionStatus !== "") Update();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [admissionStatus]);
 
@@ -238,6 +240,37 @@ const StudentDetail = () => {
                   <option value="continue">Continue</option>
                   <option value="dropout">Dropout</option>
                 </select>
+              </div>
+            </Box>
+            <Box
+              display={"flex"}
+              marginTop={"15px"}
+              border={"1px solid black"}
+              flexDirection={"column"}
+              gap={3}
+              padding={5}
+              borderRadius={"10px"}
+              boxShadow={"3"}
+            >
+              <Box display={"flex"} justifyContent={"space-between"}>
+                <h4>Fee Status</h4>
+                <h4 style={{ color: "red", textTransform: "capitalize" }}>
+                  {data.remainingFee === 0 ? "Paid" : "UnPaid"}
+                </h4>
+              </Box>
+              <div className="formGroup">
+                <Box display={"flex"} gap={3}>
+                  <p>Remaining Fee</p>
+                  <h4>{data.remainingFee}</h4>
+                </Box>
+                <Box display={"flex"} gap={3}>
+                  <p>Paid Fee</p>
+                  <h4>{data.paidFee}</h4>
+                </Box>
+                <Box display={"flex"} gap={3}>
+                  <p>Discount Fee</p>
+                  <h4>{data.discountFee}</h4>
+                </Box>
               </div>
             </Box>
           </Grid>

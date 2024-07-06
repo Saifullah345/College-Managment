@@ -28,7 +28,6 @@ export const EducationInfo = ({ setStepper, formData, setFormData }) => {
           headers: { "Content-Type": "application/json" },
         }
       );
-      console.log(result);
       if (result.data) {
         setViewClass(result.data);
       }

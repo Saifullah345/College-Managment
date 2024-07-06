@@ -1,4 +1,5 @@
 import React from "react";
+import { formatCNIC } from "./utilis";
 
 export const PersonalInfo = ({ formData, setFormData }) => {
   return (
@@ -46,9 +47,10 @@ export const PersonalInfo = ({ formData, setFormData }) => {
               placeholder="Enter CNIC..."
               value={formData.cnic}
               onChange={(e) => {
+                const formattedCNIC = formatCNIC(e.target.value);
                 setFormData((prevState) => ({
                   ...prevState,
-                  cnic: e.target.value,
+                  cnic: formattedCNIC,
                 }));
               }}
             />
