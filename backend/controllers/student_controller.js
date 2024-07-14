@@ -241,11 +241,53 @@ const updateStudent = async (req, res) => {
     //   }
     // }
 
-    const updatedStudent = await student.save();
+    await student.save();
 
     return res.status(200).json({
       code: 200,
       message: "Student data updated successfully",
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
+};
+const updateStudentFee = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { paidFee, remainingFee, classId } = req.body;
+
+    // Find the student by ID
+    let student = await Student.findById(id);
+
+    if (!student) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+
+    // Find the fee history for the specific class
+    let feeHistory = student.feeHistory.find(
+      (history) => history.sclassName.toString() === classId
+    );
+
+    if (!feeHistory) {
+      return res.status(404).json({ error: "Class fee history not found" });
+    }
+    console.log(feeHistory);
+
+    // Update the paid fee and remaining fee for the specified class
+    if (paidFee !== undefined) {
+      feeHistory.paidFee = paidFee;
+    }
+    if (remainingFee !== undefined) {
+      feeHistory.remainingFee = remainingFee;
+    }
+    console.log(feeHistory);
+    // Save the student document with updated fee history
+    await student.save();
+
+    return res.status(200).json({
+      code: 200,
+      message: "Fee details updated successfully",
     });
   } catch (err) {
     console.error(err);
@@ -520,6 +562,7 @@ const removeStudentAttendance = async (req, res) => {
 module.exports = {
   studentRegister,
   studentLogIn,
+  updateStudentFee,
   getStudents,
   getStudentDetail,
   deleteStudents,

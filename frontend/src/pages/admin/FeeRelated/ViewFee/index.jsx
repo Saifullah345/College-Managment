@@ -8,7 +8,7 @@ import { Backdrop, Box, CircularProgress } from "@mui/material";
 
 export const ViewFee = () => {
   const [viewFee, setViewFee] = useState([]);
-  const [message, setMessage] = useState("");
+  // const [message, setMessage] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [viewSession, setViewSession] = useState([]);
   const [session, setSession] = useState("");
@@ -67,7 +67,7 @@ export const ViewFee = () => {
           variant="contained"
           onClick={() => navigate("/Admin/addFee")}
         >
-          Add Fees
+          Add Fee
         </GreenButton>
       </Box>
       <Box marginTop={"30px"}>
@@ -77,6 +77,7 @@ export const ViewFee = () => {
             value={session}
             onChange={(e) => {
               setSession(e.target.value);
+              console.log(e.target.value);
             }}
             required
           >
@@ -99,16 +100,10 @@ export const ViewFee = () => {
           <CircularProgress color="inherit" />
           Please Wait
         </Backdrop>
-        {viewFee.length > 0 ? (
-          <FeeTable
-            session={viewFee}
-            setShowPopup={setShowPopup}
-            setMessage={setMessage}
-          />
-        ) : null}
+        {viewFee.length > 0 ? <FeeTable session={viewFee.feeHistory} /> : null}
       </Box>
       <Popup
-        message={message}
+        // message={message}
         setShowPopup={setShowPopup}
         showPopup={showPopup}
       />

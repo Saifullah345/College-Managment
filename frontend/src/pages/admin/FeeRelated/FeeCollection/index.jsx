@@ -1,17 +1,23 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Box, Button, Divider, Typography } from "@mui/material";
 import Popup from "../../../../components/Popup";
+import PrintButton from "./printButton";
+import FeeSlip from "./feeSlip";
 
 const FeeCollection = () => {
   const [student, setStudent] = useState("");
   const [students, setStudents] = useState([]);
+  const [formData, setFormData] = useState("");
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [showStudent, setShowStudent] = useState(false);
   const [fee, setFee] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const contentRef = useRef();
+  const [viewFee, setViewFee] = useState([]);
+  const [viewClass, setViewClass] = useState([]);
 
   const ViewAllStudent = async () => {
     try {
@@ -25,26 +31,23 @@ const FeeCollection = () => {
   };
   const UpdateFee = async () => {
     setLoading(true);
-    console.log("Update");
-    console.log(filteredStudents[0].remainingFee - fee);
 
     try {
       const studentId = filteredStudents[0]._id;
-      console.log(studentId);
       const result = await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/Student/${studentId}`,
+        `${process.env.REACT_APP_BASE_URL}/studentFee/${studentId}`,
         {
           paidFee: fee,
           remainingFee: filteredStudents[0].remainingFee - fee,
+          classId: formData,
         }
       );
 
-      console.log(result);
       if (result.data) {
         setLoading(false);
-        console.log(result);
         setShowPopup(true);
         setMessage("Done Successfully");
+        setFee("");
         ViewAllStudent();
       }
     } catch (error) {
@@ -54,21 +57,81 @@ const FeeCollection = () => {
     }
   };
 
+  const ViewFees = async () => {
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/allFee/664852fb9a9731f208836537`,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (result.data) {
+        setViewFee(result.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const ViewClass = async () => {
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/SclassList`,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (result.data) {
+        setViewClass(result.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    ViewFees();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionStorage.getItem("loader")]);
+
   useEffect(() => {
     ViewAllStudent();
+    ViewClass();
   }, []);
 
   useEffect(() => {
-    setFilteredStudents(
-      students.filter((studentItem) =>
-        studentItem.name.toLowerCase().includes(student.toLowerCase())
-      )
-    );
-  }, [student, students]);
+    if (student && formData) {
+      setFilteredStudents(
+        students?.filter(
+          (studentItem) =>
+            studentItem.name.toLowerCase().includes(student.toLowerCase()) &&
+            (!formData || studentItem.sclassName._id === formData)
+        )
+      );
+    }
+  }, [student, students, formData]);
 
   return (
     <div>
-      <Box width={"50%"}>
+      <Box
+        display={"flex"}
+        flexDirection={"column"}
+        width={"50%"}
+        justifyContent={"space-between"}
+        gap={"10px"}
+      >
+        <div className="formGroup">
+          <select
+            className="registerInput"
+            value={formData}
+            onChange={(e) => {
+              setFormData(e.target.value);
+            }}
+          >
+            <option value="">Select Class</option>
+            {viewClass?.map((val) => (
+              <option value={val?._id}>{val?.sclassName}</option>
+            ))}
+          </select>
+        </div>
         <input
           className="registerInput"
           type="text"
@@ -77,9 +140,11 @@ const FeeCollection = () => {
           onChange={(event) => setStudent(event.target.value)}
           required
         />
-        {!showStudent && student && (
+      </Box>
+      <Box width={"50%"}>
+        {!showStudent && student !== "" && (
           <ul className="dropdown">
-            {filteredStudents.map((studentItem) => (
+            {filteredStudents?.map((studentItem) => (
               <li
                 key={studentItem.id}
                 onClick={() => {
@@ -123,7 +188,7 @@ const FeeCollection = () => {
                   Class
                 </Typography>
                 <Typography fontWeight={600}>
-                  {filteredStudents[0]?.sclassName.sclassName}
+                  {filteredStudents[0]?.sclassName?.sclassName}
                 </Typography>
               </Box>
               <Box className="flex" width="100%" justifyContent="space-between">
@@ -131,7 +196,7 @@ const FeeCollection = () => {
                   Session
                 </Typography>
                 <Typography fontWeight={600}>
-                  {filteredStudents[0]?.session.session}
+                  {filteredStudents[0]?.session?.session}
                 </Typography>
               </Box>
               <Box className="flex" width="100%" justifyContent="space-between">
@@ -139,7 +204,11 @@ const FeeCollection = () => {
                   Discount Fee
                 </Typography>
                 <Typography fontWeight={600}>
-                  {filteredStudents[0]?.discountFee}
+                  {
+                    filteredStudents[0]?.feeHistory?.find(
+                      (val) => val.sclassName === formData
+                    )?.discountFee
+                  }
                 </Typography>
               </Box>
               <Box className="flex" width="100%" justifyContent="space-between">
@@ -147,7 +216,11 @@ const FeeCollection = () => {
                   Paid Fee
                 </Typography>
                 <Typography fontWeight={600}>
-                  {filteredStudents[0]?.paidFee}
+                  {
+                    filteredStudents[0]?.feeHistory?.find(
+                      (val) => val.sclassName === formData
+                    )?.paidFee
+                  }
                 </Typography>
               </Box>
               <Box className="flex" width="100%" justifyContent="space-between">
@@ -155,37 +228,62 @@ const FeeCollection = () => {
                   Remaining Fee
                 </Typography>
                 <Typography fontWeight={600}>
-                  {filteredStudents[0]?.remainingFee}
+                  {
+                    filteredStudents[0]?.feeHistory?.find(
+                      (val) => val.sclassName === formData
+                    )?.remainingFee
+                  }
                 </Typography>
               </Box>
             </Box>
           </Box>
         </Box>
       )}
-      {showStudent && (
+      {filteredStudents[0]?.feeHistory?.find(
+        (val) => val.sclassName === formData
+      )?.remainingFee !== "0" &&
+        showStudent && (
+          <>
+            <Box width={"50%"} marginTop={"10px"}>
+              <input
+                className="registerInput"
+                type="text"
+                placeholder="Enter Deposit Fee..."
+                value={fee}
+                onChange={(event) => setFee(event.target.value)}
+                required
+              />
+            </Box>
+            <Button
+              variant="contained"
+              onClick={() => {
+                UpdateFee();
+              }}
+              sx={{ mt: 2, width: "50%" }}
+              disabled={
+                filteredStudents[0]?.feeHistory?.find(
+                  (val) => val.sclassName === formData
+                )?.remainingFee === "0"
+              }
+            >
+              {loading ? "Loading..." : "Submit"}
+            </Button>
+          </>
+        )}
+      <Box justifyContent={"center"}>
         <>
-          <Box width={"50%"} marginTop={"10px"}>
-            <input
-              className="registerInput"
-              type="text"
-              placeholder="Enter Deposit Fee..."
-              value={fee}
-              onChange={(event) => setFee(event.target.value)}
-              required
+          <Box display={"flex"} justifyContent={"center"}>
+            <PrintButton contentRef={contentRef} viewFee={viewFee} />
+          </Box>
+          <Box display={"none"}>
+            <FeeSlip
+              ref={contentRef}
+              data={filteredStudents}
+              viewFee={viewFee}
             />
           </Box>
-          <Button
-            variant="contained"
-            onClick={() => {
-              UpdateFee();
-            }}
-            sx={{ mt: 2, width: "50%" }}
-            disabled={filteredStudents[0].remainingFee === "0"}
-          >
-            {loading ? "Loading..." : "Submit"}
-          </Button>
         </>
-      )}
+      </Box>
       <Popup
         message={message}
         setShowPopup={setShowPopup}

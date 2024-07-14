@@ -60,7 +60,7 @@ export const FeeTable = ({ session }) => {
                 <StyledTableCell>Fees</StyledTableCell>
                 {session.map((val) => (
                   <StyledTableCell key={val._id}>
-                    {val.sclass.sclassName}
+                    {val?.sclass?.sclassName}
                   </StyledTableCell>
                 ))}
               </StyledTableRow>

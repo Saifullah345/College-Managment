@@ -29,6 +29,9 @@ a {
   cursor: pointer;
 }
 
+.css-1ex1afd-MuiTableCell-root {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+}
 .flex-col {
   flex-direction: column;
   gap: 1rem;
