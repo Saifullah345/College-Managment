@@ -72,7 +72,9 @@ const FeeSlip = forwardRef((props, ref) => {
           )}
         />
       ) : null}
-      <SubmissionFeeTable session={data[0].feeHistory} />
+      {data[0]?.feeHistory?.length > 0 ? (
+        <SubmissionFeeTable session={data[0]?.feeHistory} />
+      ) : null}
     </Box>
   );
 });

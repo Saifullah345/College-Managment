@@ -60,6 +60,7 @@ export const ViewFee = () => {
     setLoader(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionStorage.getItem("loader"), session]);
+  console.log(viewFee);
   return (
     <div>
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
@@ -100,7 +101,7 @@ export const ViewFee = () => {
           <CircularProgress color="inherit" />
           Please Wait
         </Backdrop>
-        {viewFee.length > 0 ? <FeeTable session={viewFee.feeHistory} /> : null}
+        {viewFee.length > 0 ? <FeeTable session={viewFee} /> : null}
       </Box>
       <Popup
         // message={message}

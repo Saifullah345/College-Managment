@@ -14,6 +14,7 @@ import {
 import { StyledTableCell, StyledTableRow } from "../../../../components/styles";
 
 export const FeeTable = ({ session }) => {
+  console.log(session);
   const fees = [...Object.keys(initialFeeState), "SubTotal"];
 
   const calculateTotal = (val) => {
@@ -58,7 +59,7 @@ export const FeeTable = ({ session }) => {
             <TableHead>
               <StyledTableRow>
                 <StyledTableCell>Fees</StyledTableCell>
-                {session.map((val) => (
+                {session?.map((val) => (
                   <StyledTableCell key={val._id}>
                     {val?.sclass?.sclassName}
                   </StyledTableCell>
@@ -66,12 +67,12 @@ export const FeeTable = ({ session }) => {
               </StyledTableRow>
             </TableHead>
             <TableBody>
-              {fees.map((fee) => (
+              {fees?.map((fee) => (
                 <TableRow key={fee}>
                   <StyledTableCell className="capitalize">
                     {fee}: {initialFeeState[fee]}
                   </StyledTableCell>
-                  {session.map((val) => (
+                  {session?.map((val) => (
                     <StyledTableCell key={val._id + fee} className="capitalize">
                       {fee !== "SubTotal"
                         ? formatNumber(val[fee] ?? 0)

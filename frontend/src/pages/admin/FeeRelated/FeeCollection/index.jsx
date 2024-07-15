@@ -244,11 +244,25 @@ const FeeCollection = () => {
       )?.remainingFee !== "0" &&
         showStudent && (
           <>
-            <Box width={"50%"} marginTop={"10px"}>
+            <Box
+              width={"50%"}
+              display={"flex"}
+              flexDirection={"column"}
+              gap={"10px"}
+              marginTop={"10px"}
+            >
               <input
                 className="registerInput"
                 type="text"
                 placeholder="Enter Deposit Fee..."
+                value={fee}
+                onChange={(event) => setFee(event.target.value)}
+                required
+              />
+              <input
+                className="registerInput"
+                type="text"
+                placeholder="Enter Manual Receipt No..."
                 value={fee}
                 onChange={(event) => setFee(event.target.value)}
                 required
