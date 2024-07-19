@@ -12,7 +12,6 @@ const StudentDetail = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
   const viewStudentDetail = async () => {
-    setLoading(false);
     try {
       const result = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/Student/${id}`,
@@ -64,6 +63,7 @@ const StudentDetail = () => {
     if (admissionStatus !== "") Update();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [admissionStatus]);
+  console.log(data);
 
   return (
     <div className="register-form">
@@ -251,27 +251,51 @@ const StudentDetail = () => {
               padding={5}
               borderRadius={"10px"}
               boxShadow={"3"}
+              height={"21%"}
+              overflow={"auto"}
             >
               <Box display={"flex"} justifyContent={"space-between"}>
                 <h4>Fee Status</h4>
-                <h4 style={{ color: "red", textTransform: "capitalize" }}>
-                  {data.remainingFee === 0 ? "Paid" : "UnPaid"}
-                </h4>
+                {(() => {
+                  const feeEntry = data?.feeHistory?.find(
+                    (val) => val.sclassName === data.sclassName._id
+                  );
+                  const isPaid =
+                    feeEntry?.remainingFee === 0 ||
+                    feeEntry?.remainingFee === null;
+                  return (
+                    <h4
+                      style={{
+                        color: isPaid ? "green" : "red",
+                        textTransform: "capitalize",
+                      }}
+                    >
+                      {isPaid ? "Paid" : "UnPaid"}
+                    </h4>
+                  );
+                })()}
               </Box>
-              <div className="formGroup">
-                <Box display={"flex"} gap={3}>
-                  <p>Remaining Fee</p>
-                  <h4>{data.remainingFee}</h4>
-                </Box>
-                <Box display={"flex"} gap={3}>
-                  <p>Paid Fee</p>
-                  <h4>{data.paidFee}</h4>
-                </Box>
-                <Box display={"flex"} gap={3}>
-                  <p>Discount Fee</p>
-                  <h4>{data.discountFee}</h4>
-                </Box>
-              </div>
+
+              {data?.feeHistory.map((val) => (
+                <div className="formGroup">
+                  <Box display={"flex"} gap={3}>
+                    <p>Class </p>
+                    <h4>{val?.sclassName.sclassName || 0}</h4>
+                  </Box>
+                  <Box display={"flex"} gap={3}>
+                    <p>Remaining Fee</p>
+                    <h4>{val?.remainingFee || 0}</h4>
+                  </Box>
+                  <Box display={"flex"} gap={3}>
+                    <p>Paid Fee</p>
+                    <h4> {val?.paidFee || 0}</h4>
+                  </Box>
+                  <Box display={"flex"} gap={3}>
+                    <p>Discount Fee</p>
+                    <h4> {val?.discountFee || 0}</h4>
+                  </Box>
+                </div>
+              ))}
             </Box>
           </Grid>
         </Grid>

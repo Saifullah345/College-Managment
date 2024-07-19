@@ -209,37 +209,37 @@ const updateStudent = async (req, res) => {
     });
 
     // If a discount is provided, update the fee details accordingly
-    // if (updateData.discount) {
-    //   const feeDetails = await Fee.findOne({
-    //     sclass: student.sclassName,
-    //     session: student.session,
-    //   });
+    if (updateData.discount) {
+      const feeDetails = await Fee.findOne({
+        sclass: student.sclassName,
+        session: student.session._id,
+      });
 
-    //   if (feeDetails) {
-    //     const feeValues = feeDetails.toObject();
-    //     const tuitionFee = parseFloat(feeValues.tuitionFee) || 0;
-    //     const discountPercent = parseFloat(updateData.discount) || 0;
-    //     const discountAmount = (tuitionFee * discountPercent) / 100;
-    //     const remainingFee =
-    //       Object.keys(feeValues).reduce((sum, key) => {
-    //         if (
-    //           key !== "_id" &&
-    //           key !== "createdAt" &&
-    //           key !== "updatedAt" &&
-    //           key !== "__v" &&
-    //           key !== "session" &&
-    //           key !== "sclass"
-    //         ) {
-    //           const fee = parseFloat(feeValues[key]) || 0;
-    //           sum += fee;
-    //         }
-    //         return sum;
-    //       }, 0) - discountAmount;
+      if (feeDetails) {
+        const feeValues = feeDetails.toObject();
+        const tuitionFee = parseFloat(feeValues.tuitionFee) || 0;
+        const discountPercent = parseFloat(updateData.discount) || 0;
+        const discountAmount = (tuitionFee * discountPercent) / 100;
+        const remainingFee =
+          Object.keys(feeValues).reduce((sum, key) => {
+            if (
+              key !== "_id" &&
+              key !== "createdAt" &&
+              key !== "updatedAt" &&
+              key !== "__v" &&
+              key !== "session" &&
+              key !== "sclass"
+            ) {
+              const fee = parseFloat(feeValues[key]) || 0;
+              sum += fee;
+            }
+            return sum;
+          }, 0) - discountAmount;
 
-    //     student.discountFee = discountAmount;
-    //     student.remainingFee = remainingFee;
-    //   }
-    // }
+        student.discountFee = discountAmount;
+        student.remainingFee = remainingFee;
+      }
+    }
 
     await student.save();
 
@@ -252,6 +252,7 @@ const updateStudent = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
 const updateStudentFee = async (req, res) => {
   try {
     const { id } = req.params;
@@ -272,7 +273,6 @@ const updateStudentFee = async (req, res) => {
     if (!feeHistory) {
       return res.status(404).json({ error: "Class fee history not found" });
     }
-    console.log(feeHistory);
 
     // Update the paid fee and remaining fee for the specified class
     if (paidFee !== undefined) {
@@ -281,13 +281,14 @@ const updateStudentFee = async (req, res) => {
     if (remainingFee !== undefined) {
       feeHistory.remainingFee = remainingFee;
     }
-    console.log(feeHistory);
+
     // Save the student document with updated fee history
     await student.save();
 
     return res.status(200).json({
       code: 200,
       message: "Fee details updated successfully",
+      updatedFeeHistory: feeHistory, // Return the updated fee history for verification
     });
   } catch (err) {
     console.error(err);
@@ -343,7 +344,11 @@ const getStudentDetail = async (req, res) => {
   try {
     let student = await Student.findById(req.params.id)
       .populate("sclassName")
-      .populate("session");
+      .populate("session")
+      .populate({
+        path: "feeHistory.sclassName",
+        model: "sclass",
+      });
     if (student) {
       student.password = undefined;
       res.send(student);
@@ -417,16 +422,52 @@ const updateStudentClass = async (req, res) => {
       return res.status(400).json({ message: "sclassName is required" });
     }
 
-    // Update only the sclassName field
-    let result = await Student.findByIdAndUpdate(
-      req.params.id,
-      { $set: { sclassName } },
-      { new: true }
-    ).populate("sclassName");
-    // Exclude password from the response
-    result.password = undefined;
+    // Find the student by ID
+    let student = await Student.findById(req.params.id)
+      .populate("sclassName")
+      .populate("session");
 
-    return res.send(result);
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    // Update the sclassName field
+    student.sclassName = sclassName;
+
+    // Find the fee details for the new class and session
+    const feeDetails = await Fee.findOne({
+      sclass: student.sclassName,
+      session: student.session._id,
+    });
+
+    if (!feeDetails) {
+      return res.status(404).json({ message: "Fee details not found" });
+    }
+
+    // Calculate the fee details
+    const tuitionFee = parseFloat(feeDetails.tuitionFee) || 0;
+    const discountPercent = parseFloat(student.discount) || 0;
+    const discountAmount = (tuitionFee * discountPercent) / 100;
+    const remainingFee = tuitionFee - discountAmount;
+
+    // Add the new fee history entry
+    student.feeHistory.push({
+      sclassName: student.sclassName,
+      session: student.session,
+      totalFee: tuitionFee,
+      discountFee: discountAmount,
+      remainingFee,
+      paidFee: 0,
+      year: new Date().getFullYear().toString(),
+    });
+
+    // Save the updated student
+    await student.save();
+
+    // Exclude password from the response
+    student.password = undefined;
+
+    return res.send(student);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

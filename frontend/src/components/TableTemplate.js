@@ -16,7 +16,7 @@ const TableTemplate = ({
   header = "Actions",
 }) => {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   return (
     <>
       <TableContainer>
@@ -27,7 +27,7 @@ const TableTemplate = ({
                 <StyledTableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}
+                  style={{ minWidth: column.minWidth, whiteSpace: "nowrap" }}
                 >
                   {column.label}
                 </StyledTableCell>

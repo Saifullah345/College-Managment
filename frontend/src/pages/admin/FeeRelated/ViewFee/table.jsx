@@ -14,11 +14,10 @@ import {
 import { StyledTableCell, StyledTableRow } from "../../../../components/styles";
 
 export const FeeTable = ({ session }) => {
-  console.log(session);
   const fees = [...Object.keys(initialFeeState), "SubTotal"];
 
   const calculateTotal = (val) => {
-    return Object.keys(initialFeeState).reduce(
+    return Object.keys(initialFeeState)?.reduce(
       (sum, key) => sum + (Number(val[key]) || 0),
       0
     );

@@ -1,3 +1,4 @@
+// StudentTable.js
 import * as React from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,54 +13,70 @@ import { Edit, Visibility } from "@mui/icons-material";
 import { getAllSclasses } from "../../../redux/sclassRelated/sclassHandle";
 import { GreenButton } from "../../../components/buttonStyles";
 
-export const StudentsTable = () => {
+export const StudentsTable = ({ activeClass }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { studentsList, loading, error, response } = useSelector(
     (state) => state.student
   );
 
-  const { currentUser } = useSelector((state) => state.user);
+  // const { currentUser } = useSelector((state) => state.user);
   useEffect(() => {
-    dispatch(getAllStudents(currentUser._id));
-  }, [currentUser._id, dispatch]);
+    dispatch(getAllStudents());
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(getAllSclasses("Sclass"));
   }, [dispatch]);
 
   if (error) {
-    console.log(error);
   }
+
+  const filterStudents = (students) => {
+    if (activeClass === "All") {
+      return students;
+    }
+    return students.filter(
+      (student) => student.sclassName.sclassName === activeClass
+    );
+  };
 
   const studentColumns = [
     { id: "name", label: "Name", minWidth: 170 },
     { id: "fatherName", label: "Father Name", minWidth: 170 },
-    { id: "enrollmentNo", label: "Enrollment Number", minWidth: 100 },
+    { id: "enrollmentNo", label: "Enrollment No", minWidth: 100 },
     { id: "sclassName", label: "Class", minWidth: 170 },
-    { id: "mobileNumber", label: "Mobile Number", minWidth: 170 },
+    { id: "mobileNumber", label: "Mobile No", minWidth: 170 },
+    { id: "remainingFee", label: "Remaining Fee", minWidth: 170 },
     { id: "actions", label: "Actions", minWidth: 170 },
   ];
-
   const studentRows =
     studentsList &&
     studentsList.length > 0 &&
-    studentsList.map((student) => {
+    filterStudents(studentsList).map((student) => {
       return {
         name: student.name,
         fatherName: student.fatherName,
         enrollmentNo: student.enrollmentNo,
         sclassName: student.sclassName.sclassName,
+        remainingFee:
+          student.feeHistory.find(
+            (val) => val.sclassName === student.sclassName._id
+          ).remainingFee || 0,
         id: student._id,
         mobileNumber: student.mobileNumber,
         actions: (
           <>
             <Button
+              width="10px"
+              padding="0px"
               onClick={() => navigate(`/Admin/students/student/${student._id}`)}
             >
               <Visibility />
             </Button>
             <Button
+              width="10px"
+              padding="0px"
               onClick={() => navigate(`/Admin/Updatestudent/${student._id}`)}
             >
               <Edit />

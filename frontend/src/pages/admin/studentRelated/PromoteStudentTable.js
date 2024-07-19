@@ -1,27 +1,28 @@
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getAllStudents } from "../../../redux/studentRelated/studentHandle";
-import { Paper } from "@mui/material";
+import {
+  Paper,
+  ButtonGroup,
+  Button,
+  ClickAwayListener,
+  Grow,
+  MenuItem,
+  MenuList,
+  Popper,
+} from "@mui/material";
 import { BlackButton } from "../../../components/buttonStyles";
 import TableTemplate from "../../../components/TableTemplate";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import SpeedDialTemplate from "../../../components/SpeedDialTemplate";
-import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
 import { KeyboardArrowUp, KeyboardArrowDown } from "@mui/icons-material";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
-import Grow from "@mui/material/Grow";
-import Popper from "@mui/material/Popper";
-import MenuItem from "@mui/material/MenuItem";
-import MenuList from "@mui/material/MenuList";
 import Popup from "../../../components/Popup";
 import { getAllSclasses } from "../../../redux/sclassRelated/sclassHandle";
 import axios from "axios";
-import { useState } from "react";
 
-export const PromoteStudentsTable = () => {
+export const PromoteStudentsTable = ({ activeClass }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { studentsList, loading, error } = useSelector(
@@ -31,6 +32,7 @@ export const PromoteStudentsTable = () => {
   const [message, setMessage] = useState("");
   const { sclassesList } = useSelector((state) => state.sclass);
   const { currentUser } = useSelector((state) => state.user);
+
   useEffect(() => {
     dispatch(getAllStudents(currentUser._id));
   }, [currentUser._id, dispatch]);
@@ -43,11 +45,14 @@ export const PromoteStudentsTable = () => {
     console.log(error);
   }
 
-  const studentColumns = [
-    { id: "name", label: "Name", minWidth: 170 },
-    { id: "fatherName", label: "Father Name", minWidth: 170 },
-    { id: "sclassName", label: "Class", minWidth: 170 },
-  ];
+  const filterStudents = (students) => {
+    if (activeClass === "All") {
+      return students;
+    }
+    return students.filter(
+      (student) => student.sclassName.sclassName === activeClass
+    );
+  };
 
   const Update = async (classId, sclassName) => {
     try {
@@ -60,22 +65,29 @@ export const PromoteStudentsTable = () => {
           headers: { "Content-Type": "application/json" },
         }
       );
-      // console.log(result);
       if (result.data) {
         setShowPopup(true);
         sessionStorage.setItem("loader", !sessionStorage.getItem("loader"));
         setMessage("Done Successfully");
         dispatch(getAllStudents(currentUser._id));
+        console.log(result);
       }
     } catch (error) {
       setShowPopup(true);
       setMessage(error?.response?.data?.error);
     }
   };
+
+  const studentColumns = [
+    { id: "name", label: "Name", minWidth: 170 },
+    { id: "fatherName", label: "Father Name", minWidth: 170 },
+    { id: "sclassName", label: "Class", minWidth: 170 },
+  ];
+
   const studentRows =
     studentsList &&
     studentsList.length > 0 &&
-    studentsList.map((student) => {
+    filterStudents(studentsList).map((student) => {
       return {
         name: student.name,
         id: student._id,
@@ -83,10 +95,11 @@ export const PromoteStudentsTable = () => {
         sclassName: student.sclassName.sclassName,
       };
     });
+
   const StudentButtonHaver = ({ row }) => {
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
     const anchorRef = React.useRef(null);
-    const [selectedId, setSelectedId] = React.useState(
+    const [selectedId, setSelectedId] = useState(
       row.sclassName?._id || sclassesList[0]?._id || ""
     );
 
@@ -96,6 +109,7 @@ export const PromoteStudentsTable = () => {
       row.sclassName = sclassesList.find((sclass) => sclass._id === id);
       setOpen(false);
     };
+
     const handleToggle = () => {
       setOpen((prevOpen) => !prevOpen);
     };
@@ -107,9 +121,9 @@ export const PromoteStudentsTable = () => {
       setOpen(false);
     };
 
-    const selectedClass = sclassesList?.find(
-      (sclass) => sclass._id === selectedId
-    );
+    // const selectedClass = sclassesList?.find(
+    //   (sclass) => sclass._id === selectedId
+    // );
 
     return (
       <>

@@ -3,7 +3,7 @@ import { Button } from "@mui/material";
 import PrintIcon from "@mui/icons-material/Print";
 import ReactToPrint from "react-to-print";
 
-const PrintButton = ({ contentRef, viewFee }) => {
+const PrintButton = ({ contentRef }) => {
   return (
     <ReactToPrint
       trigger={() => (

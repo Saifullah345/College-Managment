@@ -25,7 +25,6 @@ export const ViewFee = () => {
             headers: { "Content-Type": "application/json" },
           }
         );
-        console.log(result);
         if (result.data) {
           setLoader(false);
           setViewFee(result.data);
@@ -60,7 +59,6 @@ export const ViewFee = () => {
     setLoader(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionStorage.getItem("loader"), session]);
-  console.log(viewFee);
   return (
     <div>
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
@@ -78,7 +76,6 @@ export const ViewFee = () => {
             value={session}
             onChange={(e) => {
               setSession(e.target.value);
-              console.log(e.target.value);
             }}
             required
           >

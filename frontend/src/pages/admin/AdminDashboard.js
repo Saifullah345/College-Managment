@@ -49,6 +49,7 @@ import { AddFee } from "./FeeRelated/AddFee";
 import { Fee } from "./FeeRelated";
 import StudentDetail from "./studentRelated/StudentDetail";
 import { UpdateStudent } from "./studentRelated/UpdateStudent";
+import { Accounts } from "./Accounts";
 
 const AdminDashboard = () => {
   const [open, setOpen] = useState(false);
@@ -165,6 +166,7 @@ const AdminDashboard = () => {
               path="/Admin/Updatestudent/:id"
               element={<UpdateStudent />}
             />
+            <Route path="/Admin/AccountStatement" element={<Accounts />} />
             <Route
               path="/Admin/students/student/attendance/:id"
               element={<StudentAttendance situation="Student" />}

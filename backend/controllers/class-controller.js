@@ -31,12 +31,68 @@ const sclassCreate = async (req, res) => {
 
 const sclassList = async (req, res) => {
   try {
+    // Fetch all sclasses
     let sclasses = await Sclass.find();
-    if (sclasses.length > 0) {
-      res.send(sclasses);
-    } else {
-      res.send({ message: "No sclasses found" });
+    const totalClasses = sclasses.length;
+
+    // If no sclasses found, return an appropriate message
+    if (totalClasses === 0) {
+      return res.send({ message: "No sclasses found" });
     }
+
+    // Aggregate student data by class
+    const classData = await Student.aggregate([
+      { $match: { sclassName: { $in: sclasses.map((sclass) => sclass._id) } } },
+      {
+        $group: {
+          _id: "$sclassName",
+          totalStudents: { $sum: 1 },
+          totalFemale: {
+            $sum: { $cond: [{ $eq: ["$gender", "female"] }, 1, 0] },
+          },
+          totalMale: {
+            $sum: { $cond: [{ $eq: ["$gender", "male"] }, 1, 0] },
+          },
+        },
+      },
+    ]);
+
+    // Calculate total students across all classes
+    const totalStudentsAcrossClasses = classData.reduce(
+      (sum, item) => sum + item.totalStudents,
+      0
+    );
+
+    // Add student data to each sclass
+    const detailedClassData = sclasses.map((sclass) => {
+      const data = classData.find(
+        (item) => item._id.toString() === sclass._id.toString()
+      ) || {
+        totalStudents: 0,
+        totalFemale: 0,
+        totalMale: 0,
+      };
+
+      // Avoid division by zero
+      const averageFemale =
+        totalStudentsAcrossClasses > 0
+          ? (data.totalFemale / totalStudentsAcrossClasses) * 100
+          : 0;
+      const averageMale =
+        totalStudentsAcrossClasses > 0
+          ? (data.totalMale / totalStudentsAcrossClasses) * 100
+          : 0;
+
+      return {
+        ...sclass.toObject(),
+        totalStudents: Math.round(data.totalStudents),
+        averageFemale: Math.round(averageFemale),
+        averageMale: Math.round(averageMale),
+      };
+    });
+
+    // Send the response
+    res.send(detailedClassData);
   } catch (err) {
     res.status(500).json(err);
   }

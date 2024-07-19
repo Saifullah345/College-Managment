@@ -38,7 +38,7 @@ const FeeCollection = () => {
         `${process.env.REACT_APP_BASE_URL}/studentFee/${studentId}`,
         {
           paidFee: fee,
-          remainingFee: filteredStudents[0].remainingFee - fee,
+          remainingFee: filteredStudents[0].remainingFee - fee || 0,
           classId: formData,
         }
       );
@@ -228,11 +228,9 @@ const FeeCollection = () => {
                   Remaining Fee
                 </Typography>
                 <Typography fontWeight={600}>
-                  {
-                    filteredStudents[0]?.feeHistory?.find(
-                      (val) => val.sclassName === formData
-                    )?.remainingFee
-                  }
+                  {filteredStudents[0]?.feeHistory?.find(
+                    (val) => val.sclassName === formData
+                  )?.remainingFee || 0}
                 </Typography>
               </Box>
             </Box>
@@ -241,7 +239,10 @@ const FeeCollection = () => {
       )}
       {filteredStudents[0]?.feeHistory?.find(
         (val) => val.sclassName === formData
-      )?.remainingFee !== "0" &&
+      )?.remainingFee !== 0 &&
+        filteredStudents[0]?.feeHistory?.find(
+          (val) => val.sclassName === formData
+        )?.remainingFee !== undefined &&
         showStudent && (
           <>
             <Box
@@ -287,7 +288,7 @@ const FeeCollection = () => {
       <Box justifyContent={"center"}>
         <>
           <Box display={"flex"} justifyContent={"center"}>
-            <PrintButton contentRef={contentRef} viewFee={viewFee} />
+            <PrintButton contentRef={contentRef} />
           </Box>
           <Box display={"none"}>
             <FeeSlip
