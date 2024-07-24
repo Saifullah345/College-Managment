@@ -276,7 +276,7 @@ const StudentDetail = () => {
                 })()}
               </Box>
 
-              {data?.feeHistory.map((val) => (
+              {data?.feeHistory?.map((val) => (
                 <div className="formGroup">
                   <Box display={"flex"} gap={3}>
                     <p>Class </p>
