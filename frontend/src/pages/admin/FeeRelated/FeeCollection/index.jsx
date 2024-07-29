@@ -5,6 +5,19 @@ import Popup from "../../../../components/Popup";
 import PrintButton from "./printButton";
 import FeeSlip from "./feeSlip";
 
+export const initialFeeState = {
+  admissionFee: "",
+  tuitionFee: "",
+  cardFee: "",
+  libraryFee: "",
+  examinationFee: "",
+  welfareFee: "",
+  hospitalFee: "",
+  enrollmentFee: "",
+  verificationFee: "",
+  specialFee: "",
+};
+
 const FeeCollection = () => {
   const [student, setStudent] = useState("");
   const [students, setStudents] = useState([]);
@@ -18,6 +31,7 @@ const FeeCollection = () => {
   const contentRef = useRef();
   const [viewFee, setViewFee] = useState([]);
   const [viewClass, setViewClass] = useState([]);
+  const [selectedFeeType, setSelectedFeeType] = useState("");
 
   const ViewAllStudent = async () => {
     try {
@@ -29,17 +43,37 @@ const FeeCollection = () => {
       console.log(error);
     }
   };
+
   const UpdateFee = async () => {
     setLoading(true);
 
     try {
       const studentId = filteredStudents[0]._id;
+      const existingFee = filteredStudents[0]?.feeHistory?.find(
+        (val) => val.sclassName === formData
+      );
+
+      // Check if the fee type has already been paid
+      if (
+        existingFee &&
+        existingFee.paidFees &&
+        existingFee.paidFees[selectedFeeType]
+      ) {
+        setShowPopup(true);
+        setLoading(false);
+        setMessage("Fee already paid for the selected fee type.");
+        return;
+      }
       const result = await axios.put(
         `${process.env.REACT_APP_BASE_URL}/studentFee/${studentId}`,
         {
           paidFee: fee,
-          remainingFee: filteredStudents[0].remainingFee - fee || 0,
+          remainingFee:
+            filteredStudents[0]?.feeHistory?.find(
+              (val) => val.sclassName === formData
+            )?.remainingFee - fee || 0,
           classId: formData,
+          feeType: selectedFeeType,
         }
       );
 
@@ -48,6 +82,7 @@ const FeeCollection = () => {
         setShowPopup(true);
         setMessage("Done Successfully");
         setFee("");
+        setSelectedFeeType("");
         ViewAllStudent();
       }
     } catch (error) {
@@ -72,6 +107,7 @@ const FeeCollection = () => {
       console.log(error);
     }
   };
+
   const ViewClass = async () => {
     try {
       const result = await axios.get(
@@ -87,6 +123,7 @@ const FeeCollection = () => {
       console.log(error);
     }
   };
+
   useEffect(() => {
     ViewFees();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -96,6 +133,10 @@ const FeeCollection = () => {
     ViewAllStudent();
     ViewClass();
   }, []);
+  const getSelectedFeeDetails = () => {
+    const fee = viewFee.find((val) => val.sclass._id === formData);
+    return fee ? (fee[selectedFeeType] === "" ? 0 : fee[selectedFeeType]) : 0;
+  };
 
   useEffect(() => {
     if (student && formData) {
@@ -128,7 +169,25 @@ const FeeCollection = () => {
           >
             <option value="">Select Class</option>
             {viewClass?.map((val) => (
-              <option value={val?._id}>{val?.sclassName}</option>
+              <option key={val?._id} value={val?._id}>
+                {val?.sclassName}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="formGroup">
+          <select
+            className="registerInput"
+            value={selectedFeeType}
+            onChange={(e) => {
+              setSelectedFeeType(e.target.value);
+            }}
+          >
+            <option value="">Select Fee Type</option>
+            {Object.keys(initialFeeState).map((feeType) => (
+              <option key={feeType} value={feeType}>
+                {feeType}
+              </option>
             ))}
           </select>
         </div>
@@ -191,6 +250,24 @@ const FeeCollection = () => {
                   {filteredStudents[0]?.sclassName?.sclassName}
                 </Typography>
               </Box>
+              {selectedFeeType && (
+                <Box
+                  className="flex"
+                  width="100%"
+                  justifyContent="space-between"
+                >
+                  <Typography
+                    align="left"
+                    textTransform="capitalize"
+                    textAlign="left"
+                  >
+                    {selectedFeeType}
+                  </Typography>
+                  <Typography fontWeight={600}>
+                    {getSelectedFeeDetails()}
+                  </Typography>
+                </Box>
+              )}
               <Box className="flex" width="100%" justifyContent="space-between">
                 <Typography align="left" textAlign="left">
                   Session
@@ -263,46 +340,39 @@ const FeeCollection = () => {
               <input
                 className="registerInput"
                 type="text"
-                placeholder="Enter Manual Receipt No..."
-                value={fee}
-                onChange={(event) => setFee(event.target.value)}
-                required
+                placeholder="Remaining Fee"
+                value={
+                  filteredStudents[0]?.remainingFee - fee > 0
+                    ? filteredStudents[0]?.remainingFee - fee
+                    : 0
+                }
+                disabled
+              />
+              <Button
+                type="button"
+                variant="contained"
+                className="registerButton"
+                onClick={UpdateFee}
+                disabled={loading}
+              >
+                {loading ? "Loading..." : "Submit"}
+              </Button>
+
+              <PrintButton contentRef={contentRef} />
+            </Box>
+            <Box display={"none"}>
+              <FeeSlip
+                ref={contentRef}
+                data={filteredStudents}
+                viewFee={viewFee}
               />
             </Box>
-            <Button
-              variant="contained"
-              onClick={() => {
-                UpdateFee();
-              }}
-              sx={{ mt: 2, width: "50%" }}
-              disabled={
-                filteredStudents[0]?.feeHistory?.find(
-                  (val) => val.sclassName === formData
-                )?.remainingFee === "0"
-              }
-            >
-              {loading ? "Loading..." : "Submit"}
-            </Button>
           </>
         )}
-      <Box justifyContent={"center"}>
-        <>
-          <Box display={"flex"} justifyContent={"center"}>
-            <PrintButton contentRef={contentRef} />
-          </Box>
-          <Box display={"none"}>
-            <FeeSlip
-              ref={contentRef}
-              data={filteredStudents}
-              viewFee={viewFee}
-            />
-          </Box>
-        </>
-      </Box>
       <Popup
         message={message}
-        setShowPopup={setShowPopup}
         showPopup={showPopup}
+        setShowPopup={setShowPopup}
       />
     </div>
   );

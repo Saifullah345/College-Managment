@@ -29,6 +29,11 @@ const feeHistorySchema = new mongoose.Schema(
     year: {
       type: String,
     },
+    paidFees: {
+      type: Map,
+      of: Boolean,
+      default: {},
+    },
   },
   { timestamps: true }
 );

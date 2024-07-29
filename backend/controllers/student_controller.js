@@ -256,7 +256,7 @@ const updateStudent = async (req, res) => {
 const updateStudentFee = async (req, res) => {
   try {
     const { id } = req.params;
-    const { paidFee, remainingFee, classId } = req.body;
+    const { paidFee, remainingFee, classId, feeType } = req.body;
 
     // Find the student by ID
     let student = await Student.findById(id);
@@ -280,6 +280,13 @@ const updateStudentFee = async (req, res) => {
     }
     if (remainingFee !== undefined) {
       feeHistory.remainingFee = remainingFee;
+    }
+
+    // Ensure feeType is valid and not empty before setting it in the map
+    if (feeType !== undefined && feeType.trim() !== "") {
+      feeHistory.paidFees.set(feeType, true);
+    } else {
+      return res.status(400).json({ error: "Invalid fee type" });
     }
 
     // Save the student document with updated fee history

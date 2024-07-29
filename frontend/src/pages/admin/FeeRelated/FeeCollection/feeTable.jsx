@@ -42,7 +42,7 @@ const FeeTable = ({ session }) => {
               </StyledTableRow>
             </TableHead>
             <TableBody>
-              {fees.map((fee, index) => (
+              {fees.length>0&&fees.map((fee, index) => (
                 <TableRow key={fee}>
                   <TableCell sx={{ padding: "4px", paddingLeft: "30px" }}>
                     {index + 1}
