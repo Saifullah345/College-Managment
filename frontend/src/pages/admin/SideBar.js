@@ -109,6 +109,18 @@ const SideBar = () => {
           </ListItemIcon>
           <ListItemText primary="Students" />
         </ListItemButton>
+        <ListItemButton component={Link} to="/Admin/message">
+          <ListItemIcon>
+            <PersonOutlineIcon
+              color={
+                location.pathname.startsWith("/Admin/message")
+                  ? "primary"
+                  : "inherit"
+              }
+            />
+          </ListItemIcon>
+          <ListItemText primary="Message" />
+        </ListItemButton>
 
         {/* 
                 <ListItemButton component={Link} to="/Admin/students">
