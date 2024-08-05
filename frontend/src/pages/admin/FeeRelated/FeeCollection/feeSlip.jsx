@@ -1,81 +1,218 @@
-import { Box, Typography } from "@mui/material";
-import { forwardRef } from "react";
-import FeeTable from "./feeTable";
-import { SubmissionFeeTable } from "./submissionFeeTable";
+import React, { forwardRef } from "react";
+import "./feeReceipt.css";
 
 const FeeSlip = forwardRef((props, ref) => {
-  const { data, viewFee } = props;
   return (
-    <Box ref={ref} sx={{ margin: "2px", padding: "10px" }}>
-      <Box
-        display={"flex"}
-        flexDirection={"column"}
-        alignContent={"center"}
-        margin={"auto"}
-        textAlign={"center"}
-        justifyContent={"center"}
-      >
-        <h1>Logo</h1>
-        <h4>eSKooly</h4>
-        <h4>0300-34543321 | www.eskooly.com | info@eskooly.com</h4>
-        <h1 style={{ color: "red" }}>Fee Submission Slip</h1>
-      </Box>
-      <hr />
-      <Box display={"flex"} gap={"10px"} padding={"10px"}>
-        <img
-          src={"https://eskooly.com/bb/uploads/students/no-image.png"}
-          height={100}
-          style={{ borderRadius: "100%" }}
-          width={100}
-          alt="reload"
-        />
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 2,
-          }}
-        >
-          <Typography
-            sx={{ textDecoration: "underline", textUnderlineOffset: "10px" }}
-          >
-            RegNo: 3232
-          </Typography>
-          <Typography
-            sx={{ textDecoration: "underline", textUnderlineOffset: "10px" }}
-          >
-            EnrollmentNo: {data[0]?.enrollmentNo}
-          </Typography>
-          <Typography
-            sx={{ textDecoration: "underline", textUnderlineOffset: "10px" }}
-          >
-            Student Name: {data[0]?.name}
-          </Typography>
-          {data[0]?.fatherName && (
-            <Typography
-              sx={{ textDecoration: "underline", textUnderlineOffset: "10px" }}
-            >
-              Father Name: {data[0]?.fatherName}
-            </Typography>
-          )}
-          <Typography
-            sx={{ textDecoration: "underline", textUnderlineOffset: "10px" }}
-          >
-            Class: {data[0]?.sclassName?.sclassName}
-          </Typography>
-        </Box>
-      </Box>
-      {viewFee.length > 0 ? (
-        <FeeTable
-          session={viewFee.filter(
-            (fee) => fee.sclass?._id === data[0]?.sclassName?._id
-          )}
-        />
-      ) : null}
-      {data[0]?.feeHistory?.length > 0 ? (
-        <SubmissionFeeTable session={data[0]?.feeHistory} />
-      ) : null}
-    </Box>
+    <div className="receipt-container" ref={ref}>
+      <div className="receipt-content">
+        <div className="receipt-column">
+          {/* Office Copy */}
+          <div className="receipt-header">Office Copy</div>
+          <div className="college-info">
+            <h4>ASPIRE COLLEGE</h4>
+            <small>8th Floor, Balaji Infotech Park, Wagle Estate, Thane</small>
+            <p>Phone No: 020-25432947 Website: www.aspire.edu</p>
+          </div>
+          <div className="receipt-title">FEE RECEIPT</div>
+          <div className="receipt-details">
+            <div className="details-left">
+              <p>
+                <strong>Receipt No:</strong> 1718/02518
+              </p>
+              <small>
+                <strong>Received From:</strong> Gauri Pandharinath Patole
+              </small>
+              <p>
+                <strong>Mother Name:</strong> Chhaya
+              </p>
+              <p>
+                <strong>Division:</strong> MBA-II-A
+              </p>
+              <p>
+                <strong>Branch:</strong> General
+              </p>
+            </div>
+            <div className="details-right">
+              <p>
+                <strong>Date:</strong> 7-2-2018
+              </p>
+              <p>
+                <strong>Student-ID:</strong> 1617/ESBS/00283
+              </p>
+              <p>
+                <strong>Course:</strong> MBA
+              </p>
+              <p>
+                <strong>Class:</strong> MBA-II
+              </p>
+            </div>
+          </div>
+          <table className="fee-table">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Tuition Fees /17-18</td>
+                <td>57,418.00</td>
+              </tr>
+              <tr>
+                <td>Development Fees /17-18</td>
+                <td>12,842.00</td>
+              </tr>
+              <tr>
+                <td>SPPU Student Activity Fees /17-18</td>
+                <td>1,000.00</td>
+              </tr>
+              <tr>
+                <td>Miscellaneous Course Fees /17-18</td>
+                <td>500.00</td>
+              </tr>
+              <tr>
+                <td>University Prorata Fees /17-18</td>
+                <td>592.00</td>
+              </tr>
+              <tr>
+                <td>Students Insurance Fees /17-18</td>
+                <td>25.00</td>
+              </tr>
+            </tbody>
+          </table>
+          <div className="total-amount">
+            <p>
+              <strong>Total:</strong> 72,377.00
+            </p>
+          </div>
+          <div className="payment-info">
+            <p>
+              <strong>Mode Of Payment:</strong> Cash
+            </p>
+            <p>
+              <strong>Name Of User:</strong> GANESH
+            </p>
+            <small>
+              <strong>Amount in Words:</strong> INR Seventy Two Thousand Three
+              Hundred Seventy Seven Only.
+            </small>
+          </div>
+          <div className="remarks-signature">
+            <p>
+              <strong>Remark</strong>
+            </p>
+            <p>
+              <strong>Signature</strong>
+            </p>
+          </div>
+          <small className="note">DD/Cheque subject to be realization.</small>
+        </div>
+        <div className="receipt-column">
+          {/* Student Copy */}
+          <div className="receipt-header">Student Copy</div>
+          <div className="college-info">
+            <h4>ASPIRE COLLEGE</h4>
+            <small>8th Floor, Balaji Infotech Park, Wagle Estate, Thane</small>
+            <p>Phone No: 020-25432947 Website: www.aspire.edu</p>
+          </div>
+          <div className="receipt-title">FEE RECEIPT</div>
+          <div className="receipt-details">
+            <div className="details-left">
+              <p>
+                <strong>Receipt No:</strong> 1718/02518
+              </p>
+              <small>
+                <strong>Received From:</strong> Gauri Pandharinath Patole
+              </small>
+              <p>
+                <strong>Mother Name:</strong> Chhaya
+              </p>
+              <p>
+                <strong>Division:</strong> MBA-II-A
+              </p>
+              <p>
+                <strong>Branch:</strong> General
+              </p>
+            </div>
+            <div className="details-right">
+              <p>
+                <strong>Date:</strong> 7-2-2018
+              </p>
+              <p>
+                <strong>Student-ID:</strong> 1617/ESBS/00283
+              </p>
+              <p>
+                <strong>Course:</strong> MBA
+              </p>
+              <p>
+                <strong>Class:</strong> MBA-II
+              </p>
+            </div>
+          </div>
+          <table className="fee-table">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Tuition Fees /17-18</td>
+                <td>57,418.00</td>
+              </tr>
+              <tr>
+                <td>Development Fees /17-18</td>
+                <td>12,842.00</td>
+              </tr>
+              <tr>
+                <td>SPPU Student Activity Fees /17-18</td>
+                <td>1,000.00</td>
+              </tr>
+              <tr>
+                <td>Miscellaneous Course Fees /17-18</td>
+                <td>500.00</td>
+              </tr>
+              <tr>
+                <td>University Prorata Fees /17-18</td>
+                <td>592.00</td>
+              </tr>
+              <tr>
+                <td>Students Insurance Fees /17-18</td>
+                <td>25.00</td>
+              </tr>
+            </tbody>
+          </table>
+          <div className="total-amount">
+            <p>
+              <strong>Total:</strong> 72,377.00
+            </p>
+          </div>
+          <div className="payment-info">
+            <p>
+              <strong>Mode Of Payment:</strong> Cash
+            </p>
+            <p>
+              <strong>Name Of User:</strong> GANESH
+            </p>
+            <small>
+              <strong>Amount in Words:</strong> INR Seventy Two Thousand Three
+              Hundred Seventy Seven Only.
+            </small>
+          </div>
+          <div className="remarks-signature">
+            <p>
+              <strong>Remark</strong>
+            </p>
+            <p>
+              <strong>Signature</strong>
+            </p>
+          </div>
+          <small className="note">DD/Cheque subject to be realization.</small>
+        </div>
+      </div>
+    </div>
   );
 });
 

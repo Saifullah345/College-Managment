@@ -28,6 +28,9 @@ a {
   padding: 8px;
   cursor: pointer;
 }
+.border-r-2 {
+  border-right: "10px solid red";
+}
 
 .css-1ex1afd-MuiTableCell-root {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
