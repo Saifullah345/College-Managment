@@ -185,17 +185,17 @@ const FeeSlip = forwardRef((props, ref) => {
             </tbody>
           </table>
           <div className="total-amount">
-            <p>
+            <small>
               <strong>Total:</strong> 72,377.00
-            </p>
+            </small>
           </div>
           <div className="payment-info">
-            <p>
+            <small>
               <strong>Mode Of Payment:</strong> Cash
-            </p>
-            <p>
+            </small>
+            <small>
               <strong>Name Of User:</strong> GANESH
-            </p>
+            </small>
             <small>
               <strong>Amount in Words:</strong> INR Seventy Two Thousand Three
               Hundred Seventy Seven Only.
