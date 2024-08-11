@@ -4,7 +4,7 @@ const Subject = require("../models/subjectSchema.js");
 const driveHandlers = require("../utilits/drive_handlers.js");
 const multer = require("multer");
 const Fee = require("../models/feeSchema");
-
+const mongoose = require("mongoose");
 const upload = multer().fields([
   { name: "idCardFront", maxCount: 1 },
   { name: "idCardBack", maxCount: 1 },
@@ -120,6 +120,7 @@ const studentRegister = async (req, res) => {
           session: studentData.session,
           totalFee,
           discountFee: discountAmount,
+          discount: studentData.discount,
           remainingFee,
           paidFee: 0,
         },
@@ -334,9 +335,45 @@ const studentLogIn = async (req, res) => {
 
 const getStudents = async (req, res) => {
   try {
+    // Fetch students with populated references
     let students = await Student.find()
       .populate("sclassName")
-      .populate("session");
+      .populate("session")
+      .exec();
+
+    // Fetch all fees and populate related session and sclass
+    const fees = await Fee.find().populate("session").populate("sclass").exec();
+
+    // Create new student objects with updated feeHistory
+    students = students.map((student) => {
+      // Filter fees based on student’s sclassName and session
+      const studentFees = fees.filter(
+        (fee) =>
+          fee.sclass.toString() === student.sclassName.toString() &&
+          fee.session.toString() === student.session.toString()
+      );
+
+      // Construct new feeHistory array based on matching fees
+      const newFeeHistory = studentFees.map((fee) => ({
+        sclassName: fee.sclass,
+        session: fee.session,
+        totalFee: fee.totalFee,
+        discountFee: fee.discountFee,
+        fee: fee, // Reference to the fee
+        discount: fee.discount,
+        remainingFee: fee.remainingFee,
+        paidFee: fee.paidFee,
+        year: fee.year,
+        paidFees: fee.paidFees,
+      }));
+
+      // Merge new feeHistory with existing feeHistory
+      return {
+        ...student.toObject(),
+        feeHistory: [...student.feeHistory, ...newFeeHistory],
+      };
+    });
+
     if (students.length > 0) {
       res.send(students);
     } else {
@@ -349,20 +386,104 @@ const getStudents = async (req, res) => {
 
 const getStudentDetail = async (req, res) => {
   try {
+    // Fetch the student by ID with populated references
     let student = await Student.findById(req.params.id)
       .populate("sclassName")
       .populate("session")
       .populate({
         path: "feeHistory.sclassName",
         model: "sclass",
-      });
-    if (student) {
-      student.password = undefined;
-      res.send(student);
-    } else {
-      res.send({ message: "No student found" });
+      })
+      .exec();
+
+    if (!student) {
+      return res.send({ message: "No student found" });
     }
+
+    const studentSclassId = student.sclassName._id.toString();
+    const studentSessionId = student.session._id.toString();
+
+    // Fetch fees based on student's sclass and session
+    const studentFees = await Fee.find({
+      sclass: studentSclassId,
+      session: studentSessionId,
+    })
+      .populate("session")
+      .populate("sclass")
+      .exec();
+
+    // Merge new fee history into existing fee history
+    studentFees.forEach((fee) => {
+      const existingHistory = student.feeHistory.find(
+        (history) =>
+          history.sclassName._id.toString() === fee.sclass._id.toString() &&
+          history.session._id.toString() === fee.session._id.toString()
+      );
+
+      if (existingHistory) {
+        // Update existing history with new fee data
+        existingHistory.totalFee = fee.totalFee || existingHistory.totalFee;
+        existingHistory.discountFee =
+          fee.discountFee || existingHistory.discountFee;
+        existingHistory.discount = fee.discount || existingHistory.discount;
+        existingHistory.remainingFee =
+          fee.remainingFee || existingHistory.remainingFee;
+        existingHistory.paidFee = fee.paidFee || existingHistory.paidFee;
+        existingHistory.paidFees = fee.paidFees || existingHistory.paidFees;
+        existingHistory.fee = fee;
+      } else {
+        // Add new fee data if it doesn't exist in feeHistory
+        student.feeHistory.push({
+          sclassName: fee.sclass,
+          session: fee.session,
+          totalFee: fee.totalFee,
+          discountFee: fee.discountFee,
+          discount: fee.discount,
+          remainingFee: fee.remainingFee,
+          paidFee: fee.paidFee,
+          paidFees: fee.paidFees,
+          fee: fee,
+        });
+      }
+    });
+
+    // Ensure feeHistory has unique entries by checking sclassName and session IDs
+    const uniqueFeeHistory = student.feeHistory.reduce((acc, current) => {
+      const existingEntry = acc.find(
+        (item) =>
+          item.sclassName._id.toString() ===
+            current.sclassName._id.toString() &&
+          item.session._id.toString() === current.session._id.toString()
+      );
+
+      if (existingEntry) {
+        // Merge the fields from current into existingEntry if not already set
+        existingEntry.totalFee =
+          existingEntry.totalFee || current.totalFee || 0;
+        existingEntry.discountFee =
+          existingEntry.discountFee || current.discountFee || 0;
+        existingEntry.discount =
+          existingEntry.discount || current.discount || 0;
+        existingEntry.remainingFee =
+          existingEntry.remainingFee || current.remainingFee || 0;
+        existingEntry.paidFee = existingEntry.paidFee || current.paidFee || 0;
+        existingEntry.paidFees =
+          existingEntry.paidFees || current.paidFees || new Map();
+        existingEntry.fee = existingEntry.fee || current.fee || {};
+      } else {
+        acc.push(current);
+      }
+
+      return acc;
+    }, []);
+
+    student.feeHistory = uniqueFeeHistory;
+
+    // Remove sensitive information
+    student.password = undefined;
+    return res.send(student);
   } catch (err) {
+    console.error("Error in getStudentDetail:", err);
     res.status(500).json(err);
   }
 };

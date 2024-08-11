@@ -18,6 +18,14 @@ const feeHistorySchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    fee: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "fee",
+    },
+    discount: {
+      type: Number,
+      default: 0,
+    },
     remainingFee: {
       type: Number,
       default: 0,
