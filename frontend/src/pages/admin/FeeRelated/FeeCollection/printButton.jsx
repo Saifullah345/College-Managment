@@ -9,7 +9,7 @@ const PrintButton = ({ contentRef }) => {
       trigger={() => (
         <Button
           variant="contained"
-          sx={{ mt: 2, display: "flex", gap: "10px", width: "auto" }}
+          sx={{ display: "flex", gap: "10px", width: "auto" }}
           //   disabled={viewFee[0]?.remainingFee !== "0"}
         >
           <PrintIcon />

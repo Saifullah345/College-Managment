@@ -4,6 +4,7 @@ import { PersonalInfo } from "../PersonalInfo";
 import { EducationInfo } from "../EducationInfo";
 import { AcademicDetail } from "../AcademicDetail";
 import { RelationInfo } from "../RelationInfo";
+import { Discount } from "../StudentDetail/Discount";
 
 const AddStudentForm = ({ formData, setFormData, loader }) => {
   return (
@@ -22,6 +23,8 @@ const AddStudentForm = ({ formData, setFormData, loader }) => {
         setFormData={setFormData}
       />
       <hr />
+      <Discount formData={formData} setFormData={setFormData} />
+      <hr />
       <RelationInfo
         // setStepper={setStepper}
         formData={formData}
@@ -29,8 +32,6 @@ const AddStudentForm = ({ formData, setFormData, loader }) => {
       />
       <hr />
       <AcademicDetail formData={formData} setFormData={setFormData} />
-
-      {/* Additional input fields */}
 
       <button className="registerButton" type="submit" disabled={loader}>
         {loader ? <CircularProgress size={24} color="inherit" /> : "Submit"}

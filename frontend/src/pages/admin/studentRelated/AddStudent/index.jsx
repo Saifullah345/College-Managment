@@ -177,8 +177,6 @@ export const AddStudent = ({ setActive }) => {
                         {val.session}
                       </option>
                     ))}
-
-                    {/* Add more options as needed */}
                   </select>
                 </div>
                 <button

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { Box, Button, Divider, Typography } from "@mui/material";
@@ -19,9 +20,13 @@ export const initialFeeState = {
 };
 
 const FeeCollection = () => {
-  const [student, setStudent] = useState("");
+  const [student, setStudent] = useState(
+    localStorage.getItem("studentName") || ""
+  );
   const [students, setStudents] = useState([]);
-  const [formData, setFormData] = useState("");
+  const [formData, setFormData] = useState(
+    localStorage.getItem("classID") || ""
+  );
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [showStudent, setShowStudent] = useState(false);
   const [fee, setFee] = useState("");
@@ -31,7 +36,9 @@ const FeeCollection = () => {
   const contentRef = useRef();
   const [viewFee, setViewFee] = useState([]);
   const [viewClass, setViewClass] = useState([]);
-  const [selectedFeeType, setSelectedFeeType] = useState("");
+  const [selectedFeeType, setSelectedFeeType] = useState(
+    localStorage.getItem("feeType") || ""
+  );
 
   const ViewAllStudent = async () => {
     try {
@@ -149,6 +156,21 @@ const FeeCollection = () => {
       );
     }
   }, [student, students, formData]);
+
+  useEffect(() => {
+    if (localStorage.getItem("classID")) {
+      setFormData(localStorage.getItem("classID"));
+    } else if (localStorage.getItem("feeType")) {
+      setSelectedFeeType(localStorage.getItem("feeType"));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [localStorage.getItem("classID") || localStorage.getItem("feeType")]);
+  useEffect(() => {
+    if (localStorage.getItem("studentName")) {
+      setStudent(localStorage.getItem("studentName"));
+      setShowStudent(true);
+    }
+  }, [localStorage.getItem("studentName")]);
 
   return (
     <div>

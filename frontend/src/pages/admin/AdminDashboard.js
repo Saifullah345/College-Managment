@@ -51,6 +51,7 @@ import StudentDetail from "./studentRelated/StudentDetail";
 import { UpdateStudent } from "./studentRelated/UpdateStudent";
 import { Accounts } from "./Accounts";
 import WhatsAppMessageSender from "./Message";
+import StudentFee from "./studentRelated/StudentDetail/Fee";
 
 const AdminDashboard = () => {
   const [open, setOpen] = useState(false);
@@ -163,6 +164,10 @@ const AdminDashboard = () => {
             <Route
               path="/Admin/students/student/:id"
               element={<StudentDetail />}
+            />
+            <Route
+              path="/Admin/students/feeDetail/:id"
+              element={<StudentFee />}
             />
             <Route
               path="/Admin/Updatestudent/:id"

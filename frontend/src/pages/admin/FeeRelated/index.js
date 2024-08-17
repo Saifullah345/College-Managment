@@ -4,7 +4,10 @@ import { ViewFee } from "./ViewFee";
 import FeeCollection from "./FeeCollection";
 
 export const Fee = () => {
-  const [active, setActive] = useState("Fee Particulars");
+  const [active, setActive] = useState(
+    localStorage.getItem("active"),
+    "Fee Particulars"
+  );
 
   return (
     <div className="register-form">

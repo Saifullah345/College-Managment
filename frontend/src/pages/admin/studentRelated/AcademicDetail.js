@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import React from "react";
 
 export const AcademicDetail = ({ formData, setFormData }) => {
@@ -37,6 +38,9 @@ export const AcademicDetail = ({ formData, setFormData }) => {
               required
             />
           </div>
+          <Box visibility={"hidden"} className="formGroup">
+            <input className="registerInput" type="text" />
+          </Box>
         </div>
         <div className="flex justify-between">
           <div className="formGroup">
@@ -67,6 +71,9 @@ export const AcademicDetail = ({ formData, setFormData }) => {
               required
             />
           </div>
+          <Box visibility={"hidden"} className="formGroup">
+            <input className="registerInput" type="text" />
+          </Box>
         </div>
       </div>
     </div>

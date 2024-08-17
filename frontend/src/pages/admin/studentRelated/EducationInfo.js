@@ -1,9 +1,9 @@
+import { Box } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 export const EducationInfo = ({ setStepper, formData, setFormData }) => {
   const [viewBoard, setViewBoard] = useState([]);
-  const [viewClass, setViewClass] = useState([]);
 
   const ViewBoard = async () => {
     try {
@@ -20,24 +20,10 @@ export const EducationInfo = ({ setStepper, formData, setFormData }) => {
       console.log(error);
     }
   };
-  const ViewClass = async () => {
-    try {
-      const result = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/SclassList`,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      if (result.data) {
-        setViewClass(result.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   useEffect(() => {
     ViewBoard();
-    ViewClass();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionStorage.getItem("loader")]);
   return (
@@ -65,24 +51,9 @@ export const EducationInfo = ({ setStepper, formData, setFormData }) => {
                 <option value="master">Master</option>
               </select>
             </div>
-            <div className="formGroup">
-              <label>Class *</label>
-              <select
-                className="registerInput"
-                value={formData.sclassName}
-                onChange={(e) => {
-                  setFormData((prevState) => ({
-                    ...prevState,
-                    sclassName: e.target.value,
-                  }));
-                }}
-              >
-                <option value="">Select Class</option>
-                {viewClass?.map((val) => (
-                  <option value={val?._id}>{val?.sclassName}</option>
-                ))}
-              </select>
-            </div>
+            <Box visibility={"hidden"} className="formGroup">
+              <input className="registerInput" type="text" />
+            </Box>
           </div>
           <div className="flex justify-between">
             <div className="formGroup">
@@ -103,7 +74,10 @@ export const EducationInfo = ({ setStepper, formData, setFormData }) => {
                 ))}
               </select>
             </div>
-            <div className="formGroup">
+            <Box visibility={"hidden"} className="formGroup">
+              <input className="registerInput" type="text" />
+            </Box>
+            {/* <div className="formGroup">
               <label>Enrollment No *</label>
               <input
                 className="registerInput"
@@ -118,7 +92,7 @@ export const EducationInfo = ({ setStepper, formData, setFormData }) => {
                 }}
                 autoComplete="enrollmentNo"
               />
-            </div>
+            </div> */}
           </div>
           <div className="flex justify-between">
             <div className="formGroup">
@@ -136,21 +110,9 @@ export const EducationInfo = ({ setStepper, formData, setFormData }) => {
                 }}
               />
             </div>
-            <div className="formGroup">
-              <label>Discount Fee *</label>
-              <input
-                className="registerInput"
-                type="text"
-                placeholder="In %"
-                value={formData.discount}
-                onChange={(e) => {
-                  setFormData((prevState) => ({
-                    ...prevState,
-                    discount: e.target.value,
-                  }));
-                }}
-              />
-            </div>
+            <Box visibility={"hidden"} className="formGroup">
+              <input className="registerInput" type="text" />
+            </Box>
           </div>
           <div className="flex justify-between">
             <div className="formGroup">
@@ -168,6 +130,11 @@ export const EducationInfo = ({ setStepper, formData, setFormData }) => {
                 }}
               />
             </div>
+            <Box visibility={"hidden"} className="formGroup">
+              <input className="registerInput" type="text" />
+            </Box>
+          </div>
+          <div className="flex justify-between">
             <div className="formGroup">
               <label>Years of Passing *</label>
               <input
@@ -183,6 +150,9 @@ export const EducationInfo = ({ setStepper, formData, setFormData }) => {
                 }}
               />
             </div>
+            <Box visibility={"hidden"} className="formGroup">
+              <input className="registerInput" type="text" />
+            </Box>
           </div>
         </div>
       </form>

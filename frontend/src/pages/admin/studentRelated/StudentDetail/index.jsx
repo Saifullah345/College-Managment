@@ -1,18 +1,17 @@
 import { Box, Grid, Typography } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Popup from "../../../../components/Popup";
-import FeeDetails from "./feeDetail";
 
 const StudentDetail = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({});
   const { id } = useParams();
   const [admissionStatus, setAdmissionStatus] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
-  console.log(data);
   const viewStudentDetail = async () => {
     try {
       const result = await axios.get(
@@ -24,6 +23,8 @@ const StudentDetail = () => {
       console.log(result);
       if (result.status === 200) {
         setData(result.data);
+        localStorage.setItem("studentName", result.data.name);
+
         setLoading(false);
       }
     } catch (err) {
@@ -65,20 +66,28 @@ const StudentDetail = () => {
     if (admissionStatus !== "") Update();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [admissionStatus]);
-  console.log(data);
 
   return (
     <div className="register-form">
-      <Typography
-        component="h1"
-        marginBottom={"10px"}
-        variant="h6"
-        color="inherit"
-        noWrap
-        sx={{ flexGrow: 1 }}
-      >
-        Student Detail
-      </Typography>
+      <Box display={"flex"} justifyContent={"space-between"}>
+        <Typography
+          component="h1"
+          marginBottom={"10px"}
+          variant="h6"
+          color="inherit"
+          noWrap
+          sx={{ flexGrow: 1 }}
+        >
+          Student Detail
+        </Typography>
+        <button
+          className="registerButton"
+          onClick={() => navigate(`/Admin/students/feeDetail/${id}`)}
+          type="submit"
+        >
+          Fee Detail
+        </button>
+      </Box>
       {loading ? (
         "Loading..."
       ) : (
@@ -170,6 +179,40 @@ const StudentDetail = () => {
                 <h4>{data.tehsil}</h4>
               </Box>
             </Box>
+          </Grid>
+          <Grid item xs={12} lg={6} gap={3}>
+            <Box
+              display={"flex"}
+              flexDirection={"column"}
+              border={"1px solid #ccc"}
+              borderRadius={"10px"}
+              padding={3}
+              boxShadow={1}
+              marginTop={"20px"}
+            >
+              <Box display={"flex"} justifyContent={"space-between"}>
+                <h4>Admission Status</h4>
+                <h4 style={{ color: "red", textTransform: "capitalize" }}>
+                  {data.admissionStatus}
+                </h4>
+              </Box>
+              <div className="formGroup">
+                <select
+                  defaultValue={data.admissionStatus}
+                  className="registerInput"
+                  value={admissionStatus}
+                  onChange={(e) => {
+                    setAdmissionStatus(e.target.value);
+                  }}
+                  required
+                >
+                  <option value="">Select Admission Status</option>
+                  <option value="pending">Pending</option>
+                  <option value="continue">Continue</option>
+                  <option value="dropout">Dropout</option>
+                </select>
+              </div>
+            </Box>
             <Box
               display={"flex"}
               flexDirection={"column"}
@@ -213,64 +256,6 @@ const StudentDetail = () => {
                   {data.MetricDMC?.slice(0, 30)}
                 </a>
               </Box>
-            </Box>
-          </Grid>
-          <Grid item xs={12} lg={6} gap={3}>
-            {data?.feeHistory?.map((val) => (
-              <Box
-                display={"flex"}
-                flexDirection={"column"}
-                border={"1px solid #ccc"}
-                borderRadius={"10px"}
-                padding={3}
-                boxShadow={1}
-                marginTop={"20px"}
-              >
-                <Typography variant="h6" color="primary">
-                  {val?.sclassName?.sclassName}
-                </Typography>
-                <Typography variant="body1" color="textSecondary">
-                  Discount : {val?.discount}% ( {val.discountFee} )
-                </Typography>
-
-                <Typography variant="h6" marginTop={2}>
-                  Payment History
-                </Typography>
-                <FeeDetails fee={val} />
-              </Box>
-            ))}
-
-            <Box
-              display={"flex"}
-              flexDirection={"column"}
-              border={"1px solid #ccc"}
-              borderRadius={"10px"}
-              padding={3}
-              boxShadow={1}
-              marginTop={"20px"}
-            >
-              <Box display={"flex"} justifyContent={"space-between"}>
-                <h4>Admission Status</h4>
-                <h4 style={{ color: "red", textTransform: "capitalize" }}>
-                  {data.admissionStatus}
-                </h4>
-              </Box>
-              <div className="formGroup">
-                <select
-                  defaultValue={data.admissionStatus}
-                  className="registerInput"
-                  value={admissionStatus}
-                  onChange={(e) => {
-                    setAdmissionStatus(e.target.value);
-                  }}
-                  required
-                >
-                  <option value="">Select Admission Status</option>
-                  <option value="pending">Pending</option>
-                  <option value="continue">Continue</option>
-                  <option value="dropout">Dropout</option>
-                </select>
-              </div>
             </Box>
           </Grid>
         </Grid>
