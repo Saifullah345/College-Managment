@@ -56,21 +56,21 @@ const FeeCollection = () => {
 
     try {
       const studentId = filteredStudents[0]._id;
-      const existingFee = filteredStudents[0]?.feeHistory?.find(
-        (val) => val.sclassName === formData
-      );
+      // const existingFee = filteredStudents[0]?.feeHistory?.find(
+      //   (val) => val.sclassName === formData
+      // );
 
       // Check if the fee type has already been paid
-      if (
-        existingFee &&
-        existingFee.paidFees &&
-        existingFee.paidFees[selectedFeeType]
-      ) {
-        setShowPopup(true);
-        setLoading(false);
-        setMessage("Fee already paid for the selected fee type.");
-        return;
-      }
+      // if (
+      //   existingFee &&
+      //   existingFee.paidFees &&
+      //   existingFee.paidFees[selectedFeeType]
+      // ) {
+      //   setShowPopup(true);
+      //   setLoading(false);
+      //   setMessage("Fee already paid for the selected fee type.");
+      //   return;
+      // }
       const result = await axios.put(
         `${process.env.REACT_APP_BASE_URL}/studentFee/${studentId}`,
         {
@@ -81,6 +81,7 @@ const FeeCollection = () => {
             )?.remainingFee - fee || 0,
           classId: formData,
           feeType: selectedFeeType,
+          fee: fee,
         }
       );
 

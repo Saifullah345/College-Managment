@@ -257,16 +257,22 @@ const updateStudent = async (req, res) => {
 const updateStudentFee = async (req, res) => {
   try {
     const { id } = req.params;
-    const { paidFee, remainingFee, classId, feeType } = req.body;
+    const { paidFee, remainingFee, classId, feeType, fee } = req.body;
 
-    // Find the student by ID
     let student = await Student.findById(id);
-
     if (!student) {
       return res.status(404).json({ error: "Student not found" });
     }
+    const feeDetails = await Fee.findOne({
+      sclass: student.sclassName,
+      session: student.session,
+    });
+    if (!feeDetails) {
+      return res.status(400).json({
+        error: "Fee details not found for the specified class and session",
+      });
+    }
 
-    // Find the fee history for the specific class
     let feeHistory = student.feeHistory.find(
       (history) => history.sclassName.toString() === classId
     );
@@ -274,29 +280,56 @@ const updateStudentFee = async (req, res) => {
     if (!feeHistory) {
       return res.status(404).json({ error: "Class fee history not found" });
     }
-
-    // Update the paid fee and remaining fee for the specified class
     if (paidFee !== undefined) {
       feeHistory.paidFee = paidFee;
     }
     if (remainingFee !== undefined) {
       feeHistory.remainingFee = remainingFee;
     }
-
-    // Ensure feeType is valid and not empty before setting it in the map
-    if (feeType !== undefined && feeType.trim() !== "") {
-      feeHistory.paidFees.set(feeType, true);
-    } else {
+    if (!feeType || typeof feeType !== "string" || feeType.trim() === "") {
       return res.status(400).json({ error: "Invalid fee type" });
     }
 
-    // Save the student document with updated fee history
-    await student.save();
+    if (paidFee === undefined || paidFee <= 0) {
+      return res.status(400).json({ error: "Invalid paid fee amount" });
+    }
+    const previousPaidFee = feeHistory.paidFees.get(feeType) || 0;
+
+    if (
+      Number(paidFee) + Number(previousPaidFee) >
+      Number(feeDetails[feeType])
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Fee Already Submitted or Invalid Amount" });
+    }
+    const fees = Number(feeDetails[feeType]) - Number(paidFee);
+
+    const totalFee = feeHistory.remainingFees.get(feeType) || 0;
+    if (totalFee === undefined) {
+      return res
+        .status(400)
+        .json({ error: "Invalid fee type in remaining fees" });
+    }
+    // console.log(previousPaidFee, "Previous Paid Fee");
+    // console.log(fees, "Fees");
+    const updatedPaidFee = Number(previousPaidFee) + Number(fees);
+    // console.log(updatedPaidFee);
+    // console.log(previousPaidFee, "previo");
+
+    // if (updatedPaidFee > totalFee) {
+    //   return res.status(400).json({ error: "Paid fee exceeds the total fee" });
+    // }
+    const x = Number(previousPaidFee) + Number(paidFee);
+    feeHistory.remainingFees.set(feeType, Number(feeDetails[feeType]) - x);
+    feeHistory.paidFees.set(feeType, Number(previousPaidFee) + Number(paidFee));
+    // console.log(feeHistory);
+    // await student.save();
 
     return res.status(200).json({
       code: 200,
       message: "Fee details updated successfully",
-      updatedFeeHistory: feeHistory, // Return the updated fee history for verification
+      updatedFeeHistory: feeHistory,
     });
   } catch (err) {
     console.error(err);

@@ -48,7 +48,18 @@ const StudentFee = () => {
       >
         Fee Detail
       </Typography>
-      {data?.feeHistory?.map((val, index) => (
+      <Typography
+        marginTop={"20px"}
+        component="h1"
+        marginBottom={"10px"}
+        variant="h6"
+        color="inherit"
+        noWrap
+        sx={{ flexGrow: 1, textTransform: "capitalize" }}
+      >
+        {data?.name}
+      </Typography>
+      {data?.feeHistory?.reverse()?.map((val, index) => (
         <Box
           key={index}
           display={"flex"}
@@ -57,6 +68,7 @@ const StudentFee = () => {
           borderRadius={"10px"}
           padding={3}
           boxShadow={1}
+          // marginTop={"2px"}
           marginTop={"20px"}
         >
           <Typography variant="h6" color="primary">
@@ -69,6 +81,7 @@ const StudentFee = () => {
           <Typography variant="h6" marginTop={2}>
             Payment History
           </Typography>
+
           <FeeDetails fee={val} />
         </Box>
       ))}

@@ -8,16 +8,29 @@ const FeeDetails = ({ fee }) => {
   const contentRef = useRef();
   const navigate = useNavigate();
   const excludeFields = ["_id", "createdAt", "updatedAt", "__v"];
-  localStorage.setItem("classID", fee.sclassName._id);
-  const feeEntries = Object.entries(fee.fee).filter(([key, value]) => {
+  localStorage.setItem("classID", fee?.sclassName?._id);
+
+  // Safely access fee and remainingFees
+  const feeData = fee?.fee || {};
+  const remainingFees = fee?.remainingFees || {};
+  const paidFees = fee?.paidFees || {};
+
+  // Filter unpaid fees that are not excluded
+  const feeEntries = Object.entries(feeData).filter(([key, value]) => {
     return (
       value !== "" &&
       value !== "0" &&
       typeof value !== "object" &&
       !excludeFields.includes(key) &&
-      !fee.paidFees[key]
+      !paidFees[key]
     );
   });
+
+  // Calculate the total remaining fee
+  const totalRemainingFee = Object.entries(remainingFees).reduce(
+    (acc, [key, value]) => acc + value,
+    0
+  );
 
   return (
     <div>
@@ -45,7 +58,7 @@ const FeeDetails = ({ fee }) => {
         </Typography>
       </Box>
 
-      {Object.keys(fee.paidFees).map((paidFeeKey, index) => (
+      {Object.keys(paidFees).map((paidFeeKey, index) => (
         <Box
           key={paidFeeKey}
           display={"flex"}
@@ -70,7 +83,7 @@ const FeeDetails = ({ fee }) => {
             {Math.floor(1000 + Math.random() * 9000)}
           </Typography>
           <Typography variant="body2" width="10%">
-            {fee.fee[paidFeeKey]}
+            {paidFees[paidFeeKey]}
           </Typography>
           <Typography variant="body2" width="10%">
             <PrintButton contentRef={contentRef} />
@@ -84,9 +97,10 @@ const FeeDetails = ({ fee }) => {
         textAlign={"right"}
         fontWeight={600}
       >
-        Subtotal (Paid): {fee.paidFee}
+        Subtotal (Paid): {fee?.paidFee}
       </Typography>
 
+      {/* Display Remaining Fees from feeEntries */}
       {feeEntries.length > 0 && (
         <div>
           <Typography variant="h6" marginTop={2}>
@@ -102,7 +116,35 @@ const FeeDetails = ({ fee }) => {
               }}
               key={key}
               display={"flex"}
-              // justifyContent={"space-between"}
+              gap={"50px"}
+              marginBottom={1}
+            >
+              <Typography variant="body2" marginY={"auto"}>
+                {key.charAt(0).toUpperCase() +
+                  key.slice(1).replace(/([A-Z])/g, " $1")}
+              </Typography>
+              <Box display={"flex"} gap={"10px"}>
+                <Typography variant="body2" margin={"auto"}>
+                  {key === "tuitionFee" ? value - fee.discountFee : value}
+                </Typography>
+                <Button marginTop={"-5px"}>Collect Fee</Button>
+              </Box>
+            </Box>
+          ))}
+        </div>
+      )}
+
+      {Object.entries(remainingFees).map(([key, value], index) => {
+        if (value > 0) {
+          return (
+            <Box
+              onClick={() => {
+                localStorage.setItem("feeType", key);
+                localStorage.setItem("active", "Fee Collection");
+                navigate("/Admin/fee");
+              }}
+              key={key}
+              display={"flex"}
               gap={"50px"}
               marginBottom={1}
             >
@@ -114,21 +156,20 @@ const FeeDetails = ({ fee }) => {
                 <Typography variant="body2" margin={"auto"}>
                   {value}
                 </Typography>
-                <Button marginTop={"-5px"} onClick={() => {}}>
-                  Collect Fee
-                </Button>
+                <Button marginTop={"-5px"}>Collect Fee</Button>
               </Box>
             </Box>
-          ))}
-        </div>
-      )}
+          );
+        }
+        return null;
+      })}
 
       <Box display={"flex"} justifyContent={"space-between"} mt={2}>
         <Typography variant="body1" fontWeight={600}>
           Total Due
         </Typography>
         <Typography variant="body1" fontWeight={600} color="primary">
-          {fee.remainingFee}
+          {totalRemainingFee}
         </Typography>
       </Box>
       <Box display={"none"}>

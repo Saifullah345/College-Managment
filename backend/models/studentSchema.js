@@ -39,7 +39,12 @@ const feeHistorySchema = new mongoose.Schema(
     },
     paidFees: {
       type: Map,
-      of: Boolean,
+      of: Number,
+      default: {},
+    },
+    remainingFees: {
+      type: Map,
+      of: Number,
       default: {},
     },
   },
