@@ -27,10 +27,10 @@ const FeeDetails = ({ fee }) => {
   });
 
   // Calculate the total remaining fee
-  const totalRemainingFee = Object.entries(remainingFees).reduce(
-    (acc, [key, value]) => acc + value,
-    0
-  );
+  // const totalRemainingFee = Object.entries(remainingFees).reduce(
+  //   (acc, [key, value]) => acc + value,
+  //   0
+  // );
 
   return (
     <div>
@@ -169,7 +169,7 @@ const FeeDetails = ({ fee }) => {
           Total Due
         </Typography>
         <Typography variant="body1" fontWeight={600} color="primary">
-          {totalRemainingFee}
+          {fee.remainingFee}
         </Typography>
       </Box>
       <Box display={"none"}>

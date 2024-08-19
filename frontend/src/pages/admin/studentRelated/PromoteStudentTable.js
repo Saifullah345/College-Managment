@@ -74,6 +74,7 @@ export const PromoteStudentsTable = ({ activeClass }) => {
       }
     } catch (error) {
       setShowPopup(true);
+      console.log(error);
       setMessage(error?.response?.data?.error);
     }
   };

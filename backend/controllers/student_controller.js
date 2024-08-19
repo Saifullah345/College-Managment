@@ -5,6 +5,7 @@ const driveHandlers = require("../utilits/drive_handlers.js");
 const multer = require("multer");
 const Fee = require("../models/feeSchema");
 const mongoose = require("mongoose");
+
 const upload = multer().fields([
   { name: "idCardFront", maxCount: 1 },
   { name: "idCardBack", maxCount: 1 },
@@ -192,7 +193,8 @@ const updateStudent = async (req, res) => {
           discountFee: discountAmount,
           remainingFee,
           paidFee: student.paidFee || 0,
-          year: student.year, // Maintain the year field if necessary
+          year: student.year,
+          s,
         });
       }
     }
@@ -281,7 +283,7 @@ const updateStudentFee = async (req, res) => {
       return res.status(404).json({ error: "Class fee history not found" });
     }
     if (paidFee !== undefined) {
-      feeHistory.paidFee = paidFee;
+      feeHistory.paidFee += paidFee;
     }
     if (remainingFee !== undefined) {
       feeHistory.remainingFee = remainingFee;
@@ -324,7 +326,7 @@ const updateStudentFee = async (req, res) => {
     feeHistory.remainingFees.set(feeType, Number(feeDetails[feeType]) - x);
     feeHistory.paidFees.set(feeType, Number(previousPaidFee) + Number(paidFee));
     // console.log(feeHistory);
-    // await student.save();
+    await student.save();
 
     return res.status(200).json({
       code: 200,
@@ -587,9 +589,14 @@ const updateStudentClass = async (req, res) => {
     let student = await Student.findById(req.params.id)
       .populate("sclassName")
       .populate("session");
+    if (student.feeHistory[student.feeHistory.length - 1].remainingFee !== 0) {
+      return res
+        .status(404)
+        .json({ error: "Please Submit Previous Class Fee" });
+    }
 
     if (!student) {
-      return res.status(404).json({ message: "Student not found" });
+      return res.status(404).json({ error: "Student not found" });
     }
 
     // Update the sclassName field
@@ -602,14 +609,30 @@ const updateStudentClass = async (req, res) => {
     });
 
     if (!feeDetails) {
-      return res.status(404).json({ message: "Fee details not found" });
+      return res.status(404).json({ error: "Fee details not found" });
     }
-
+    const feeValues = feeDetails.toObject();
+    let totalFee = Object.keys(feeValues).reduce((sum, key) => {
+      if (
+        key !== "_id" &&
+        key !== "createdAt" &&
+        key !== "updatedAt" &&
+        key !== "__v" &&
+        key !== "session" &&
+        key !== "sclass"
+      ) {
+        const fee = parseFloat(feeValues[key]) || 0;
+        sum += fee;
+      }
+      return sum;
+    }, 0);
+    console.log(student.feeHistory);
     // Calculate the fee details
-    const tuitionFee = parseFloat(feeDetails.tuitionFee) || 0;
-    const discountPercent = parseFloat(student.discount) || 0;
+
+    const tuitionFee = parseFloat(feeValues.tuitionFee) || 0;
+    const discountPercent = 0;
     const discountAmount = (tuitionFee * discountPercent) / 100;
-    const remainingFee = tuitionFee - discountAmount;
+    const remainingFee = totalFee - discountAmount;
 
     // Add the new fee history entry
     student.feeHistory.push({
@@ -630,6 +653,7 @@ const updateStudentClass = async (req, res) => {
 
     return res.send(student);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: error.message });
   }
 };
