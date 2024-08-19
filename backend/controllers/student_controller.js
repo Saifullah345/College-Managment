@@ -626,7 +626,7 @@ const updateStudentClass = async (req, res) => {
       }
       return sum;
     }, 0);
-    console.log(student.feeHistory);
+    // console.log(student.feeHistory);
     // Calculate the fee details
 
     const tuitionFee = parseFloat(feeValues.tuitionFee) || 0;
