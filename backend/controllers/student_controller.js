@@ -259,12 +259,13 @@ const updateStudent = async (req, res) => {
 const updateStudentFee = async (req, res) => {
   try {
     const { id } = req.params;
-    const { paidFee, remainingFee, classId, feeType, fee } = req.body;
+    const { paidFee, remainingFee, classId, feeType } = req.body;
 
     let student = await Student.findById(id);
     if (!student) {
       return res.status(404).json({ error: "Student not found" });
     }
+
     const feeDetails = await Fee.findOne({
       sclass: student.sclassName,
       session: student.session,
@@ -282,12 +283,7 @@ const updateStudentFee = async (req, res) => {
     if (!feeHistory) {
       return res.status(404).json({ error: "Class fee history not found" });
     }
-    if (paidFee !== undefined) {
-      feeHistory.paidFee += paidFee;
-    }
-    if (remainingFee !== undefined) {
-      feeHistory.remainingFee = remainingFee;
-    }
+
     if (!feeType || typeof feeType !== "string" || feeType.trim() === "") {
       return res.status(400).json({ error: "Invalid fee type" });
     }
@@ -295,37 +291,62 @@ const updateStudentFee = async (req, res) => {
     if (paidFee === undefined || paidFee <= 0) {
       return res.status(400).json({ error: "Invalid paid fee amount" });
     }
-    const previousPaidFee = feeHistory.paidFees.get(feeType) || 0;
 
+    // Find existing record for the feeType or initialize a new one
+    const paidFees = feeHistory.paidFees.filter(
+      (fee) => fee.feeType === feeType
+    );
+    const previousPaidFee = paidFees.reduce(
+      (total, fee) => total + fee.amount,
+      0
+    );
+
+    // Check if the total paid amount exceeds the total fee amount
     if (
       Number(paidFee) + Number(previousPaidFee) >
       Number(feeDetails[feeType])
     ) {
       return res
         .status(400)
-        .json({ error: "Fee Already Submitted or Invalid Amount" });
+        .json({ error: "Paid fee exceeds the total fee for this type" });
     }
-    const fees = Number(feeDetails[feeType]) - Number(paidFee);
 
-    const totalFee = feeHistory.remainingFees.get(feeType) || 0;
-    if (totalFee === undefined) {
-      return res
-        .status(400)
-        .json({ error: "Invalid fee type in remaining fees" });
+    // Append new paid fee record
+    feeHistory.paidFees.push({
+      feeType,
+      amount: Number(paidFee),
+      date: new Date(),
+    });
+
+    // Update total paid fee for the class
+    const totalPaidSoFar = previousPaidFee + Number(paidFee);
+    feeHistory.paidFee += Number(paidFee); // Add the new paid fee to the total
+
+    const totalFeeAmount = Number(feeDetails[feeType]);
+
+    // Update the remaining fees
+    if (totalPaidSoFar >= totalFeeAmount) {
+      // Remove the fee type from remainingFees array
+      feeHistory.remainingFees = feeHistory.remainingFees.filter(
+        (fee) => fee.feeType !== feeType
+      );
+    } else {
+      // Update or add the remaining fee entry
+      feeHistory.remainingFees = feeHistory.remainingFees.filter(
+        (fee) => fee.feeType !== feeType
+      );
+
+      feeHistory.remainingFees.push({
+        feeType,
+        amount: totalFeeAmount - totalPaidSoFar,
+        date: new Date(),
+      });
     }
-    // console.log(previousPaidFee, "Previous Paid Fee");
-    // console.log(fees, "Fees");
-    const updatedPaidFee = Number(previousPaidFee) + Number(fees);
-    // console.log(updatedPaidFee);
-    // console.log(previousPaidFee, "previo");
 
-    // if (updatedPaidFee > totalFee) {
-    //   return res.status(400).json({ error: "Paid fee exceeds the total fee" });
-    // }
-    const x = Number(previousPaidFee) + Number(paidFee);
-    feeHistory.remainingFees.set(feeType, Number(feeDetails[feeType]) - x);
-    feeHistory.paidFees.set(feeType, Number(previousPaidFee) + Number(paidFee));
-    // console.log(feeHistory);
+    if (remainingFee !== undefined) {
+      feeHistory.remainingFee = remainingFee;
+    }
+
     await student.save();
 
     return res.status(200).json({
@@ -421,7 +442,6 @@ const getStudents = async (req, res) => {
 
 const getStudentDetail = async (req, res) => {
   try {
-    // Fetch the student by ID with populated references
     let student = await Student.findById(req.params.id)
       .populate("sclassName")
       .populate("session")
@@ -432,7 +452,7 @@ const getStudentDetail = async (req, res) => {
       .exec();
 
     if (!student) {
-      return res.send({ message: "No student found" });
+      return res.status(404).json({ message: "No student found" });
     }
 
     const studentSclassId = student.sclassName._id.toString();
@@ -446,7 +466,7 @@ const getStudentDetail = async (req, res) => {
       .populate("session")
       .populate("sclass")
       .exec();
-
+    console.log(studentFees);
     // Merge new fee history into existing fee history
     studentFees.forEach((fee) => {
       const existingHistory = student.feeHistory.find(
@@ -464,7 +484,30 @@ const getStudentDetail = async (req, res) => {
         existingHistory.remainingFee =
           fee.remainingFee || existingHistory.remainingFee;
         existingHistory.paidFee = fee.paidFee || existingHistory.paidFee;
-        existingHistory.paidFees = fee.paidFees || existingHistory.paidFees;
+
+        // Merge paidFees and remainingFees
+        fee.paidFees?.forEach((paidFee) => {
+          const existingPaidFee = existingHistory.paidFees.find(
+            (pf) => pf.feeType === paidFee.feeType
+          );
+          if (existingPaidFee) {
+            existingPaidFee.amount += paidFee.amount;
+          } else {
+            existingHistory.paidFees.push(paidFee);
+          }
+        });
+
+        fee.remainingFees?.forEach((remainingFee) => {
+          const existingRemainingFee = existingHistory.remainingFees.find(
+            (rf) => rf.feeType === remainingFee.feeType
+          );
+          if (existingRemainingFee) {
+            existingRemainingFee.amount = remainingFee.amount;
+          } else {
+            existingHistory.remainingFees.push(remainingFee);
+          }
+        });
+
         existingHistory.fee = fee;
       } else {
         // Add new fee data if it doesn't exist in feeHistory
@@ -477,6 +520,7 @@ const getStudentDetail = async (req, res) => {
           remainingFee: fee.remainingFee,
           paidFee: fee.paidFee,
           paidFees: fee.paidFees,
+          remainingFees: fee.remainingFees,
           fee: fee,
         });
       }
@@ -502,8 +546,30 @@ const getStudentDetail = async (req, res) => {
         existingEntry.remainingFee =
           existingEntry.remainingFee || current.remainingFee || 0;
         existingEntry.paidFee = existingEntry.paidFee || current.paidFee || 0;
-        existingEntry.paidFees =
-          existingEntry.paidFees || current.paidFees || new Map();
+
+        // Merge arrays for paidFees and remainingFees
+        current.paidFees.forEach((paidFee) => {
+          const existingPaidFee = existingEntry.paidFees.find(
+            (pf) => pf.feeType === paidFee.feeType
+          );
+          if (existingPaidFee) {
+            existingPaidFee.amount += paidFee.amount;
+          } else {
+            existingEntry.paidFees.push(paidFee);
+          }
+        });
+
+        current.remainingFees.forEach((remainingFee) => {
+          const existingRemainingFee = existingEntry.remainingFees.find(
+            (rf) => rf.feeType === remainingFee.feeType
+          );
+          if (existingRemainingFee) {
+            existingRemainingFee.amount = remainingFee.amount;
+          } else {
+            existingEntry.remainingFees.push(remainingFee);
+          }
+        });
+
         existingEntry.fee = existingEntry.fee || current.fee || {};
       } else {
         acc.push(current);
@@ -516,7 +582,7 @@ const getStudentDetail = async (req, res) => {
 
     // Remove sensitive information
     student.password = undefined;
-    return res.send(student);
+    return res.status(200).json(student);
   } catch (err) {
     console.error("Error in getStudentDetail:", err);
     res.status(500).json(err);

@@ -37,16 +37,38 @@ const feeHistorySchema = new mongoose.Schema(
     year: {
       type: String,
     },
-    paidFees: {
-      type: Map,
-      of: Number,
-      default: {},
-    },
-    remainingFees: {
-      type: Map,
-      of: Number,
-      default: {},
-    },
+    paidFees: [
+      {
+        feeType: {
+          type: String,
+          required: true,
+        },
+        amount: {
+          type: Number,
+          required: true,
+        },
+        date: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
+    remainingFees: [
+      {
+        feeType: {
+          type: String,
+          required: true,
+        },
+        amount: {
+          type: Number,
+          required: true,
+        },
+        date: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

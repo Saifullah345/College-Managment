@@ -5,6 +5,7 @@ import FeeSlip from "../../../FeeRelated/FeeCollection/feeSlip";
 import { useNavigate } from "react-router-dom";
 
 const FeeDetails = ({ fee }) => {
+  console.log(fee);
   const contentRef = useRef();
   const navigate = useNavigate();
   const excludeFields = ["_id", "createdAt", "updatedAt", "__v"];
@@ -12,8 +13,8 @@ const FeeDetails = ({ fee }) => {
 
   // Safely access fee and remainingFees
   const feeData = fee?.fee || {};
-  const remainingFees = fee?.remainingFees || {};
-  const paidFees = fee?.paidFees || {};
+  const remainingFees = fee?.remainingFees || [];
+  const paidFees = fee?.paidFees || [];
 
   // Filter unpaid fees that are not excluded
   const feeEntries = Object.entries(feeData).filter(([key, value]) => {
@@ -22,7 +23,7 @@ const FeeDetails = ({ fee }) => {
       value !== "0" &&
       typeof value !== "object" &&
       !excludeFields.includes(key) &&
-      !paidFees[key]
+      !paidFees.some((paidFee) => paidFee.feeType === key)
     );
   });
 
@@ -58,9 +59,9 @@ const FeeDetails = ({ fee }) => {
         </Typography>
       </Box>
 
-      {Object.keys(paidFees).map((paidFeeKey, index) => (
+      {paidFees.map((paidFee, index) => (
         <Box
-          key={paidFeeKey}
+          key={paidFee.feeType}
           display={"flex"}
           borderBottom={"1px solid #ccc"}
           paddingBottom={1}
@@ -73,8 +74,8 @@ const FeeDetails = ({ fee }) => {
             {new Date().toLocaleDateString()}
           </Typography>
           <Typography variant="body2" width="20%">
-            {paidFeeKey.charAt(0).toUpperCase() +
-              paidFeeKey.slice(1).replace(/([A-Z])/g, " $1")}
+            {paidFee.feeType.charAt(0).toUpperCase() +
+              paidFee.feeType.slice(1).replace(/([A-Z])/g, " $1")}
           </Typography>
           <Typography variant="body2" width="30%">
             {Math.floor(1000 + Math.random() * 9000)}
@@ -83,7 +84,7 @@ const FeeDetails = ({ fee }) => {
             {Math.floor(1000 + Math.random() * 9000)}
           </Typography>
           <Typography variant="body2" width="10%">
-            {paidFees[paidFeeKey]}
+            {paidFee.amount}
           </Typography>
           <Typography variant="body2" width="10%">
             <PrintButton contentRef={contentRef} />
@@ -134,27 +135,27 @@ const FeeDetails = ({ fee }) => {
         </div>
       )}
 
-      {Object.entries(remainingFees).map(([key, value], index) => {
-        if (value > 0) {
+      {remainingFees.map((remainingFee, index) => {
+        if (remainingFee.amount > 0) {
           return (
             <Box
               onClick={() => {
-                localStorage.setItem("feeType", key);
+                localStorage.setItem("feeType", remainingFee.feeType);
                 localStorage.setItem("active", "Fee Collection");
                 navigate("/Admin/fee");
               }}
-              key={key}
+              key={remainingFee.feeType}
               display={"flex"}
               gap={"50px"}
               marginBottom={1}
             >
               <Typography variant="body2" marginY={"auto"}>
-                {key.charAt(0).toUpperCase() +
-                  key.slice(1).replace(/([A-Z])/g, " $1")}
+                {remainingFee.feeType.charAt(0).toUpperCase() +
+                  remainingFee.feeType.slice(1).replace(/([A-Z])/g, " $1")}
               </Typography>
               <Box display={"flex"} gap={"10px"}>
                 <Typography variant="body2" margin={"auto"}>
-                  {value}
+                  {remainingFee.amount}
                 </Typography>
                 <Button marginTop={"-5px"}>Collect Fee</Button>
               </Box>
