@@ -292,7 +292,18 @@ const updateStudentFee = async (req, res) => {
       return res.status(400).json({ error: "Invalid paid fee amount" });
     }
 
-    // Find existing record for the feeType or initialize a new one
+    // Apply discount to all remainingFees for tuitionFee
+    feeHistory.remainingFees = feeHistory.remainingFees.map((fee) => {
+      if (fee.feeType === "tuitionFee" && feeHistory.discount) {
+        const discountAmount = (fee.amount * feeHistory.discount) / 100;
+        return {
+          ...fee,
+          amount: fee.amount - discountAmount,
+        };
+      }
+      return fee;
+    });
+
     const paidFees = feeHistory.paidFees.filter(
       (fee) => fee.feeType === feeType
     );
@@ -301,44 +312,39 @@ const updateStudentFee = async (req, res) => {
       0
     );
 
-    // Check if the total paid amount exceeds the total fee amount
-    if (
-      Number(paidFee) + Number(previousPaidFee) >
-      Number(feeDetails[feeType])
-    ) {
+    let discountedFee = feeDetails[feeType];
+    if (feeType === "tuitionFee" && feeHistory.discount) {
+      const discountAmount = (feeDetails[feeType] * feeHistory.discount) / 100;
+      discountedFee -= discountAmount;
+    }
+
+    if (Number(paidFee) + Number(previousPaidFee) > Number(discountedFee)) {
       return res
         .status(400)
         .json({ error: "Paid fee exceeds the total fee for this type" });
     }
 
-    // Append new paid fee record
     feeHistory.paidFees.push({
       feeType,
       amount: Number(paidFee),
       date: new Date(),
     });
 
-    // Update total paid fee for the class
     const totalPaidSoFar = previousPaidFee + Number(paidFee);
-    feeHistory.paidFee += Number(paidFee); // Add the new paid fee to the total
+    feeHistory.paidFee += Number(paidFee);
 
-    const totalFeeAmount = Number(feeDetails[feeType]);
-
-    // Update the remaining fees
-    if (totalPaidSoFar >= totalFeeAmount) {
-      // Remove the fee type from remainingFees array
+    if (totalPaidSoFar >= discountedFee) {
       feeHistory.remainingFees = feeHistory.remainingFees.filter(
         (fee) => fee.feeType !== feeType
       );
     } else {
-      // Update or add the remaining fee entry
       feeHistory.remainingFees = feeHistory.remainingFees.filter(
         (fee) => fee.feeType !== feeType
       );
 
       feeHistory.remainingFees.push({
         feeType,
-        amount: totalFeeAmount - totalPaidSoFar,
+        amount: discountedFee - totalPaidSoFar,
         date: new Date(),
       });
     }
@@ -466,7 +472,6 @@ const getStudentDetail = async (req, res) => {
       .populate("session")
       .populate("sclass")
       .exec();
-    console.log(studentFees);
     // Merge new fee history into existing fee history
     studentFees.forEach((fee) => {
       const existingHistory = student.feeHistory.find(
