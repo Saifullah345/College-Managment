@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { initialFeeState } from "./constant";
 import axios from "axios";
-import { useSelector } from "react-redux";
 import Popup from "../../../../components/Popup";
 import { Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -111,7 +110,6 @@ export const AddFee = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionStorage.getItem("loader")]);
 
-  console.log(viewClasses);
   return (
     <div className="register-form">
       <span className="registerTitle">Add Fee</span>

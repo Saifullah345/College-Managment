@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { initialFeeState } from "../AddFee/constant";
 import {
   Box,
@@ -8,16 +9,19 @@ import {
   TableContainer,
   TableFooter,
   TableHead,
-  TableRow,
+  // TableRow,
   Typography,
+  IconButton,
 } from "@mui/material";
 import { StyledTableCell, StyledTableRow } from "../../../../components/styles";
+import EditIcon from "@mui/icons-material/Edit";
 
 export const FeeTable = ({ session }) => {
   const fees = [...Object.keys(initialFeeState), "SubTotal"];
+  const navigate = useNavigate();
 
   const calculateTotal = (val) => {
-    return Object.keys(initialFeeState)?.reduce(
+    return Object.keys(initialFeeState).reduce(
       (sum, key) => sum + (Number(val[key]) || 0),
       0
     );
@@ -25,7 +29,7 @@ export const FeeTable = ({ session }) => {
 
   const formatNumber = (value) => {
     const number = Number(value);
-    return number;
+    return number; // Ensure proper formatting
   };
 
   const calculateGrandTotal = () => {
@@ -50,43 +54,64 @@ export const FeeTable = ({ session }) => {
     return calculateTotal(val);
   };
 
+  const handleEditClick = (id) => {
+    navigate(`/Admin/edit/${id}`);
+  };
+
   return (
     <>
-      {fees.length > 0 ? (
+      {session.length > 0 ? (
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
               <StyledTableRow>
-                <StyledTableCell>Fees</StyledTableCell>
-                {session?.map((val) => (
-                  <StyledTableCell key={val._id}>
-                    {val?.sclass?.sclassName}
+                <StyledTableCell>Class</StyledTableCell>
+                {fees.map((fee) => (
+                  <StyledTableCell
+                    sx={{ textTransform: "capitalize" }}
+                    key={fee}
+                  >
+                    {fee}
                   </StyledTableCell>
                 ))}
+                <StyledTableCell>Actions</StyledTableCell>
               </StyledTableRow>
             </TableHead>
             <TableBody>
-              {fees?.map((fee) => (
-                <TableRow key={fee}>
-                  <StyledTableCell className="capitalize">
-                    {fee}: {initialFeeState[fee]}
+              {session.map((val, index) => (
+                <StyledTableRow key={val._id}>
+                  <StyledTableCell sx={{ whiteSpace: "nowrap" }}>
+                    {val?.sclass?.sclassName}
                   </StyledTableCell>
-                  {session?.map((val) => (
-                    <StyledTableCell key={val._id + fee} className="capitalize">
+                  {fees.map((fee) => (
+                    <StyledTableCell key={fee}>
                       {fee !== "SubTotal"
                         ? formatNumber(val[fee] ?? 0)
                         : formatNumber(calculateTotal(val))}
                     </StyledTableCell>
                   ))}
-                </TableRow>
+                  <StyledTableCell>
+                    <IconButton
+                      color="primary"
+                      onClick={() => handleEditClick(val._id)}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </StyledTableCell>
+                </StyledTableRow>
               ))}
             </TableBody>
             <TableFooter>
               <StyledTableRow>
-                <StyledTableCell>
+                <StyledTableCell colSpan={fees.length} align="right">
+                  <Typography fontWeight={"600"}>
+                    Grand Total: {formatNumber(calculateGrandTotal())}
+                  </Typography>
+                </StyledTableCell>
+                <StyledTableCell colSpan={2}>
                   <Box
                     display={"flex"}
-                    justifyContent={"start"}
+                    justifyContent={"space-between"}
                     flexDirection={"column"}
                     gap={"10px"}
                   >
@@ -96,7 +121,6 @@ export const FeeTable = ({ session }) => {
                           key={year}
                           fontWeight={"600"}
                           margin={"auto"}
-                          className="flex"
                         >
                           {`${index + 1}st Year:`}
                           <input
@@ -123,11 +147,6 @@ export const FeeTable = ({ session }) => {
                       )
                     )}
                   </Box>
-                </StyledTableCell>
-                <StyledTableCell colSpan={session.length + 1} align="right">
-                  <Typography fontWeight={"600"}>
-                    Grand Total: {formatNumber(calculateGrandTotal())}
-                  </Typography>
                 </StyledTableCell>
               </StyledTableRow>
             </TableFooter>

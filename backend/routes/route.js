@@ -32,7 +32,12 @@ const {
   districtCreate,
   allDistrict,
 } = require("../controllers/district-controller.js");
-const { AddFee, getAllFee } = require("../controllers/fee-controller.js");
+const {
+  AddFee,
+  getAllFee,
+  EditFee,
+  getFeeDetails,
+} = require("../controllers/fee-controller.js");
 const {
   AddInstitute,
   getAllInstitute,
@@ -219,7 +224,9 @@ router.get("/allProgram", allPrograms);
 router.delete("/deleteProgram/:id", deleteProgram);
 
 router.post("/addFee", AddFee);
+router.put("/editFee/:id", EditFee);
 router.get("/allFee/:id", getAllFee);
+router.get("/fee/:id", getFeeDetails);
 
 router.post("/addInstitute", AddInstitute);
 router.get("/allInstitute", getAllInstitute);
