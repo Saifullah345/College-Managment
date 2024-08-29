@@ -51,7 +51,7 @@ const FeeDetails = ({ fee }) => {
         <Typography variant="body2" width="30%">
           Computer Invoice #
         </Typography>
-        <Typography variant="body2" width="10%">
+        <Typography variant="body2" width="10%" textAlign={"left"}>
           Amount
         </Typography>
         <Typography variant="body2" width="10%">
@@ -73,7 +73,7 @@ const FeeDetails = ({ fee }) => {
           <Typography variant="body2" width="20%">
             {new Date().toLocaleDateString()}
           </Typography>
-          <Typography variant="body2" width="20%">
+          <Typography variant="body2" width="40%">
             {paidFee.feeType.charAt(0).toUpperCase() +
               paidFee.feeType.slice(1).replace(/([A-Z])/g, " $1")}
           </Typography>
