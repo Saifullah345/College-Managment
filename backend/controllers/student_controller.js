@@ -59,31 +59,20 @@ const studentRegister = async (req, res) => {
       }
       const studentData = req.body;
 
-      let idCardFront = await driveHandlers.uploadImage(
-        req.files["idCardFront"][0]
-      );
-      if (idCardFront.uploaded === true) {
-        studentData.idCardFront = idCardFront.url;
-      }
-      let idCardBack = await driveHandlers.uploadImage(
-        req.files["idCardBack"][0]
-      );
-      if (idCardBack.uploaded === true) {
-        studentData.idCardBack = idCardBack.url;
-      }
-      let MetricDMC = await driveHandlers.uploadImage(
-        req.files["MetricDMC"][0]
-      );
-      if (MetricDMC.uploaded === true) {
-        studentData.MetricDMC = MetricDMC.url;
-      }
-      let studentProfile = await driveHandlers.uploadImage(
-        req.files["studentProfile"][0]
-      );
-      if (studentProfile.uploaded === true) {
-        studentData.studentProfile = studentProfile.url;
-      }
+      // Upload files to the drive
+      const uploadFiles = async (file) => {
+        let uploadedFile = await driveHandlers.uploadImage(file[0]);
+        return uploadedFile.uploaded ? uploadedFile.url : null;
+      };
 
+      studentData.idCardFront = await uploadFiles(req.files["idCardFront"]);
+      studentData.idCardBack = await uploadFiles(req.files["idCardBack"]);
+      studentData.MetricDMC = await uploadFiles(req.files["MetricDMC"]);
+      studentData.studentProfile = await uploadFiles(
+        req.files["studentProfile"]
+      );
+
+      // Fetch fee details
       const feeDetails = await Fee.findOne({
         sclass: studentData.sclassName,
         session: studentData.session,
@@ -96,7 +85,12 @@ const studentRegister = async (req, res) => {
       }
 
       const feeValues = feeDetails.toObject();
-      let totalFee = Object.keys(feeValues).reduce((sum, key) => {
+
+      // Calculate total fee and fees to store in remainingFees array
+      let totalFee = 0;
+      const remainingFees = [];
+
+      Object.keys(feeValues).forEach((key) => {
         if (
           key !== "_id" &&
           key !== "createdAt" &&
@@ -105,35 +99,42 @@ const studentRegister = async (req, res) => {
           key !== "session" &&
           key !== "sclass"
         ) {
-          const fee = parseFloat(feeValues[key]) || 0;
-          sum += fee;
-        }
-        return sum;
-      }, 0);
+          let fee = parseFloat(feeValues[key]) || 0;
 
-      const tuitionFee = parseFloat(feeValues.tuitionFee) || 0;
-      const discountPercent = parseFloat(studentData.discount) || 0;
-      const discountAmount = (tuitionFee * discountPercent) / 100;
-      const remainingFee = totalFee - discountAmount;
+          // Apply discount to tuitionFee if applicable
+          if (key === "tuitionFee") {
+            const discountPercent = parseFloat(studentData.discount) || 0;
+            const discountAmount = (fee * discountPercent) / 100;
+            fee -= discountAmount; // Apply discount
+            studentData.discountFee = discountAmount.toString();
+          }
+
+          if (fee > 0) {
+            // Store only non-zero fees
+            remainingFees.push({ feeType: key, amount: fee, date: new Date() });
+            totalFee += fee; // Calculate total fee
+          }
+        }
+      });
+
+      // Calculate remaining fee
+      studentData.remainingFee = totalFee.toString();
+      studentData.paidFee = "0"; // Assuming initial paid fee is 0
       studentData.feeHistory = [
         {
           sclassName: studentData.sclassName,
           session: studentData.session,
           totalFee,
-          discountFee: discountAmount,
           discount: studentData.discount,
-          remainingFee,
+          remainingFee: totalFee,
           paidFee: 0,
+          remainingFees, // Store remaining fees array in fee history
         },
       ];
 
-      // Set fee details in student data
-      studentData.discountFee = discountAmount.toString();
-      studentData.remainingFee = remainingFee.toString();
-      studentData.paidFee = "0"; // Assuming initial paid fee is 0
-
+      // Create and save new student record
       const student = new Student(studentData);
-      let result = await student.save();
+      const result = await student.save();
 
       return res.status(201).json({
         code: 200,
@@ -146,6 +147,7 @@ const studentRegister = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
 const updateStudent = async (req, res) => {
   try {
     const studentId = req.params.id;
@@ -194,7 +196,6 @@ const updateStudent = async (req, res) => {
           remainingFee,
           paidFee: student.paidFee || 0,
           year: student.year,
-          s,
         });
       }
     }
@@ -255,17 +256,18 @@ const updateStudent = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
-
 const updateStudentFee = async (req, res) => {
   try {
     const { id } = req.params;
-    const { paidFee, remainingFee, classId, feeType } = req.body;
+    const { paidFee, feeType } = req.body;
 
-    let student = await Student.findById(id);
+    // Fetch student details
+    const student = await Student.findById(id);
     if (!student) {
       return res.status(404).json({ error: "Student not found" });
     }
 
+    // Fetch fee details for the student's class and session
     const feeDetails = await Fee.findOne({
       sclass: student.sclassName,
       session: student.session,
@@ -276,14 +278,17 @@ const updateStudentFee = async (req, res) => {
       });
     }
 
+    // Find the fee history for the specified class
     let feeHistory = student.feeHistory.find(
-      (history) => history.sclassName.toString() === classId
+      (history) =>
+        history.sclassName.toString() === student.sclassName.toString()
     );
 
     if (!feeHistory) {
       return res.status(404).json({ error: "Class fee history not found" });
     }
 
+    // Validate input
     if (!feeType || typeof feeType !== "string" || feeType.trim() === "") {
       return res.status(400).json({ error: "Invalid fee type" });
     }
@@ -292,77 +297,92 @@ const updateStudentFee = async (req, res) => {
       return res.status(400).json({ error: "Invalid paid fee amount" });
     }
 
-    // Apply discount to all remainingFees for tuitionFee
-    feeHistory.remainingFees = feeHistory.remainingFees.map((fee) => {
-      if (fee.feeType === "tuitionFee" && feeHistory.discount) {
-        const discountAmount = (fee.amount * feeHistory.discount) / 100;
-        return {
-          ...fee,
-          amount: fee.amount - discountAmount,
-        };
-      }
-      return fee;
-    });
+    // Calculate the total paid fees for the specific fee type
+    const totalPaidFeesForType = feeHistory.paidFees
+      .filter((fee) => fee.feeType === feeType)
+      .reduce((total, fee) => total + fee.amount, 0);
 
-    const paidFees = feeHistory.paidFees.filter(
-      (fee) => fee.feeType === feeType
-    );
-    const previousPaidFee = paidFees.reduce(
-      (total, fee) => total + fee.amount,
-      0
-    );
-
-    let discountedFee = feeDetails[feeType];
+    // Get the original fee amount from fee details and apply any discounts
+    let feeAmount = parseFloat(feeDetails[feeType]) || 0;
     if (feeType === "tuitionFee" && feeHistory.discount) {
-      const discountAmount = (feeDetails[feeType] * feeHistory.discount) / 100;
-      discountedFee -= discountAmount;
+      feeAmount -= (feeAmount * feeHistory.discount) / 100;
     }
 
-    if (Number(paidFee) + Number(previousPaidFee) > Number(discountedFee)) {
+    // Ensure the new payment does not exceed the total fee amount
+    if (Number(paidFee) + totalPaidFeesForType > feeAmount) {
       return res
         .status(400)
         .json({ error: "Paid fee exceeds the total fee for this type" });
     }
 
+    // Add the new paid fee to the paid fees array
     feeHistory.paidFees.push({
       feeType,
       amount: Number(paidFee),
       date: new Date(),
     });
 
-    const totalPaidSoFar = previousPaidFee + Number(paidFee);
-    feeHistory.paidFee += Number(paidFee);
+    // Calculate the remaining fee after the new payment
+    const newRemainingFee =
+      feeAmount - (totalPaidFeesForType + Number(paidFee));
 
-    if (totalPaidSoFar >= discountedFee) {
-      feeHistory.remainingFees = feeHistory.remainingFees.filter(
-        (fee) => fee.feeType !== feeType
-      );
-    } else {
-      feeHistory.remainingFees = feeHistory.remainingFees.filter(
-        (fee) => fee.feeType !== feeType
-      );
+    // Update the remaining fees array, removing the old entry for this fee type
+    feeHistory.remainingFees = feeHistory.remainingFees.filter(
+      (fee) => fee.feeType !== feeType
+    );
 
+    // Add updated remaining fee if it is greater than 0
+    if (newRemainingFee > 0) {
       feeHistory.remainingFees.push({
         feeType,
-        amount: discountedFee - totalPaidSoFar,
+        amount: newRemainingFee,
         date: new Date(),
       });
     }
 
-    if (remainingFee !== undefined) {
-      feeHistory.remainingFee = remainingFee;
-    }
+    // Ensure all fee types in feeDetails are included in remainingFees
+    const feeTypes = Object.keys(feeDetails).filter(
+      (key) =>
+        feeDetails[key] &&
+        key !== "_id" &&
+        key !== "session" &&
+        key !== "sclass"
+    );
 
+    feeTypes.forEach((type) => {
+      const feeExists = feeHistory.remainingFees.some(
+        (f) => f.feeType === type
+      );
+      const originalAmount = parseFloat(feeDetails[type]) || 0;
+
+      if (!feeExists && originalAmount > 0) {
+        feeHistory.remainingFees.push({
+          feeType: type,
+          amount: originalAmount,
+          date: new Date(),
+        });
+      }
+    });
+
+    // Update total remainingFee based on all remaining fees
+    feeHistory.remainingFee = feeHistory.remainingFees.reduce(
+      (total, fee) => total + fee.amount,
+      0
+    );
+    feeHistory.paidFee = feeHistory.paidFees.reduce(
+      (total, fee) => total + fee.amount,
+      0
+    );
+
+    // Save updated student data
     await student.save();
 
-    return res.status(200).json({
-      code: 200,
-      message: "Fee details updated successfully",
-      updatedFeeHistory: feeHistory,
-    });
+    return res
+      .status(200)
+      .json({ message: "Student fee updated successfully", student });
   } catch (err) {
     console.error(err);
-    res.status(500).send("Internal Server Error");
+    return res.status(500).send("Internal Server Error");
   }
 };
 
@@ -456,7 +476,6 @@ const getStudentDetail = async (req, res) => {
         model: "sclass",
       })
       .exec();
-
     if (!student) {
       return res.status(404).json({ message: "No student found" });
     }

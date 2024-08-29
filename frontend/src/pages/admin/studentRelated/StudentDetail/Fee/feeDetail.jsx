@@ -101,40 +101,6 @@ const FeeDetails = ({ fee }) => {
         Subtotal (Paid): {fee?.paidFee}
       </Typography>
 
-      {/* Display Remaining Fees from feeEntries */}
-      {feeEntries.length > 0 && (
-        <div>
-          <Typography variant="h6" marginTop={2}>
-            Remaining Fees
-          </Typography>
-          {feeEntries.map(([key, value]) => (
-            <Box
-              onClick={() => {
-                console.log(key);
-                localStorage.setItem("feeType", key);
-                localStorage.setItem("active", "Fee Collection");
-                navigate("/Admin/fee");
-              }}
-              key={key}
-              display={"flex"}
-              gap={"50px"}
-              marginBottom={1}
-            >
-              <Typography variant="body2" marginY={"auto"}>
-                {key.charAt(0).toUpperCase() +
-                  key.slice(1).replace(/([A-Z])/g, " $1")}
-              </Typography>
-              <Box display={"flex"} gap={"10px"}>
-                <Typography variant="body2" margin={"auto"}>
-                  {key === "tuitionFee" ? value - fee.discountFee : value}
-                </Typography>
-                <Button marginTop={"-5px"}>Collect Fee</Button>
-              </Box>
-            </Box>
-          ))}
-        </div>
-      )}
-
       {remainingFees.map((remainingFee, index) => {
         if (remainingFee.amount > 0) {
           return (

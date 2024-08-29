@@ -2,16 +2,23 @@ import { Box, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { ViewFee } from "./ViewFee";
 import FeeCollection from "./FeeCollection";
+import { useNavigate } from "react-router-dom";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 export const Fee = () => {
   const [active, setActive] = useState(
     localStorage.getItem("active"),
     "Fee Particulars"
   );
+  const navigate = useNavigate();
 
   return (
     <div className="register-form">
       <Box display={"flex"} flexDirection={"column"} gap={4}>
+        <ArrowBackIosIcon
+          sx={{ cursor: "pointer" }}
+          onClick={() => navigate(-1)}
+        />
         <Box display="flex" marginTop={"10px"} flexDirection="column" gap={2}>
           <h2>Fees</h2>
           <Box display="flex" gap={10}>
