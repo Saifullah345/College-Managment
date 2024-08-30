@@ -602,7 +602,7 @@ const getStudentDetail = async (req, res) => {
       return acc;
     }, []);
 
-    student.feeHistory = uniqueFeeHistory;
+    student.feeHistory = uniqueFeeHistory.reverse();
 
     // Remove sensitive information
     student.password = undefined;
@@ -669,6 +669,7 @@ const deleteStudentsByClass = async (req, res) => {
 const updateStudentClass = async (req, res) => {
   try {
     const { sclassName } = req.body;
+    const discount = 0;
 
     // Ensure sclassName is provided in the request body
     if (!sclassName) {
@@ -679,14 +680,17 @@ const updateStudentClass = async (req, res) => {
     let student = await Student.findById(req.params.id)
       .populate("sclassName")
       .populate("session");
-    if (student.feeHistory[student.feeHistory.length - 1].remainingFee !== 0) {
-      return res
-        .status(404)
-        .json({ error: "Please Submit Previous Class Fee" });
-    }
 
     if (!student) {
       return res.status(404).json({ error: "Student not found" });
+    }
+
+    // Ensure the previous class fee is paid
+    const lastFeeHistory = student.feeHistory[student.feeHistory.length - 1];
+    if (lastFeeHistory.remainingFee !== 0) {
+      return res
+        .status(400)
+        .json({ error: "Please submit the previous class fee" });
     }
 
     // Update the sclassName field
@@ -701,8 +705,13 @@ const updateStudentClass = async (req, res) => {
     if (!feeDetails) {
       return res.status(404).json({ error: "Fee details not found" });
     }
+
     const feeValues = feeDetails.toObject();
-    let totalFee = Object.keys(feeValues).reduce((sum, key) => {
+    let totalFee = 0;
+    const remainingFees = [];
+
+    // Calculate fees and handle discount on tuition fee
+    Object.keys(feeValues).forEach((key) => {
       if (
         key !== "_id" &&
         key !== "createdAt" &&
@@ -711,27 +720,36 @@ const updateStudentClass = async (req, res) => {
         key !== "session" &&
         key !== "sclass"
       ) {
-        const fee = parseFloat(feeValues[key]) || 0;
-        sum += fee;
-      }
-      return sum;
-    }, 0);
-    // console.log(student.feeHistory);
-    // Calculate the fee details
+        let fee = parseFloat(feeValues[key]) || 0;
 
-    const tuitionFee = parseFloat(feeValues.tuitionFee) || 0;
-    const discountPercent = 0;
-    const discountAmount = (tuitionFee * discountPercent) / 100;
-    const remainingFee = totalFee - discountAmount;
+        // Apply discount to tuitionFee if applicable
+        if (key === "tuitionFee") {
+          const discountPercent = parseFloat(discount) || 0;
+          const discountAmount = (fee * discountPercent) / 100;
+          fee -= discountAmount; // Apply discount
+          student.discountFee = discountAmount.toString();
+        }
+
+        if (fee > 0) {
+          // Store only non-zero fees
+          remainingFees.push({ feeType: key, amount: fee, date: new Date() });
+          totalFee += fee; // Calculate total fee
+        }
+      }
+    });
+
+    // Calculate the remaining fee
+    const remainingFee = totalFee;
 
     // Add the new fee history entry
     student.feeHistory.push({
       sclassName: student.sclassName,
       session: student.session,
-      totalFee: tuitionFee,
-      discountFee: discountAmount,
+      totalFee,
+      discountFee: student.discountFee,
       remainingFee,
       paidFee: 0,
+      remainingFees, // Store remaining fees array in fee history
       year: new Date().getFullYear().toString(),
     });
 
