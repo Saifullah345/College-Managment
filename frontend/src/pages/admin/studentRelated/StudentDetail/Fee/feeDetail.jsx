@@ -1,37 +1,40 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Typography, Box, Button } from "@mui/material";
 import PrintButton from "../../../FeeRelated/FeeCollection/printButton";
 import FeeSlip from "../../../FeeRelated/FeeCollection/feeSlip";
 import { useNavigate } from "react-router-dom";
 
 const FeeDetails = ({ fee }) => {
-  console.log(fee);
+  console.log(fee?.fee?.sclass?._id);
   const contentRef = useRef();
   const navigate = useNavigate();
-  const excludeFields = ["_id", "createdAt", "updatedAt", "__v"];
-  localStorage.setItem("classID", fee?.sclassName?._id);
+  // const excludeFields = ["_id", "createdAt", "updatedAt", "__v"];
 
   // Safely access fee and remainingFees
-  const feeData = fee?.fee || {};
+  // const feeData = fee?.fee || {};
   const remainingFees = fee?.remainingFees || [];
   const paidFees = fee?.paidFees || [];
 
   // Filter unpaid fees that are not excluded
-  const feeEntries = Object.entries(feeData).filter(([key, value]) => {
-    return (
-      value !== "" &&
-      value !== "0" &&
-      typeof value !== "object" &&
-      !excludeFields.includes(key) &&
-      !paidFees.some((paidFee) => paidFee.feeType === key)
-    );
-  });
+  // const feeEntries = Object.entries(feeData).filter(([key, value]) => {
+  //   return (
+  //     value !== "" &&
+  //     value !== "0" &&
+  //     typeof value !== "object" &&
+  //     !excludeFields.includes(key) &&
+  //     !paidFees.some((paidFee) => paidFee.feeType === key)
+  //   );
+  // });
 
   // Calculate the total remaining fee
   // const totalRemainingFee = Object.entries(remainingFees).reduce(
   //   (acc, [key, value]) => acc + value,
   //   0
   // );
+  useEffect(() => {
+    if (fee?.fee?.sclass?._id)
+      localStorage.setItem("classID", fee?.fee?.sclass?._id);
+  }, [fee?.fee?.sclass?._id]);
 
   return (
     <div>

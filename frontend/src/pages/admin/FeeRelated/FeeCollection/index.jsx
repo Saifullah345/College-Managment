@@ -39,7 +39,7 @@ const FeeCollection = () => {
   const [selectedFeeType, setSelectedFeeType] = useState(
     localStorage.getItem("feeType") || ""
   );
-
+  console.log(localStorage.getItem("classID"));
   const ViewAllStudent = async () => {
     try {
       const result = await axios.get(
