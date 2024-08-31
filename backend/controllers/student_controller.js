@@ -595,35 +595,16 @@ const deleteStudentsByClass = async (req, res) => {
   }
 };
 
-// const updateStudent = async (req, res) => {
-//   try {
-//     if (req.body.password) {
-//       const salt = await bcrypt.genSalt(10);
-//       res.body.password = await bcrypt.hash(res.body.password, salt);
-//     }
-//     let result = await Student.findByIdAndUpdate(
-//       req.params.id,
-//       { $set: req.body },
-//       { new: true }
-//     );
-
-//     result.password = undefined;
-//     return res.send(result);
-//   } catch (error) {
-//     return res.status(500).json(error);
-//   }
-// };
 const updateStudentClass = async (req, res) => {
   try {
     const { sclassName } = req.body;
-    const discount = 0;
+    const discount = 0; // Adjust the discount value as needed
 
-    // Ensure sclassName is provided in the request body
     if (!sclassName) {
       return res.status(400).json({ message: "sclassName is required" });
     }
 
-    // Find the student by ID
+    // Fetch the student document by ID and populate related fields
     let student = await Student.findById(req.params.id)
       .populate("sclassName")
       .populate("session");
@@ -632,15 +613,22 @@ const updateStudentClass = async (req, res) => {
       return res.status(404).json({ error: "Student not found" });
     }
 
+    // Update the student's class
+    student.sclassName = sclassName;
+    console.log("Updated class name:", student.sclassName);
+
+    // Check if the previous class fee is cleared
     const lastFeeHistory = student.feeHistory[student.feeHistory.length - 1];
-    if (lastFeeHistory.remainingFee !== 0) {
+    if (lastFeeHistory && lastFeeHistory.remainingFee !== 0) {
       return res
         .status(400)
         .json({ error: "Please submit the previous class fee" });
     }
 
-    student.sclassName = sclassName;
+    // Re-fetch the updated student with populated sclassName
+    student = await student.populate("sclassName");
 
+    // Fetch fee details based on the new class and session
     const feeDetails = await Fee.findOne({
       sclass: student.sclassName,
       session: student.session._id,
@@ -696,6 +684,7 @@ const updateStudentClass = async (req, res) => {
       remainingFees,
       year: new Date().getFullYear().toString(),
     });
+    console.log(student);
 
     // Save the updated student
     await student.save();

@@ -13,6 +13,7 @@ const FeeDetails = ({ fee }) => {
   // const feeData = fee?.fee || {};
   const remainingFees = fee?.remainingFees || [];
   const paidFees = fee?.paidFees || [];
+  console.log(fee);
 
   // Filter unpaid fees that are not excluded
   // const feeEntries = Object.entries(feeData).filter(([key, value]) => {
@@ -30,13 +31,6 @@ const FeeDetails = ({ fee }) => {
   //   (acc, [key, value]) => acc + value,
   //   0
   // );
-  useEffect(() => {
-    if (fee?.fee?.sclass?._id)
-      localStorage.setItem("classID", fee?.fee?.sclass?._id);
-    else {
-      localStorage.setItem("classID", fee?.sclassName?._id);
-    }
-  }, [fee]);
 
   return (
     <div>

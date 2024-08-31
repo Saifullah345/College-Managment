@@ -20,10 +20,11 @@ const StudentDetail = () => {
           headers: { "Content-Type": "application/json" },
         }
       );
-      console.log(result);
       if (result.status === 200) {
         setData(result.data);
+        console.log(result?.data?.sclassName?._id);
         localStorage.setItem("studentName", result.data.name);
+        localStorage.setItem("classID", result?.data?.sclassName?._id);
 
         setLoading(false);
       }
@@ -82,7 +83,9 @@ const StudentDetail = () => {
         </Typography>
         <button
           className="registerButton"
-          onClick={() => navigate(`/Admin/students/feeDetail/${id}`)}
+          onClick={() => {
+            navigate(`/Admin/students/feeDetail/${id}`);
+          }}
           type="submit"
         >
           Fee Detail
