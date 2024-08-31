@@ -59,32 +59,33 @@ const StudentFee = () => {
       >
         {data?.name}
       </Typography>
-      {data?.feeHistory?.reverse()?.map((val, index) => (
-        <Box
-          key={index}
-          display={"flex"}
-          flexDirection={"column"}
-          border={"1px solid #ccc"}
-          borderRadius={"10px"}
-          padding={3}
-          boxShadow={1}
-          // marginTop={"2px"}
-          marginTop={"20px"}
-        >
-          <Typography variant="h6" color="primary">
-            {val?.sclassName?.sclassName}
-          </Typography>
-          <Typography variant="body1" color="textSecondary">
-            Discount : {val?.discount}% ( {val.discountFee} )
-          </Typography>
+      {data?.feeHistory &&
+        [...data.feeHistory].reverse().map((val, index) => (
+          <Box
+            key={index}
+            display={"flex"}
+            flexDirection={"column"}
+            border={"1px solid #ccc"}
+            borderRadius={"10px"}
+            padding={3}
+            boxShadow={1}
+            // marginTop={"2px"}
+            marginTop={"20px"}
+          >
+            <Typography variant="h6" color="primary">
+              {val?.sclassName?.sclassName}
+            </Typography>
+            <Typography variant="body1" color="textSecondary">
+              Discount : {val?.discount}% ( {val.discountFee} )
+            </Typography>
 
-          <Typography variant="h6" marginTop={2}>
-            Payment History
-          </Typography>
+            <Typography variant="h6" marginTop={2}>
+              Payment History
+            </Typography>
 
-          <FeeDetails fee={val} />
-        </Box>
-      ))}
+            <FeeDetails fee={val} />
+          </Box>
+        ))}
     </div>
   );
 };

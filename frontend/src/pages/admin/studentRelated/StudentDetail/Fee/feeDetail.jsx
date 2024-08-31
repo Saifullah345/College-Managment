@@ -5,7 +5,6 @@ import FeeSlip from "../../../FeeRelated/FeeCollection/feeSlip";
 import { useNavigate } from "react-router-dom";
 
 const FeeDetails = ({ fee }) => {
-  console.log(fee?.fee?.sclass?._id);
   const contentRef = useRef();
   const navigate = useNavigate();
   // const excludeFields = ["_id", "createdAt", "updatedAt", "__v"];
@@ -34,7 +33,10 @@ const FeeDetails = ({ fee }) => {
   useEffect(() => {
     if (fee?.fee?.sclass?._id)
       localStorage.setItem("classID", fee?.fee?.sclass?._id);
-  }, [fee?.fee?.sclass?._id]);
+    else {
+      localStorage.setItem("classID", fee?.sclassName?._id);
+    }
+  }, [fee]);
 
   return (
     <div>

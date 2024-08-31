@@ -468,22 +468,34 @@ const getStudents = async (req, res) => {
 
 const getStudentDetail = async (req, res) => {
   try {
-    let student = await Student.findById(req.params.id)
+    const student = await Student.findById(req.params.id)
       .populate("sclassName")
       .populate("session")
       .populate({
         path: "feeHistory.sclassName",
         model: "sclass",
       })
+
       .exec();
+
     if (!student) {
       return res.status(404).json({ message: "No student found" });
     }
 
-    const studentSclassId = student.sclassName._id.toString();
-    const studentSessionId = student.session._id.toString();
+    const studentSclassId =
+      student.feeHistory[
+        student.feeHistory.length - 1
+      ].sclassName._id.toString();
+    const studentSessionId = student.session?._id?.toString();
 
-    // Fetch fees based on student's sclass and session
+    // console.log(studentSclassId);
+
+    if (!studentSclassId || !studentSessionId) {
+      return res
+        .status(400)
+        .json({ message: "Invalid student class or session data." });
+    }
+
     const studentFees = await Fee.find({
       sclass: studentSclassId,
       session: studentSessionId,
@@ -491,50 +503,26 @@ const getStudentDetail = async (req, res) => {
       .populate("session")
       .populate("sclass")
       .exec();
-    // Merge new fee history into existing fee history
-    studentFees.forEach((fee) => {
-      const existingHistory = student.feeHistory.find(
+    studentFees?.forEach((fee) => {
+      const existingHistory = student.feeHistory?.find(
         (history) =>
-          history.sclassName._id.toString() === fee.sclass._id.toString() &&
-          history.session._id.toString() === fee.session._id.toString()
+          history.sclassName?._id.toString() === fee.sclass?._id.toString() &&
+          history.session?._id.toString() === fee.session?._id.toString()
       );
 
       if (existingHistory) {
-        // Update existing history with new fee data
-        existingHistory.totalFee = fee.totalFee || existingHistory.totalFee;
-        existingHistory.discountFee =
-          fee.discountFee || existingHistory.discountFee;
-        existingHistory.discount = fee.discount || existingHistory.discount;
-        existingHistory.remainingFee =
-          fee.remainingFee || existingHistory.remainingFee;
-        existingHistory.paidFee = fee.paidFee || existingHistory.paidFee;
-
-        // Merge paidFees and remainingFees
-        fee.paidFees?.forEach((paidFee) => {
-          const existingPaidFee = existingHistory.paidFees.find(
-            (pf) => pf.feeType === paidFee.feeType
-          );
-          if (existingPaidFee) {
-            existingPaidFee.amount += paidFee.amount;
-          } else {
-            existingHistory.paidFees.push(paidFee);
-          }
+        // Update fields and merge fee arrays using helper functions
+        Object.assign(existingHistory, {
+          totalFee: fee.totalFee || existingHistory.totalFee,
+          discountFee: fee.discountFee || existingHistory.discountFee,
+          discount: fee.discount || existingHistory.discount,
+          remainingFee: fee.remainingFee || existingHistory.remainingFee,
+          paidFee: fee.paidFee || existingHistory.paidFee,
         });
 
-        fee.remainingFees?.forEach((remainingFee) => {
-          const existingRemainingFee = existingHistory.remainingFees.find(
-            (rf) => rf.feeType === remainingFee.feeType
-          );
-          if (existingRemainingFee) {
-            existingRemainingFee.amount = remainingFee.amount;
-          } else {
-            existingHistory.remainingFees.push(remainingFee);
-          }
-        });
-
-        existingHistory.fee = fee;
+        mergeFees(existingHistory.paidFees, fee.paidFees);
+        mergeFees(existingHistory.remainingFees, fee.remainingFees, true);
       } else {
-        // Add new fee data if it doesn't exist in feeHistory
         student.feeHistory.push({
           sclassName: fee.sclass,
           session: fee.session,
@@ -545,71 +533,30 @@ const getStudentDetail = async (req, res) => {
           paidFee: fee.paidFee,
           paidFees: fee.paidFees,
           remainingFees: fee.remainingFees,
-          fee: fee,
         });
       }
     });
 
-    // Ensure feeHistory has unique entries by checking sclassName and session IDs
-    const uniqueFeeHistory = student.feeHistory.reduce((acc, current) => {
-      const existingEntry = acc.find(
-        (item) =>
-          item.sclassName._id.toString() ===
-            current.sclassName._id.toString() &&
-          item.session._id.toString() === current.session._id.toString()
-      );
+    function mergeFees(targetFees, sourceFees, replace = false) {
+      sourceFees?.forEach((fee) => {
+        const existingFee = targetFees.find((f) => f.feeType === fee.feeType);
+        if (existingFee) {
+          existingFee.amount = replace
+            ? fee.amount
+            : existingFee.amount + fee.amount;
+        } else {
+          targetFees.push(fee);
+        }
+      });
+    }
 
-      if (existingEntry) {
-        // Merge the fields from current into existingEntry if not already set
-        existingEntry.totalFee =
-          existingEntry.totalFee || current.totalFee || 0;
-        existingEntry.discountFee =
-          existingEntry.discountFee || current.discountFee || 0;
-        existingEntry.discount =
-          existingEntry.discount || current.discount || 0;
-        existingEntry.remainingFee =
-          existingEntry.remainingFee || current.remainingFee || 0;
-        existingEntry.paidFee = existingEntry.paidFee || current.paidFee || 0;
-
-        // Merge arrays for paidFees and remainingFees
-        current.paidFees.forEach((paidFee) => {
-          const existingPaidFee = existingEntry.paidFees.find(
-            (pf) => pf.feeType === paidFee.feeType
-          );
-          if (existingPaidFee) {
-            existingPaidFee.amount += paidFee.amount;
-          } else {
-            existingEntry.paidFees.push(paidFee);
-          }
-        });
-
-        current.remainingFees.forEach((remainingFee) => {
-          const existingRemainingFee = existingEntry.remainingFees.find(
-            (rf) => rf.feeType === remainingFee.feeType
-          );
-          if (existingRemainingFee) {
-            existingRemainingFee.amount = remainingFee.amount;
-          } else {
-            existingEntry.remainingFees.push(remainingFee);
-          }
-        });
-
-        existingEntry.fee = existingEntry.fee || current.fee || {};
-      } else {
-        acc.push(current);
-      }
-
-      return acc;
-    }, []);
-
-    student.feeHistory = uniqueFeeHistory.reverse();
-
-    // Remove sensitive information
     student.password = undefined;
     return res.status(200).json(student);
   } catch (err) {
     console.error("Error in getStudentDetail:", err);
-    res.status(500).json(err);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 };
 
@@ -685,7 +632,6 @@ const updateStudentClass = async (req, res) => {
       return res.status(404).json({ error: "Student not found" });
     }
 
-    // Ensure the previous class fee is paid
     const lastFeeHistory = student.feeHistory[student.feeHistory.length - 1];
     if (lastFeeHistory.remainingFee !== 0) {
       return res
@@ -693,10 +639,8 @@ const updateStudentClass = async (req, res) => {
         .json({ error: "Please submit the previous class fee" });
     }
 
-    // Update the sclassName field
     student.sclassName = sclassName;
 
-    // Find the fee details for the new class and session
     const feeDetails = await Fee.findOne({
       sclass: student.sclassName,
       session: student.session._id,
@@ -749,7 +693,7 @@ const updateStudentClass = async (req, res) => {
       discountFee: student.discountFee,
       remainingFee,
       paidFee: 0,
-      remainingFees, // Store remaining fees array in fee history
+      remainingFees,
       year: new Date().getFullYear().toString(),
     });
 
