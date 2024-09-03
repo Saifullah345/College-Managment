@@ -83,7 +83,7 @@ const StudentFee = () => {
               Payment History
             </Typography>
 
-            <FeeDetails fee={val} />
+            <FeeDetails fee={val} data={data} />
           </Box>
         ))}
     </div>

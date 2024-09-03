@@ -7,7 +7,7 @@
   }
 
   .receipt-container {
-    padding: 20px;
+    padding: 10px; /* Reduced padding */
     background-color: #f0f0f0;
   }
 
@@ -15,7 +15,7 @@
     max-width: 1200px;
     margin: 0 auto;
     background-color: #ffffff;
-    padding: 20px;
+    padding: 10px; /* Reduced padding */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
@@ -25,56 +25,47 @@
     width: 48%;
   }
 
-  .receipt-header {
-    text-align: center;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-
-  .college-info {
-    text-align: center;
-    margin-bottom: 10px;
-  }
-
+  .receipt-header,
+  .college-info,
   .receipt-title {
     text-align: center;
     font-weight: bold;
-    margin-bottom: 10px;
-    font-size: 1.2em;
+    margin-bottom: 5px; /* Reduced margin */
+    font-size: 0.9em; /* Reduced font size */
   }
 
   .receipt-details {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-bottom: 5px; /* Reduced margin */
   }
 
   .details-left,
   .details-right {
     width: 45%;
+    font-size: 0.8em; /* Reduced font size */
   }
 
   .fee-table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 10px;
+    margin-bottom: 5px; /* Reduced margin */
   }
 
   .fee-table th,
   .fee-table td {
     border: 1px solid #000;
-    padding: 8px;
+    padding: 4px; /* Reduced padding */
     text-align: left;
-    font-size: "5px";
+    font-size: 0.7em; /* Reduced font size */
   }
 
-  .total-amount {
-    text-align: right;
-    margin-bottom: 5px;
-  }
-
-  .payment-info {
-    margin-bottom: 5px;
+  .total-amount,
+  .payment-info,
+  .remarks-signature {
+    text-align: left;
+    margin-bottom: 3px; /* Reduced margin */
+    font-size: 0.8em; /* Reduced font size */
   }
 
   .remarks-signature {
@@ -85,6 +76,6 @@
 
   .note {
     text-align: center;
-    font-size: 0.9em;
+    font-size: 0.5em;
   }
 }

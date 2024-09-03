@@ -1,18 +1,35 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, IconButton, Typography } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Popup from "../../../../components/Popup";
+import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutlined";
+import ArrowBackIosOutlinedIcon from "@mui/icons-material/ArrowBackIosOutlined";
 
 const StudentDetail = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const location = useLocation();
   const [data, setData] = useState({});
   const { id } = useParams();
+  const [selectedStudentIds, setSelectedStudentIds] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [admissionStatus, setAdmissionStatus] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
+  useEffect(() => {
+    // Retrieve the student IDs array from the location state
+    if (location.state && location.state.selectedIds) {
+      setSelectedStudentIds(location.state.selectedIds);
+      const index = location.state.selectedIds.indexOf(id);
+      setCurrentIndex(index);
+    }
+    viewStudentDetail();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, location.state]);
+
   const viewStudentDetail = async () => {
+    setLoading(true);
     try {
       const result = await axios.get(
         `${process.env.REACT_APP_BASE_URL}/Student/${id}`,
@@ -22,16 +39,36 @@ const StudentDetail = () => {
       );
       if (result.status === 200) {
         setData(result.data);
-        console.log(result?.data?.sclassName?._id);
         localStorage.setItem("studentName", result.data.name);
-        localStorage.setItem("classID", result?.data?.sclassName?._id);
-
-        setLoading(false);
+        localStorage.setItem("classID", result.data.sclassName._id);
       }
     } catch (err) {
+      console.error(err);
+    } finally {
       setLoading(false);
     }
   };
+
+  const handleNextStudent = () => {
+    if (currentIndex < selectedStudentIds.length - 1) {
+      const nextStudentId = selectedStudentIds[currentIndex + 1];
+      setCurrentIndex(currentIndex + 1);
+      navigate(`/Admin/students/student/${nextStudentId}`, {
+        state: { selectedIds: selectedStudentIds },
+      });
+    }
+  };
+
+  const handlePreviousStudent = () => {
+    if (currentIndex > 0) {
+      const prevStudentId = selectedStudentIds[currentIndex - 1];
+      setCurrentIndex(currentIndex - 1);
+      navigate(`/Admin/students/student/${prevStudentId}`, {
+        state: { selectedIds: selectedStudentIds },
+      });
+    }
+  };
+
   const Update = async () => {
     try {
       const result = await axios.put(
@@ -70,14 +107,31 @@ const StudentDetail = () => {
 
   return (
     <div className="register-form">
+      <Box display={"flex"} justifyContent={"end"}>
+        <Box display={"flex"} gap={"10px"}>
+          <IconButton
+            onClick={handlePreviousStudent}
+            disabled={currentIndex === 0}
+          >
+            <ArrowBackIosOutlinedIcon />
+          </IconButton>
+
+          <IconButton
+            onClick={handleNextStudent}
+            disabled={currentIndex === selectedStudentIds.length - 1}
+          >
+            <ArrowForwardIosOutlinedIcon />
+          </IconButton>
+        </Box>
+      </Box>
       <Box display={"flex"} justifyContent={"space-between"}>
         <Typography
           component="h1"
-          marginBottom={"10px"}
+          // marginBottom={"10px"}
           variant="h6"
           color="inherit"
           noWrap
-          sx={{ flexGrow: 1 }}
+          // sx={{ flexGrow: 1 }}
         >
           Student Detail
         </Typography>

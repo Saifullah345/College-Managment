@@ -1,19 +1,18 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Typography, Box, Button } from "@mui/material";
 import PrintButton from "../../../FeeRelated/FeeCollection/printButton";
 import FeeSlip from "../../../FeeRelated/FeeCollection/feeSlip";
 import { useNavigate } from "react-router-dom";
 
-const FeeDetails = ({ fee }) => {
+const FeeDetails = ({ fee, data }) => {
   const contentRef = useRef();
   const navigate = useNavigate();
-  // const excludeFields = ["_id", "createdAt", "updatedAt", "__v"];
+  const [fees, setFees] = useState({});
 
   // Safely access fee and remainingFees
   // const feeData = fee?.fee || {};
   const remainingFees = fee?.remainingFees || [];
   const paidFees = fee?.paidFees || [];
-  console.log(fee);
 
   // Filter unpaid fees that are not excluded
   // const feeEntries = Object.entries(feeData).filter(([key, value]) => {
@@ -85,7 +84,11 @@ const FeeDetails = ({ fee }) => {
           <Typography variant="body2" width="10%">
             {paidFee.amount}
           </Typography>
-          <Typography variant="body2" width="10%">
+          <Typography
+            variant="body2"
+            width="10%"
+            onClick={() => setFees(paidFee)}
+          >
             <PrintButton contentRef={contentRef} />
           </Typography>
         </Box>
@@ -139,7 +142,7 @@ const FeeDetails = ({ fee }) => {
         </Typography>
       </Box>
       <Box display={"none"}>
-        <FeeSlip ref={contentRef} />
+        <FeeSlip ref={contentRef} fee={data} fees={fee} data={fees} />
       </Box>
     </div>
   );

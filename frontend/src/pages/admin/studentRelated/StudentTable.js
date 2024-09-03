@@ -16,6 +16,7 @@ import { GreenButton } from "../../../components/buttonStyles";
 export const StudentsTable = ({ activeClass }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [selectedStudentIds, setSelectedStudentIds] = React.useState([]);
   const { studentsList, loading, error, response } = useSelector(
     (state) => state.student
   );
@@ -31,6 +32,24 @@ export const StudentsTable = ({ activeClass }) => {
 
   if (error) {
   }
+
+  const handleViewStudent = (id) => {
+    // Get the index of the selected student
+    const currentIndex = studentsList.findIndex(
+      (student) => student._id === id
+    );
+
+    // Create an array of the previous 10, current, and next 10 student IDs
+    const selectedIds = studentsList
+      .slice(Math.max(currentIndex - 10, 0), currentIndex + 11)
+      .map((student) => student._id);
+
+    // Set the selected student IDs state
+    setSelectedStudentIds(selectedIds);
+
+    // Navigate to the StudentDetail component with the array of IDs
+    navigate(`/Admin/students/student/${id}`, { state: { selectedIds } });
+  };
 
   const filterStudents = (students) => {
     if (activeClass === "All") {
@@ -70,7 +89,7 @@ export const StudentsTable = ({ activeClass }) => {
             <Button
               width="10px"
               padding="0px"
-              onClick={() => navigate(`/Admin/students/student/${student._id}`)}
+              onClick={() => handleViewStudent(student._id)}
             >
               <Visibility />
             </Button>

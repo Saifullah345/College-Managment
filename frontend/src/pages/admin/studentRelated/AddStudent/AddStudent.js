@@ -17,6 +17,7 @@ const AddStudentForm = ({ formData, setFormData, loader }) => {
         setFormData={setFormData}
       />
       <hr />
+
       <EducationInfo
         // setStepper={setStepper}
         formData={formData}
