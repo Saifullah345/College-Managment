@@ -1,8 +1,19 @@
-import { Box, Button, Container, Grid, Paper } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 export const Institute = ({ setShowPopup, setMessage }) => {
   const [id, setId] = useState("");
@@ -17,6 +28,7 @@ export const Institute = ({ setShowPopup, setMessage }) => {
     country: "",
   });
   const [loading, setLoading] = useState(false);
+
   const Update = async () => {
     setLoading(true);
     const formDataElement = new FormData();
@@ -32,7 +44,6 @@ export const Institute = ({ setShowPopup, setMessage }) => {
       console.log(result);
       if (result.data) {
         setLoading(false);
-        console.log(result);
         setShowPopup(true);
         sessionStorage.setItem("loader", !sessionStorage.getItem("loader"));
         setMessage("Done Successfully");
@@ -44,6 +55,7 @@ export const Institute = ({ setShowPopup, setMessage }) => {
       setMessage(error?.response?.data?.error);
     }
   };
+
   const ViewInstitute = async () => {
     try {
       const result = await axios.get(
@@ -54,7 +66,6 @@ export const Institute = ({ setShowPopup, setMessage }) => {
       );
       console.log(result);
       if (result.data) {
-        console.log(result);
         setId(result.data._id);
         setData({
           file: result.data.instituteProfile || "",
@@ -65,15 +76,16 @@ export const Institute = ({ setShowPopup, setMessage }) => {
           address: result.data.address || "",
           country: result.data.country || "",
         });
-        console.log(result);
         setFilePreview(result.data.instituteProfile);
+        console.log(result.data.instituteProfile);
       }
     } catch (error) {
       console.log(error);
     }
   };
+
   const handleFileChange = (e) => {
-    const file = e.target.files[0]; // Get the selected file
+    const file = e.target.files[0];
     if (file) {
       const fileURL = URL.createObjectURL(file);
       setFilePreview(fileURL);
@@ -83,163 +95,175 @@ export const Institute = ({ setShowPopup, setMessage }) => {
       }));
     }
   };
+
   useEffect(() => {
     ViewInstitute();
   }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   return (
     <div>
-      <Box display="flex" flexDirection="column" gap={2} p={2}>
-        <h2>Institute</h2>
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={3} lg={3}>
-              <input
-                id="ProfileUpload"
-                type="file"
-                onChange={handleFileChange}
-                style={{ display: "none" }}
-              />
-              <StyledPaper>
-                <label htmlFor="ProfileUpload">
-                  {!filePreview ? (
-                    <AccountCircleIcon
-                      style={{ fontSize: 60, cursor: "pointer" }}
-                    />
-                  ) : (
-                    <img
-                      height={100}
-                      width={100}
-                      src={filePreview}
-                      alt="reload"
-                    />
-                  )}
-                </label>
-              </StyledPaper>
-            </Grid>
-          </Grid>
-        </Container>
-        <Box
-          display={"flex"}
-          justifyContent={"space-between"}
-          alignItems="center"
-          gap={2}
-        >
-          <input
-            className="registerInput"
-            type="text"
-            placeholder="Institute Name"
-            value={data.instituteName}
-            onChange={(e) => {
-              setData((prev) => ({
-                ...prev,
-                instituteName: e.target.value,
-              }));
-            }}
-            required
-          />
-          <input
-            className="registerInput"
-            type="text"
-            placeholder="Phone No"
-            value={data.phoneNo}
-            onChange={(e) => {
-              setData((prev) => ({
-                ...prev,
-                phoneNo: e.target.value,
-              }));
-            }}
-            required
-          />
-        </Box>
-        <Box
-          display={"flex"}
-          justifyContent={"space-between"}
-          alignItems="center"
-          gap={2}
-        >
-          <input
-            className="registerInput"
-            type="text"
-            placeholder="Website URL"
-            value={data.websiteUrl}
-            onChange={(e) => {
-              setData((prev) => ({
-                ...prev,
-                websiteUrl: e.target.value,
-              }));
-            }}
-            required
-          />
-          <input
-            className="registerInput"
-            type="text"
-            placeholder="TargetLine"
-            value={data.targetLine}
-            onChange={(e) => {
-              setData((prev) => ({
-                ...prev,
-                targetLine: e.target.value,
-              }));
-            }}
-            required
-          />
-        </Box>
-        <Box
-          display={"flex"}
-          justifyContent={"space-between"}
-          alignItems="center"
-          gap={2}
-        >
-          <input
-            className="registerInput"
-            type="text"
-            placeholder="Address"
-            value={data.address}
-            onChange={(e) => {
-              setData((prev) => ({
-                ...prev,
-                address: e.target.value,
-              }));
-            }}
-            required
-          />
-          <input
-            className="registerInput"
-            type="text"
-            placeholder="country"
-            value={data.country}
-            onChange={(e) => {
-              setData((prev) => ({
-                ...prev,
-                country: e.target.value,
-              }));
-            }}
-            required
-          />
-        </Box>
+      <Box sx={{ padding: 4 }}>
+        <Typography variant="h4" gutterBottom>
+          Update Institute
+        </Typography>
+        {/* <Typography variant="subtitle1" color="textSecondary" gutterBottom>
+          <span style={{ color: "red" }}>*</span> Required{" "}
+          <span style={{ marginLeft: 16 }}>Optional</span>
+        </Typography> */}
 
-        <Button
-          variant="contained"
-          onClick={Update}
-          sx={{
-            mt: 2,
-            width: "20%",
-            justifyContent: "center",
-            display: "flex",
-          }}
-        >
-          {loading ? "Loading..." : "Update"}
-        </Button>
+        <Grid container spacing={3}>
+          {/* Left Section */}
+          <Grid item xs={12} md={7}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              {/* Institute Logo */}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 2,
+                  border: "1px solid #e0e0e0",
+                  borderRadius: "8px",
+                  padding: 2,
+                }}
+              >
+                <Avatar
+                  alt="Institute Logo"
+                  src={filePreview || "/static/images/avatar/1.jpg"} // Replace with your logo path
+                  sx={{ width: 80, height: 80 }}
+                />
+                <Button variant="contained" color="primary" component="label">
+                  Change Logo
+                  <input type="file" hidden onChange={handleFileChange} />
+                </Button>
+              </Box>
+
+              {/* Name of Institute */}
+              <TextField
+                label="Name of Institute"
+                variant="outlined"
+                required
+                fullWidth
+                name="instituteName"
+                value={data.instituteName}
+                onChange={handleChange}
+              />
+
+              {/* Target Line */}
+              <TextField
+                label="Target Line"
+                variant="outlined"
+                required
+                fullWidth
+                name="targetLine"
+                value={data.targetLine}
+                onChange={handleChange}
+              />
+
+              {/* Phone Number */}
+              <TextField
+                label="Phone Number"
+                variant="outlined"
+                required
+                fullWidth
+                name="phoneNo"
+                value={data.phoneNo}
+                onChange={handleChange}
+              />
+
+              {/* Website */}
+              <TextField
+                label="Website"
+                variant="outlined"
+                fullWidth
+                name="websiteUrl"
+                value={data.websiteUrl}
+                onChange={handleChange}
+              />
+
+              {/* Address */}
+              <TextField
+                label="Address"
+                variant="outlined"
+                required
+                fullWidth
+                name="address"
+                value={data.address}
+                onChange={handleChange}
+              />
+
+              {/* Country */}
+              <FormControl fullWidth variant="outlined">
+                <InputLabel>Country</InputLabel>
+                <Select
+                  name="country"
+                  value={data.country}
+                  onChange={handleChange}
+                >
+                  <MenuItem value="Pakistan">Pakistan</MenuItem>
+                </Select>
+              </FormControl>
+
+              {/* Update Profile Button */}
+              <Button
+                variant="contained"
+                color="warning"
+                fullWidth
+                onClick={Update}
+              >
+                {loading ? "Updating..." : "Update Profile"}
+              </Button>
+            </Box>
+          </Grid>
+
+          {/* Right Section */}
+          <Grid item xs={12} md={5}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Profile View
+                </Typography>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  <Avatar
+                    alt="Institute Logo"
+                    src={
+                      "https://drive.google.com/uc?export=view&id=1Swqs5bRXacp1YlZjgnrT0m3fuZKTpFeT" ||
+                      "/static/images/avatar/1.jpg"
+                    }
+                    sx={{ width: 120, height: 120, margin: "0 auto" }}
+                  />
+
+                  <Typography variant="h6" align="center">
+                    {data.instituteName}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Phone No:</strong> {data.phoneNo}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Email:</strong> murad.hadi@gmail.com
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Website:</strong> {data.websiteUrl || "N/A"}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Address:</strong> {data.address}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Country:</strong> {data.country}
+                  </Typography>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
       </Box>
     </div>
   );
 };
-const StyledPaper = styled(Paper)`
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  height: 200px;
-  justify-content: space-between;
-  align-items: center;
-  text-align: center;
-`;

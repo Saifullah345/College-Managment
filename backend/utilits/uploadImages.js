@@ -29,7 +29,7 @@ module.exports = uploadImages = (fields) => {
             // Upload each file to Google Drive
             for (const field of fields) {
               const file = req.files[field][0];
-              const fileId = await drive_handlers.uploadImage(file); // Assuming uploadProductImage returns fileId
+              const fileId = await drive_handlers.uploadImage(file);
               uploadedFiles[field] = fileId;
             }
 

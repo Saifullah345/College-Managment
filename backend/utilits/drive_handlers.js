@@ -7,7 +7,7 @@ async function getDrive() {
     const scopes = ["https://www.googleapis.com/auth/drive"];
     const client = new google.auth.JWT(
       keys.client_email,
-      undefined,
+      null,
       keys.private_key,
       scopes
     );
@@ -15,21 +15,17 @@ async function getDrive() {
     return google.drive({ version: "v3", auth: client });
   } catch (error) {
     console.error("Error getting Drive client:", error);
-    return undefined;
+    return null;
   }
 }
+
 async function uploadFileToDrive(file, fileId = null) {
   const drive = await getDrive();
   if (!drive) {
-    console.log("Unable to get drive");
-    return {
-      uploaded: false,
-      url: undefined,
-      fileId: undefined,
-    };
+    return { uploaded: false, url: undefined, fileId: undefined };
   }
 
-  let bufferStream = new stream.PassThrough();
+  const bufferStream = new stream.PassThrough();
   bufferStream.end(file.buffer);
 
   const requestBody = {
@@ -43,72 +39,55 @@ async function uploadFileToDrive(file, fileId = null) {
   };
 
   try {
-    const fileData = fileId
+    const response = fileId
       ? await drive.files.update({
-          fileId: fileId,
-          requestBody: requestBody,
-          media: media,
+          fileId,
+          requestBody,
+          media,
         })
       : await drive.files.create({
-          requestBody: requestBody,
-          media: media,
+          requestBody,
+          media,
         });
 
-    if (!fileData.data.id) {
-      return {
-        uploaded: false,
-        url: undefined,
-        fileId: undefined,
-      };
+    const newFileId = response.data.id;
+    if (!newFileId) {
+      return { uploaded: false, url: undefined, fileId: undefined };
     }
 
     await drive.permissions.create({
-      fileId: fileData.data.id,
+      fileId: newFileId,
       requestBody: {
         role: "reader",
         type: "anyone",
       },
     });
 
-    const url = `https://drive.google.com/uc?export=view&id=${fileData.data.id}`;
-
-    return {
-      uploaded: true,
-      url: url,
-      fileId: fileData.data.id,
-    };
+    const url = `https://drive.google.com/uc?export=view&id=${newFileId}`;
+    return { uploaded: true, url, fileId: newFileId };
   } catch (error) {
-    console.log("Drive catch:", error);
-    return {
-      uploaded: false,
-      url: undefined,
-      fileId: undefined,
-    };
+    console.error("Error uploading file to Google Drive:", error);
+    return { uploaded: false, url: undefined, fileId: undefined };
+  }
+}
+
+async function deleteFileFromDrive(fileId) {
+  const drive = await getDrive();
+  if (!drive) {
+    return false;
+  }
+
+  try {
+    const response = await drive.files.delete({ fileId });
+    return response.status === 204;
+  } catch (error) {
+    console.error("Error deleting file from Google Drive:", error);
+    return false;
   }
 }
 
 module.exports = {
-  async uploadImage(file) {
-    return await uploadFileToDrive(file);
-  },
-
-  async updateProfileImage(file, fileId) {
-    return await uploadFileToDrive(file, fileId);
-  },
-
-  async deleteCarImage(image_id) {
-    const drive = await getDrive();
-    if (!drive) {
-      console.log("Unable to get drive");
-      return false;
-    }
-
-    try {
-      const deleteResponse = await drive.files.delete({ fileId: image_id });
-      return deleteResponse.status === 204;
-    } catch (error) {
-      console.log("Error deleting file:", error);
-      return false;
-    }
-  },
+  uploadImage: (file) => uploadFileToDrive(file),
+  updateProfileImage: (file, fileId) => uploadFileToDrive(file, fileId),
+  deleteCarImage: (imageId) => deleteFileFromDrive(imageId),
 };
