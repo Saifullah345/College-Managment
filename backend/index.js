@@ -13,7 +13,14 @@ dotenv.config();
 // app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }))
 
 app.use(express.json({ limit: "10mb" }));
-app.use(cors());
+const corsOptions = {
+  origin: "https://college-management-sandy-mu.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 mongoose
   .connect(process.env.MONGO_URL, {
