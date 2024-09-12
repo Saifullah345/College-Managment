@@ -11,33 +11,15 @@ dotenv.config();
 
 app.use(express.json({ limit: "10mb" }));
 
-// Allowed origins for CORS
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://college-management-knxr.vercel.app",
-];
+app.use(cors());
+app.use(
+  cors({
+    origin: true,
+    exposedHeaders: ["bearer"],
+  })
+);
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow requests with no origin, like mobile apps or curl requests
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-};
-
-// Use CORS middleware
-app.use(cors(corsOptions));
-
-// Handle preflight requests
-app.options("*", cors(corsOptions)); // Preflight request handler
+// app.options("*", cors(corsOptions));
 
 // Connect to MongoDB
 mongoose
