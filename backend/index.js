@@ -11,16 +11,12 @@ app.use(cors());
 app.use(
   cors({
     origin: true,
-    exposedHeaders: ["bearer"],
   })
 );
 dotenv.config();
 
 app.use(express.json({ limit: "10mb" }));
 
-// app.options("*", cors(corsOptions));
-
-// Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
