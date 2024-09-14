@@ -23,6 +23,7 @@ import { LightPurpleButton } from "../components/buttonStyles";
 import styled from "styled-components";
 import { loginUser } from "../redux/userRelated/userHandle";
 import Popup from "../components/Popup";
+import axios from "axios";
 
 const defaultTheme = createTheme();
 
@@ -47,6 +48,10 @@ const LoginPage = ({ role }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    axios
+      .post("https://college-management1.vercel.app/AdminLogin", { name: "" })
+      .then((response) => console.log(response))
+      .catch((error) => console.error(error));
 
     if (role === "Student") {
       const rollNum = event.target.rollNumber.value;
