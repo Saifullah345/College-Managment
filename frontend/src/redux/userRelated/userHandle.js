@@ -7,9 +7,9 @@ import {
   authError,
   authLogout,
   doneSuccess,
-  getDeleteSuccess,
+  // getDeleteSuccess,
   getRequest,
-  getFailed,
+  // getFailed,
   getError,
 } from "./userSlice";
 import { getFailedTwo, getSuccess } from "../sclassRelated/sclassSlice";

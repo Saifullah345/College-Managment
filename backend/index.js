@@ -5,15 +5,17 @@ const dotenv = require("dotenv");
 const Routes = require("./routes/route.js");
 
 const app = express();
+dotenv.config();
 
 const PORT = process.env.PORT || 5000;
-app.use(cors());
-app.use(
-  cors({
-    origin: true,
-  })
-);
-dotenv.config();
+
+// const corsOptions = {
+//   origin: ["http://localhost:3001", "https://college-management1.vercel.app"],
+//   methods: ["GET", "POST", "PUT", "DELETE"],
+//   credentials: true,
+// };
+
+app.use(cors(corsOptions));
 
 app.use(express.json({ limit: "10mb" }));
 
