@@ -49,7 +49,7 @@ const LoginPage = ({ role }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     axios
-      .post("https://college-management1.vercel.app/AdminLogin", { name: "" })
+      .post("https://college-management-g74u.vercel.app/AdminLogin", { name: "" })
       .then((response) => console.log(response))
       .catch((error) => console.error(error));
 
