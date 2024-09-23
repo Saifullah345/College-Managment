@@ -3,34 +3,24 @@ import "./feeReceipt.css";
 import { Typography } from "@mui/material";
 import numberToWords from "number-to-words";
 
-const FeeSlip = forwardRef(({ fee, data, fees }, ref) => {
+const FeeSlip = forwardRef(({ fee, data, fees, invoiceNo }, ref) => {
   const [feeMenu, setFeeMenu] = useState([]);
   const [feeTypeObj, setFeeTypeObj] = useState("");
   const [amountObj, setAmountObj] = useState(0);
 
-  // Log data to inspect its structure
-  console.log("Data prop:", data);
-
   useEffect(() => {
-    // Transform data into the desired format
     const formattedFeeMenu = Object.entries(data).map(([key, value]) => ({
       key,
       value,
     }));
     setFeeMenu(formattedFeeMenu);
-
-    // Log formatted fee menu to inspect its structure
-    console.log("Formatted Fee Menu:", formattedFeeMenu);
   }, [data]);
 
   useEffect(() => {
     if (feeMenu.length > 0) {
-      const feeType = feeMenu.find((obj) => obj.key === "feeType")?.value || "";
-      const amount = feeMenu.find((obj) => obj.key === "amount")?.value || 0;
-
-      // Log values before setting state
-      console.log("Fee Type Found:", feeType);
-      console.log("Amount Found:", amount);
+      const feeType =
+        feeMenu?.find((obj) => obj.key === "feeType")?.value || "";
+      const amount = feeMenu?.find((obj) => obj.key === "amount")?.value || 0;
 
       setFeeTypeObj(feeType);
       setAmountObj(amount);
@@ -57,7 +47,7 @@ const FeeSlip = forwardRef(({ fee, data, fees }, ref) => {
           <div className="receipt-details">
             <div className="details-left">
               <p>
-                <strong>Receipt No:</strong> 1718/02518{" "}
+                <strong>Receipt No:</strong> {invoiceNo}
                 {/* Generate dynamically if needed */}
               </p>
               <small>

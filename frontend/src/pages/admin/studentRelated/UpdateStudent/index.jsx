@@ -3,6 +3,7 @@ import axios from "axios";
 import Popup from "../../../../components/Popup";
 import { useNavigate, useParams } from "react-router-dom";
 import UpdateStudentForm from "./UpdateStudent";
+import { Box } from "@mui/material";
 
 export const UpdateStudent = () => {
   const { id } = useParams();
@@ -39,10 +40,12 @@ export const UpdateStudent = () => {
     sclassName: "",
     discount: "",
   });
+  const [admissionStatus, setAdmissionStatus] = useState("");
+
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
-  const [message, setMessage] = useState("");
   const [loader, setLoader] = useState(false);
+  const [message, setMessage] = useState("");
 
   const viewStudentDetail = async () => {
     setLoading(true);
@@ -88,10 +91,40 @@ export const UpdateStudent = () => {
       setMessage(error?.response?.data?.error);
     }
   };
-
+  const Update = async () => {
+    try {
+      const result = await axios.put(
+        `${process.env.REACT_APP_BASE_URL}/Student/${id}`,
+        {
+          admissionStatus,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      // console.log(result);
+      if (result.data) {
+        setShowPopup(true);
+        sessionStorage.setItem("loader", !sessionStorage.getItem("loader"));
+        setMessage("Done Successfully");
+        setLoading(true);
+        setAdmissionStatus("");
+        viewStudentDetail();
+      }
+    } catch (error) {
+      setShowPopup(true);
+      setMessage(error?.response?.data?.error);
+      setAdmissionStatus("");
+    }
+  };
   useEffect(() => {
     viewStudentDetail();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+  useEffect(() => {
+    if (admissionStatus !== "") Update();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [admissionStatus]);
 
   return (
     <>
@@ -99,6 +132,45 @@ export const UpdateStudent = () => {
         "Loading..."
       ) : (
         <div className="register-form">
+          <Box width={"100%"} justifyContent={"end"} display={"flex"}>
+            <Box
+              justifyContent={"end"}
+              display={"flex"}
+              flexDirection={"column"}
+              border={"1px solid #ccc"}
+              borderRadius={"10px"}
+              padding={3}
+              boxShadow={1}
+              marginTop={"20px"}
+            >
+              <Box
+                display={"flex"}
+                gap={"20px"}
+                justifyContent={"space-between"}
+              >
+                <h4>Admission Status</h4>
+                <h4 style={{ color: "red", textTransform: "capitalize" }}>
+                  {formData.admissionStatus}
+                </h4>
+              </Box>
+              <div className="formGroup">
+                <select
+                  defaultValue={formData.admissionStatus}
+                  className="registerInput"
+                  value={admissionStatus}
+                  onChange={(e) => {
+                    setAdmissionStatus(e.target.value);
+                  }}
+                  required
+                >
+                  <option value="">Select Admission Status</option>
+                  <option value="pending">Pending</option>
+                  <option value="continue">Continue</option>
+                  <option value="dropout">Dropout</option>
+                </select>
+              </div>
+            </Box>
+          </Box>
           <form className="registerForm" onSubmit={submitHandler}>
             <UpdateStudentForm
               formData={formData}

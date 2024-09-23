@@ -2,7 +2,6 @@ import { Box, Grid, IconButton, Typography } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import Popup from "../../../../components/Popup";
 import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutlined";
 import ArrowBackIosOutlinedIcon from "@mui/icons-material/ArrowBackIosOutlined";
 
@@ -14,9 +13,6 @@ const StudentDetail = () => {
   const { id } = useParams();
   const [selectedStudentIds, setSelectedStudentIds] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [admissionStatus, setAdmissionStatus] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
-  const [message, setMessage] = useState("");
   useEffect(() => {
     // Retrieve the student IDs array from the location state
     if (location.state && location.state.selectedIds) {
@@ -69,41 +65,11 @@ const StudentDetail = () => {
     }
   };
 
-  const Update = async () => {
-    try {
-      const result = await axios.put(
-        `${process.env.REACT_APP_BASE_URL}/Student/${id}`,
-        {
-          admissionStatus,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      // console.log(result);
-      if (result.data) {
-        setShowPopup(true);
-        sessionStorage.setItem("loader", !sessionStorage.getItem("loader"));
-        setMessage("Done Successfully");
-        setLoading(true);
-        setAdmissionStatus("");
-        viewStudentDetail();
-      }
-    } catch (error) {
-      setShowPopup(true);
-      setMessage(error?.response?.data?.error);
-      setAdmissionStatus("");
-    }
-  };
   useEffect(() => {
     viewStudentDetail();
     setLoading(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-  useEffect(() => {
-    if (admissionStatus !== "") Update();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [admissionStatus]);
 
   return (
     <div className="register-form">
@@ -247,38 +213,6 @@ const StudentDetail = () => {
               boxShadow={1}
               marginTop={"20px"}
             >
-              <Box display={"flex"} justifyContent={"space-between"}>
-                <h4>Admission Status</h4>
-                <h4 style={{ color: "red", textTransform: "capitalize" }}>
-                  {data.admissionStatus}
-                </h4>
-              </Box>
-              <div className="formGroup">
-                <select
-                  defaultValue={data.admissionStatus}
-                  className="registerInput"
-                  value={admissionStatus}
-                  onChange={(e) => {
-                    setAdmissionStatus(e.target.value);
-                  }}
-                  required
-                >
-                  <option value="">Select Admission Status</option>
-                  <option value="pending">Pending</option>
-                  <option value="continue">Continue</option>
-                  <option value="dropout">Dropout</option>
-                </select>
-              </div>
-            </Box>
-            <Box
-              display={"flex"}
-              flexDirection={"column"}
-              border={"1px solid #ccc"}
-              borderRadius={"10px"}
-              padding={3}
-              boxShadow={1}
-              marginTop={"20px"}
-            >
               <h4>Attachment</h4>
               <Box display={"flex"} gap={3}>
                 <p>ID Card Front Photo</p>
@@ -317,11 +251,6 @@ const StudentDetail = () => {
           </Grid>
         </Grid>
       )}
-      <Popup
-        message={message}
-        setShowPopup={setShowPopup}
-        showPopup={showPopup}
-      />
     </div>
   );
 };

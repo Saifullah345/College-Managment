@@ -1,35 +1,36 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Typography, Box, Button } from "@mui/material";
-import PrintButton from "../../../FeeRelated/FeeCollection/printButton";
-import FeeSlip from "../../../FeeRelated/FeeCollection/feeSlip";
 import { useNavigate } from "react-router-dom";
+import FeeModal from "./Modal";
+import FeeSlip from "../../../FeeRelated/FeeCollection/feeSlip";
+import { generateInvoiceNumber } from "./utils";
 
 const FeeDetails = ({ fee, data }) => {
-  const contentRef = useRef();
   const navigate = useNavigate();
+  const contentRef = useRef();
+  const [open, setOpen] = useState(false);
   const [fees, setFees] = useState({});
+  const [invoiceNumbers, setInvoiceNumbers] = useState({});
+  const [invoice, setInvoice] = useState("");
 
-  // Safely access fee and remainingFees
-  // const feeData = fee?.fee || {};
+  useEffect(() => {
+    if (fee?.paidFees) {
+      const initialInvoiceNumbers = fee.paidFees.reduce((acc, paidFee) => {
+        acc[paidFee.feeType] = generateInvoiceNumber();
+        return acc;
+      }, {});
+      setInvoiceNumbers(initialInvoiceNumbers);
+    }
+  }, [fee?.paidFees]);
+
+  const handlePrint = (paidFee, invoice) => {
+    setFees(paidFee);
+    setInvoice(invoice);
+    setOpen(true);
+  };
+
   const remainingFees = fee?.remainingFees || [];
   const paidFees = fee?.paidFees || [];
-
-  // Filter unpaid fees that are not excluded
-  // const feeEntries = Object.entries(feeData).filter(([key, value]) => {
-  //   return (
-  //     value !== "" &&
-  //     value !== "0" &&
-  //     typeof value !== "object" &&
-  //     !excludeFields.includes(key) &&
-  //     !paidFees.some((paidFee) => paidFee.feeType === key)
-  //   );
-  // });
-
-  // Calculate the total remaining fee
-  // const totalRemainingFee = Object.entries(remainingFees).reduce(
-  //   (acc, [key, value]) => acc + value,
-  //   0
-  // );
 
   return (
     <div>
@@ -76,10 +77,11 @@ const FeeDetails = ({ fee, data }) => {
               paidFee.feeType.slice(1).replace(/([A-Z])/g, " $1")}
           </Typography>
           <Typography variant="body2" width="30%">
-            {Math.floor(1000 + Math.random() * 9000)}
+            {invoiceNumbers[paidFee.feeType]}{" "}
+            {/* Use the stored invoice number */}
           </Typography>
           <Typography variant="body2" width="30%">
-            {Math.floor(1000 + Math.random() * 9000)}
+            {invoiceNumbers[paidFee.feeType]} {/* Don't regenerate */}
           </Typography>
           <Typography variant="body2" width="10%">
             {paidFee.amount}
@@ -87,9 +89,11 @@ const FeeDetails = ({ fee, data }) => {
           <Typography
             variant="body2"
             width="10%"
-            onClick={() => setFees(paidFee)}
+            onClick={() =>
+              handlePrint(paidFee, invoiceNumbers[paidFee.feeType])
+            }
           >
-            <PrintButton contentRef={contentRef} />
+            <Button>Print</Button>
           </Typography>
         </Box>
       ))}
@@ -103,9 +107,9 @@ const FeeDetails = ({ fee, data }) => {
         Subtotal (Paid): {fee?.paidFee}
       </Typography>
 
-      {remainingFees.map((remainingFee, index) => {
-        if (remainingFee.amount > 0) {
-          return (
+      {remainingFees.map(
+        (remainingFee, index) =>
+          remainingFee.amount > 0 && (
             <Box
               onClick={() => {
                 localStorage.setItem("feeType", remainingFee.feeType);
@@ -128,10 +132,8 @@ const FeeDetails = ({ fee, data }) => {
                 <Button marginTop={"-5px"}>Collect Fee</Button>
               </Box>
             </Box>
-          );
-        }
-        return null;
-      })}
+          )
+      )}
 
       <Box display={"flex"} justifyContent={"space-between"} mt={2}>
         <Typography variant="body1" fontWeight={600}>
@@ -141,8 +143,27 @@ const FeeDetails = ({ fee, data }) => {
           {fee.remainingFee}
         </Typography>
       </Box>
-      <Box display={"none"}>
-        <FeeSlip ref={contentRef} fee={data} fees={fee} data={fees} />
+
+      <Box>
+        <FeeModal
+          open={open}
+          setOpen={setOpen}
+          fee={data}
+          fees={fee}
+          data={fees}
+          contentRef={contentRef}
+          invoiceNo={invoice}
+          setInvoiceNo={setInvoice}
+        />
+        <Box display={"none"}>
+          <FeeSlip
+            ref={contentRef}
+            fee={data}
+            fees={fee}
+            data={fees}
+            invoiceNo={invoice}
+          />
+        </Box>
       </Box>
     </div>
   );

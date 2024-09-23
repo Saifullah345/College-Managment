@@ -8,13 +8,13 @@ export const AddDistrict = ({ open, setOpen }) => {
   const [provinces, setProvinces] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [message, setMessage] = useState("");
-  const [loading, setloading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [district, setDistrict] = useState("");
   const [provinceId, setProvinceId] = useState("");
 
   const Add = async () => {
     console.log(provinceId);
-    setloading(true);
+    setLoading(true);
     try {
       const result = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/districtCreate`,
@@ -28,7 +28,7 @@ export const AddDistrict = ({ open, setOpen }) => {
       );
       console.log(result);
       if (result.data) {
-        setloading(false);
+        setLoading(false);
         // console.log(result);
         sessionStorage.setItem("loader", !sessionStorage.getItem("loader"));
         setShowPopup(true);
@@ -38,7 +38,7 @@ export const AddDistrict = ({ open, setOpen }) => {
     } catch (error) {
       console.log(error.response);
       setShowPopup(true);
-      setloading(false);
+      setLoading(false);
       setMessage(error?.response?.data?.error);
     }
   };
