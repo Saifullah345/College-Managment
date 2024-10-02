@@ -60,7 +60,7 @@ const FeeSlip = forwardRef(({ fee, data, fees, invoiceNo }, ref) => {
             <div className="details-right">
               <p>
                 <strong>Date:</strong>{" "}
-                {new Date(fees?.date || fee.updatedAt)
+                {new Date(fees?.date || fee?.updatedAt)
                   .toISOString()
                   .slice(0, 10)}
               </p>
@@ -144,7 +144,7 @@ const FeeSlip = forwardRef(({ fee, data, fees, invoiceNo }, ref) => {
             <div className="details-right">
               <p>
                 <strong>Date:</strong>{" "}
-                {new Date(fees?.date || fee.updatedAt)
+                {new Date(fees?.date || fee?.updatedAt)
                   .toISOString()
                   .slice(0, 10)}
               </p>

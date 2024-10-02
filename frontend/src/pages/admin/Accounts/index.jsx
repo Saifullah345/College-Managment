@@ -34,7 +34,7 @@ export const Accounts = () => {
               runningBalance += fee.paidFee || 0; // Add the paid fee to the running balance
 
               return {
-                date: formatDate(fee.updatedAt),
+                date: formatDate(fee?.updatedAt),
                 description: `Fee Submission of ${student.name}`,
                 debit: fee.debit || 0,
                 credit: fee.paidFee || 0,
