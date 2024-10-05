@@ -15,8 +15,17 @@ import { AddProgram } from "./Program/AddProgram.jsx";
 import { ProgramTable } from "./Program/ProgramTable.jsx";
 import { SessionTable } from "./Session/SessionTable.jsx";
 import { Institute } from "./Institute/index.jsx";
+import { AddRole } from "./AddRole/index.jsx";
+import { AllRoles } from "./AddRole/Table/index.jsx";
 
-const categories = ["Tehsil", "Board", "Session", "Program", "Institute"];
+const categories = [
+  "Tehsil",
+  "Board",
+  "Session",
+  "Program",
+  "Institute",
+  "Roles",
+];
 
 const AddAddress = () => {
   const [addProvinces, setAddProvinces] = useState(false);
@@ -33,6 +42,7 @@ const AddAddress = () => {
   const [viewBoard, setViewBoard] = useState([]);
   const [active, setActive] = useState("Tehsil");
   const [viewProgram, setViewProgram] = useState([]);
+  const [viewRoles, setViewRoles] = useState([]);
   const [viewSession, setViewSession] = useState([]);
 
   const Add = async () => {
@@ -129,7 +139,6 @@ const AddAddress = () => {
           headers: { "Content-Type": "application/json" },
         }
       );
-      console.log(result);
       if (result.data) {
         console.log(result);
         setViewBoard(result.data);
@@ -149,6 +158,22 @@ const AddAddress = () => {
       if (result.data) {
         console.log(result);
         setViewProgram(result.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const ViewRoles = async () => {
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/allRoles`,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (result.data) {
+        console.log(result);
+        setViewRoles(result.data);
       }
     } catch (error) {
       console.log(error);
@@ -177,6 +202,7 @@ const AddAddress = () => {
     ViewDistrict();
     ViewBoard();
     ViewProgram();
+    ViewRoles();
     ViewSession();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionStorage.getItem("loader"), active, provinceId]);
@@ -285,6 +311,8 @@ const AddAddress = () => {
               <AddSession setMessage={setMessage} setShowPopup={setShowPopup} />
             ) : active === "Program" ? (
               <AddProgram setMessage={setMessage} setShowPopup={setShowPopup} />
+            ) : active === "Roles" ? (
+              <AddRole setMessage={setMessage} setShowPopup={setShowPopup} />
             ) : null}
           </Box>
           {/* <hr
@@ -322,6 +350,12 @@ const AddAddress = () => {
           />
         ) : active === "Institute" ? (
           <Institute setMessage={setMessage} setShowPopup={setShowPopup} />
+        ) : active === "Roles" ? (
+          <AllRoles
+            program={viewRoles}
+            setShowPopup={setShowPopup}
+            setMessage={setMessage}
+          />
         ) : null}
       </Box>
       <AddProvinces open={addProvinces} setOpen={setAddProvinces} />

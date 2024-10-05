@@ -1,19 +1,18 @@
 import React from "react";
-import TableTemplate from "../../../components/TableTemplate";
-import { boardColumns } from "./constant";
-import axios from "axios";
+import { columns } from "./constant";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import axios from "axios";
+import TableTemplate from "../../../../../components/TableTemplate";
 
-export const BoardTable = ({ board, setShowPopup, setMessage }) => {
+export const AllRoles = ({ program, setShowPopup, setMessage }) => {
   const rows =
-    board &&
-    board?.length > 0 &&
-    board?.map((val) => {
+    program &&
+    program?.length > 0 &&
+    program?.map((val) => {
       return {
-        name: val?.name,
+        program: val?.role,
         id: val?._id,
-        address: val?.address,
       };
     });
   const deleteHandler = async (deleteID, address) => {
@@ -25,7 +24,9 @@ export const BoardTable = ({ board, setShowPopup, setMessage }) => {
         }
       );
       if (result.data) {
+        console.log(result);
         setShowPopup(true);
+        console.log(sessionStorage.getItem("loader"));
         sessionStorage.setItem("loader", !sessionStorage.getItem("loader"));
         setMessage("Done Successfully");
       }
@@ -40,8 +41,7 @@ export const BoardTable = ({ board, setShowPopup, setMessage }) => {
     return (
       <IconButton
         onClick={() => {
-          console.log(row);
-          deleteHandler(row.id, "deleteBoard");
+          deleteHandler(row.id, "deleteRole");
         }}
       >
         <DeleteIcon color="error" />
@@ -52,9 +52,8 @@ export const BoardTable = ({ board, setShowPopup, setMessage }) => {
     <div>
       {rows.length > 0 ? (
         <TableTemplate
-          columns={boardColumns}
+          columns={columns}
           rows={rows}
-          showAction={true}
           buttonHaver={SubjectsButtonHaver}
         />
       ) : null}

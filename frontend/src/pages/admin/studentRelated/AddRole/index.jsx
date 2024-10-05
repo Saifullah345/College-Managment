@@ -2,68 +2,57 @@ import { Box, Button } from "@mui/material";
 import axios from "axios";
 import React, { useState } from "react";
 
-export const AddBoard = ({ setMessage, setShowPopup }) => {
+export const AddRole = ({ setMessage, setShowPopup }) => {
   const [data, setData] = useState({
-    name: "",
-    address: "",
+    role: "",
   });
-  const [loading, setloading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const Add = async () => {
-    setloading(true);
+    if (!data.role) {
+      setMessage("Role is required");
+      return;
+    }
+
+    console.log("Sending role:", data.role);
+
+    setLoading(true);
     try {
       const result = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/boardCreate`,
-        data,
+        `${process.env.REACT_APP_BASE_URL}/roleCreate`,
+        { role: data.role },
         {
           headers: { "Content-Type": "application/json" },
         }
       );
-      // console.log(result);
       if (result.data) {
-        setloading(false);
-        console.log(result);
+        setLoading(false);
         setShowPopup(true);
-        sessionStorage.setItem("loader", !sessionStorage.getItem("loader"));
         setMessage("Done Successfully");
-        setData({
-          name: "",
-          address: "",
-        });
+        sessionStorage.setItem("loader", !sessionStorage.getItem("loader"));
+        setData({ role: "" });
       }
     } catch (error) {
-      setloading(false);
+      setLoading(false);
       setShowPopup(true);
       setMessage(error?.response?.data?.error);
     }
   };
+
   return (
     <div>
       {" "}
       <Box display="flex" flexDirection="column" gap={2} p={2}>
-        <h2>Board</h2>
-        <Box display={"flex"} alignItems="center" gap={2}>
+        <h2>Role</h2>
+        <Box display={"flex"} width={"50%"} alignItems="center" gap={2}>
           <input
             className="registerInput"
             type="text"
-            placeholder="Add Board Name"
-            value={data.name}
+            placeholder="Add Role"
+            value={data.role}
             onChange={(e) => {
               setData((prev) => ({
                 ...prev,
-                name: e.target.value,
-              }));
-            }}
-            required
-          />
-          <input
-            className="registerInput"
-            type="text"
-            placeholder="Add Board Address"
-            value={data.address}
-            onChange={(e) => {
-              setData((prev) => ({
-                ...prev,
-                address: e.target.value,
+                role: e.target.value,
               }));
             }}
             required
@@ -72,7 +61,7 @@ export const AddBoard = ({ setMessage, setShowPopup }) => {
 
         <Button
           variant="contained"
-          onClick={Add}
+          onClick={() => Add()}
           sx={{
             mt: 2,
             width: "20%",

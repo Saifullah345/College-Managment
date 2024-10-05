@@ -13,12 +13,10 @@ const provincesCreate = async (req, res) => {
       return res.status(400).json({ error: "Province already exists" });
     }
 
-    // Create new district
     const createProvince = new Province({
       province,
     });
 
-    // Save district to database
     const result = await createProvince.save();
 
     return res.send(result);

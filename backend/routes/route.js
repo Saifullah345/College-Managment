@@ -61,6 +61,11 @@ const {
   allProvinces,
 } = require("../controllers/province-controller.js");
 const {
+  rolesCreate,
+  allRoles,
+  deleteRoles,
+} = require("../controllers/roles-controller.js");
+const {
   studentRegister,
   studentLogIn,
   getStudents,
@@ -104,6 +109,11 @@ const {
   allTehsil,
   deleteTehsil,
 } = require("../controllers/tehsil-controller.js");
+const {
+  createUser,
+  getAllUsers,
+  deleteUser,
+} = require("../controllers/user-controller.js");
 
 // Admin
 router.post("/AdminReg", adminRegister);
@@ -222,6 +232,14 @@ router.delete("/deleteSession/:id", deleteSession);
 router.post("/programCreate", programCreate);
 router.get("/allProgram", allPrograms);
 router.delete("/deleteProgram/:id", deleteProgram);
+//
+router.post("/roleCreate", rolesCreate);
+router.get("/allRoles", allRoles);
+router.delete("/deleteRole/:id", deleteRoles);
+//
+router.post("/userCreate", createUser);
+router.get("/allUser", getAllUsers);
+router.delete("/deleteUser/:id", deleteUser);
 
 router.post("/addFee", AddFee);
 router.put("/editFee/:id", EditFee);
