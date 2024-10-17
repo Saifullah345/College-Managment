@@ -17,6 +17,8 @@ import { SessionTable } from "./Session/SessionTable.jsx";
 import { Institute } from "./Institute/index.jsx";
 import { AddRole } from "./AddRole/index.jsx";
 import { AllRoles } from "./AddRole/Table/index.jsx";
+import { AddUser } from "./AddUser/index.jsx";
+import { AllUsers } from "./AddUser/Table/index.jsx";
 
 const categories = [
   "Tehsil",
@@ -25,6 +27,7 @@ const categories = [
   "Program",
   "Institute",
   "Roles",
+  "Users",
 ];
 
 const AddAddress = () => {
@@ -43,6 +46,7 @@ const AddAddress = () => {
   const [active, setActive] = useState("Tehsil");
   const [viewProgram, setViewProgram] = useState([]);
   const [viewRoles, setViewRoles] = useState([]);
+  const [viewUsers, setViewUsers] = useState([]);
   const [viewSession, setViewSession] = useState([]);
 
   const Add = async () => {
@@ -179,6 +183,22 @@ const AddAddress = () => {
       console.log(error);
     }
   };
+  const ViewUsers = async () => {
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/allUser`,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (result.data) {
+        console.log(result);
+        setViewUsers(result.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const ViewSession = async () => {
     try {
       const result = await axios.get(
@@ -203,6 +223,7 @@ const AddAddress = () => {
     ViewBoard();
     ViewProgram();
     ViewRoles();
+    ViewUsers();
     ViewSession();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionStorage.getItem("loader"), active, provinceId]);
@@ -313,6 +334,8 @@ const AddAddress = () => {
               <AddProgram setMessage={setMessage} setShowPopup={setShowPopup} />
             ) : active === "Roles" ? (
               <AddRole setMessage={setMessage} setShowPopup={setShowPopup} />
+            ) : active === "Users" ? (
+              <AddUser setMessage={setMessage} setShowPopup={setShowPopup} />
             ) : null}
           </Box>
           {/* <hr
@@ -353,6 +376,12 @@ const AddAddress = () => {
         ) : active === "Roles" ? (
           <AllRoles
             program={viewRoles}
+            setShowPopup={setShowPopup}
+            setMessage={setMessage}
+          />
+        ) : active === "Users" ? (
+          <AllUsers
+            program={viewUsers}
             setShowPopup={setShowPopup}
             setMessage={setMessage}
           />

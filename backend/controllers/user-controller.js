@@ -2,7 +2,7 @@ const User = require("../models/userSchema.js");
 
 const createUser = async (req, res) => {
   try {
-    const { user } = req.body;
+    const { user, role } = req.body;
 
     if (!user || typeof user !== "string" || user.trim() === "") {
       return res
@@ -19,6 +19,7 @@ const createUser = async (req, res) => {
 
     const newUser = new User({
       user,
+      role,
     });
 
     const result = await newUser.save();
@@ -32,12 +33,11 @@ const createUser = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
   try {
-    let users = await User.find();
-
+    let users = await User.find().populate("role");
     if (users.length > 0) {
-      res.send(users);
+      return res.send(users);
     } else {
-      res.send({ message: "No Users found" });
+      return res.send({ message: "No Users found" });
     }
   } catch (err) {
     res.status(500).json(err);

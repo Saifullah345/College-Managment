@@ -7,7 +7,11 @@ const userSchema = new mongoose.Schema(
       required: true,
       index: true,
       unique: true,
-      sparse: true,
+    },
+    role: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "role",
+      required: true,
     },
   },
   {
@@ -15,4 +19,4 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("newUsers", userSchema);
